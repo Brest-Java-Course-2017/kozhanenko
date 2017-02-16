@@ -1,4 +1,4 @@
-package com.epam.test.model;
+package com.epam.test.dao;
 
 
 import org.junit.Assert;
@@ -19,8 +19,8 @@ public class UserTest {
     @org.junit.Test
     public void getUserID() throws Exception {
         User user = new User();
-        user.setUserID(11);
-        Assert.assertEquals("User id", (int)USER_ID, user.getUserID());
+        user.setUserId(11);
+        Assert.assertEquals("User id", (int)USER_ID, user.getUserId());
 
     }
 

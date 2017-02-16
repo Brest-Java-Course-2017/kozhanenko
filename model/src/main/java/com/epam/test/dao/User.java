@@ -1,4 +1,4 @@
-package com.epam.test.model;
+package com.epam.test.dao;
 
 import java.util.Objects;
 
@@ -6,28 +6,27 @@ import java.util.Objects;
  * Created by andrei on 13.2.17.
  */
 public class User {
-    private int userID;
+    private int userId;
     private String login;
     private String password;
     private String description;
 
-    public User(){
-
+    public User() {
     }
 
-    public User(int userID, String login, String password, String description) {
-        this.userID = userID;
+    public User(Integer userId, String login, String password, String description) {
+        this.userId = userId;
         this.login = login;
         this.password = password;
         this.description = description;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getLogin() {
@@ -57,7 +56,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userID=" + userID +
+                "userId=" + userId +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 ", description='" + description + '\'' +
@@ -69,7 +68,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userID == user.userID &&
+        return userId == user.userId &&
                 Objects.equals(login, user.login) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(description, user.description);
@@ -77,6 +76,6 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userID, login, password, description);
+        return Objects.hash(userId, login, password, description);
     }
 }
