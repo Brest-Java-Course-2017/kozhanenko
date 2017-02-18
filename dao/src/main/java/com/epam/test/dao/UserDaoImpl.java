@@ -10,11 +10,15 @@ import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Dao implementation.
  */
 public class UserDaoImpl implements UserDao {
+
+    private static final Logger LOGGER = LogManager.getLogger(UserDaoImpl.class);
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -30,7 +34,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-
+        LOGGER.debug("Hello from getAllUsers");
         return jdbcTemplate.query(getAllUsersSql, new UserRowMapper());
     }
 
