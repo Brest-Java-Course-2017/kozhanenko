@@ -2,6 +2,7 @@ package com.epam.test.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -9,7 +10,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -24,8 +28,12 @@ public class UserDaoImpl implements UserDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     // FIXME move SQL scripts to properties or external files
-    String getAllUsersSql = "select user_id, login, password, description from app_user";
-    String getUserByIdSql = "select user_id, login, password, description from app_user where user_id = :p_user_id";
+    private String getAllUsersSql = "select user_id, login, password, description from app_user";
+    private String getUserByIdSql = "select user_id, login, password, description from app_user where user_id = :p_user_id";
+    private String addUserSql = "insert into app_user (login, password, description) values (:p_login, :p_password, :p_description)";
+    private String updateUserSql = "update app_user set login = :p_login, password = :p_password, description = :p_description where user_id = :p_user_id";
+    private String deleteUserSql = "delete from app_user where user_id = :p_user_id";
+
 
     public UserDaoImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -48,17 +56,27 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public Integer addUser(User user) {
-        return null;
+        Map <String, String> parameters = new HashMap<>();
+        parameters.put("p_login", user.getLogin());
+        parameters.put("p_password", user.getPassword());
+        parameters.put("p_description", user.getDescription());
+        return namedParameterJdbcTemplate.update(addUserSql, parameters);
     }
 
     @Override
     public void updateUser(User user) {
-
+        Map <String, Object> parameters = new HashMap<>();
+        parameters.put("p_user_id", user.getUserId());
+        parameters.put("p_login", user.getLogin());
+        parameters.put("p_password", user.getPassword());
+        parameters.put("p_description", user.getDescription());
+        namedParameterJdbcTemplate.update(updateUserSql, parameters);
     }
 
     @Override
     public void deleteUser(Integer userId) {
-
+        SqlParameterSource parameters = new MapSqlParameterSource("p_user_id", userId);
+        namedParameterJdbcTemplate.update(deleteUserSql, parameters);
     }
 
     private class UserRowMapper implements RowMapper<User> {

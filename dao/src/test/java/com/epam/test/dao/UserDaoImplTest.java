@@ -22,7 +22,7 @@ public class UserDaoImplTest {
     public void getAllUsersTest() throws Exception {
 
         List<User> users = userDao.getAllUsers();
-        assertTrue(users.size() == 2);
+        assertTrue(users.size() >= 2);
     }
 
     @Test
@@ -32,4 +32,28 @@ public class UserDaoImplTest {
         assertNotNull(user);
         assertEquals("userLogin1", user.getLogin());
     }
+
+    @Test
+    public void addUserTest () throws Exception{
+        User user = new User("Some login", "Some password", "some description");
+        Integer res = userDao.addUser(user);
+        assertEquals(res, new Integer(1));
+    }
+
+    @Test
+    public void updateUserTest () throws Exception{
+        User user = new User(1, "Some login", "Some password", "some description");
+        userDao.updateUser(user);
+        User userUpdated = userDao.getUserById(1);
+        assertEquals(user.getPassword(), userUpdated.getPassword());
+    }
+
+    @Test
+    public void deleteUserTest () throws Exception{
+        userDao.deleteUser(1);
+        User user = userDao.getUserById(1);
+        assertNull(user);
+    }
+
+
 }
