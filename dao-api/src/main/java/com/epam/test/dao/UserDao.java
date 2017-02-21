@@ -1,7 +1,5 @@
 package com.epam.test.dao;
 
-import com.epam.test.dao.User;
-
 import java.util.List;
 
 /**

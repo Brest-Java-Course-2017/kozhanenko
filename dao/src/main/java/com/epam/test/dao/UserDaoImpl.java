@@ -1,8 +1,8 @@
 package com.epam.test.dao;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -28,11 +28,21 @@ public class UserDaoImpl implements UserDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     // FIXME move SQL scripts to properties or external files
-    private String getAllUsersSql = "select user_id, login, password, description from app_user";
-    private String getUserByIdSql = "select user_id, login, password, description from app_user where user_id = :p_user_id";
-    private String addUserSql = "insert into app_user (login, password, description) values (:p_login, :p_password, :p_description)";
-    private String updateUserSql = "update app_user set login = :p_login, password = :p_password, description = :p_description where user_id = :p_user_id";
-    private String deleteUserSql = "delete from app_user where user_id = :p_user_id";
+
+    @Value("${user.getAllUsersSql}")
+    String getAllUsersSql;
+
+    @Value("${user.getUserByIdSql}")
+    String getUserByIdSql;
+
+    @Value("${user.addUserSql}")
+    String addUserSql;
+
+    @Value("${user.updateUserSql}")
+    String updateUserSql;
+
+    @Value("${user.deleteUserSql}")
+    String deleteUserSql;
 
 
     public UserDaoImpl(DataSource dataSource) {
