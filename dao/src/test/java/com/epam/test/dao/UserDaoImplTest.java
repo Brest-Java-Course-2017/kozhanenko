@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:test-spring-dao.xml"})
+@Transactional
 public class UserDaoImplTest {
 
     @Autowired
@@ -28,7 +30,7 @@ public class UserDaoImplTest {
     @Test
     public void getUserByIdTest() throws Exception {
 
-        User user = userDao.getUserById(1);
+        User user = userDao.getUserById(8);
         assertNotNull(user);
         assertEquals("userLogin1", user.getLogin());
     }
