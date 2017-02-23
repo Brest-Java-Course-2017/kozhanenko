@@ -14,6 +14,8 @@
         <module>model</module>
         <module>dao-api</module>
         <module>dao</module>
+        <module>service-api</module>
+        <module>service</module>
         <module>test-db</module>
     </modules>
 
@@ -22,7 +24,7 @@
         <h2.version>1.4.193</h2.version>
         <spring.version>4.3.6.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
-        <log4j.version>2.8</log4j.version>
+        <log4j2.version>2.8</log4j2.version>
     </properties>
 
     <dependencyManagement>
@@ -30,23 +32,32 @@
             <dependency>
                 <groupId>com.epam.test</groupId>
                 <artifactId>model</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.epam.test</groupId>
                 <artifactId>dao-api</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.epam.test</groupId>
                 <artifactId>dao</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.epam.test</groupId>
+                <artifactId>service-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.test</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.epam.test</groupId>
                 <artifactId>test-db</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -92,25 +103,28 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.4</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
-                <version>${log4j.version}</version>
+                <version>${log4j2.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>${log4j.version}</version>
+                <version>${log4j2.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-jcl</artifactId>
-                <version>${log4j.version}</version>
+                <version>${log4j2.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -233,7 +247,7 @@
                     <linkXref>true</linkXref>
                     <sourceEncoding>utf-8</sourceEncoding>
                     <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.8</targetJdk>
+                    <targetJdk>1.5</targetJdk>
                 </configuration>
                 <reportSets>
                     <reportSet>

@@ -20,7 +20,7 @@ public class UserTest {
     public void getUserID() throws Exception {
         User user = new User();
         user.setUserId(11);
-        Assert.assertEquals("User id", (int)USER_ID, user.getUserId());
+        Assert.assertEquals("User id", (Integer) USER_ID, user.getUserId());
 
     }
 
