@@ -11,17 +11,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.annotation.Resource;
 
-import  static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import  static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import  static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import  static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
-
-/**
- * Created by andrei on 24.2.17.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath*:test-spring-rest-mock.xml")
+@ContextConfiguration(locations = {"classpath*:test-spring-rest-mock.xml"})
 public class VersionControllerMockTest {
 
     @Resource
@@ -30,17 +26,20 @@ public class VersionControllerMockTest {
     private MockMvc mockMvc;
 
     @Before
-    public void  setUp(){
+    public void setUp() {
         mockMvc = standaloneSetup(versionController)
-                .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+                .setMessageConverters(new MappingJackson2HttpMessageConverter())
+                .build();
     }
 
     @Test
-    public void getVersionTest() throws Exception{
+    public void getVersionTest() throws Exception {
         mockMvc.perform(
                 get("/version")
                         .accept(MediaType.APPLICATION_JSON)
-        ).andDo(print()).andExpect(status().isOk())
+        ).andDo(print())
+        .andExpect(status().isOk())
         .andExpect(content().string("\"1.0\""));
     }
+
 }

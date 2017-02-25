@@ -1,4 +1,3 @@
-
 package com.epam.test.service;
 
 import com.epam.test.dao.User;
@@ -16,7 +15,7 @@ import org.springframework.util.Assert;
 import static org.easymock.EasyMock.*;
 
 /**
- * Created by andrei on 23.2.17.
+ * Created by mentor on 20.2.17.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:service-test-mock.xml"})

@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
-<Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-        <PatternLayout pattern="%highlight{%d{dd-MMM-yyyy HH:mm:ss,SSS} [%t] %-5level %logger{36} - %msg%n}"/>
-    </Console>
-    <File name="File" fileName="logfiles/result.log">
-        <PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss,SSS} [%t] %-5level %logger{36} - %msg%n}"/>
-    </File>
-</Appenders>
-<Loggers>
-    <Root level="ERROR">
-        <appender-ref ref="Console"/>
-        <appender-ref ref="File"/>
-    </Root>
-    <Logger name="org.springframework" level="INFO"/>
-    <Logger name="com.epam.test" level="DEBUG"/>
-</Loggers>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <File name="File" fileName="logs/server.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="ERROR">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="File"/>
+        </Root>
+        <Logger name="org.springframework" level="INFO"/>
+        <Logger name="com.epam.test" level="DEBUG"/>
+    </Loggers>
 </Configuration>

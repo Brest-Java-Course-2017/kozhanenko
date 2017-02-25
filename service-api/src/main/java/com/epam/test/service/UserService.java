@@ -50,12 +50,6 @@ public interface UserService {
      */
     int updateUser(User user) throws DataAccessException;
 
-    /**
-     *
-     * @param userId
-     * @return
-     * @throws DataAccessException
-     */
     int deleteUser(Integer userId) throws DataAccessException;
 
 }

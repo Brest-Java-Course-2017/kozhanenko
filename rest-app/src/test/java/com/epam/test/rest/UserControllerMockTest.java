@@ -59,11 +59,11 @@ public class UserControllerMockTest {
         mockMvc.perform(
                 post("/user")
                         .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(user)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(user)
         ).andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().string("3"));
+        .andExpect(status().isCreated())
+        .andExpect(content().string("3"));
     }
 
     @Test
@@ -88,6 +88,6 @@ public class UserControllerMockTest {
                         .accept(MediaType.APPLICATION_JSON)
         ).andDo(print())
                 .andExpect(status().isAccepted())
-                .andExpect(content().string(""));
+        .andExpect(content().string(""));
     }
 }

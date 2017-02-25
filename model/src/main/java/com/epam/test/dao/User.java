@@ -3,7 +3,9 @@ package com.epam.test.dao;
 import java.util.Objects;
 
 /**
- * Created by andrei on 13.2.17.
+ * Created by mentor on 13.2.17.
+ * <p>
+ * This is our 1st bean class.
  */
 public class User {
 

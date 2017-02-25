@@ -5,8 +5,8 @@ import org.springframework.dao.DataAccessException;
 import java.util.List;
 
 /**
- * DAO interface.
- */
+* DAO interface.
+*/
 public interface UserDao {
 
     /**
@@ -52,4 +52,3 @@ public interface UserDao {
     int deleteUser(Integer userId) throws DataAccessException;
 
 }
-

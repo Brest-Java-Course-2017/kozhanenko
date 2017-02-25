@@ -1,7 +1,13 @@
+#curl -o .gitignore
+#https://raw.githubusercontent.com/github/gitignore/master/Java.gitignore
+#https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
+
 *.class
 
 # Log file
 *.log
+logs
+
 
 # BlueJ files
 *.ctxt

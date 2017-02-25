@@ -1,9 +1,5 @@
 package com.epam.test.rest;
 
-/**
- * Created by andrei on 25.2.17.
- */
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -20,8 +16,7 @@ public class RestErrorHandler {
 
     @ExceptionHandler(DataAccessException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public @ResponseBody
-    String handleDataAccessException(DataAccessException ex) {
+    public @ResponseBody String handleDataAccessException(DataAccessException ex) {
         LOGGER.debug("Handling DataAccessException: " + ex);
         return "DataAccessException: " + ex.getLocalizedMessage();
     }

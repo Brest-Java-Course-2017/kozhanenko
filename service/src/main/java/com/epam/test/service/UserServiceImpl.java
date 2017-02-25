@@ -13,7 +13,7 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 /**
- * Created by andrei on 22.2.17.
+ * User Service implementation.
  */
 @Service
 @Transactional
@@ -35,7 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Integer userId) throws DataAccessException {
-        return null;
+        LOGGER.debug("getUserById({}) ", userId);
+        Assert.notNull(userId, "User id should not be null.");
+        return userDao.getUserById(userId);
     }
 
     @Override
@@ -58,11 +60,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUser(User user) throws DataAccessException {
-        return 0;
+        Assert.notNull(user, "User should not be null.");
+        LOGGER.debug("updateUser(): user login = {} ", user.getLogin());
+        Assert.hasText(user.getLogin(), "User login should not be null.");
+        Assert.hasText(user.getPassword(), "User password should not be null.");
+        return userDao.updateUser(user);
     }
 
     @Override
     public int deleteUser(Integer userId) throws DataAccessException {
-        return 0;
+        Assert.notNull(userId, "User id should not be null.");
+        LOGGER.debug("deleteUser(): user id = {} ", userId);
+        return userDao.deleteUser(userId);
     }
 }

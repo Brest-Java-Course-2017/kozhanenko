@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Created by andrei on 23.2.17.
+ * Created by mentor on 20.2.17.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:service-test.xml"})
@@ -34,7 +34,7 @@ public class UserServiceImplTest {
 
     @Test
     public void getUserById() throws Exception {
-
+        // FIXME implement test
     }
 
     @Test
@@ -47,17 +47,17 @@ public class UserServiceImplTest {
 
     @Test
     public void addUser() throws Exception {
-
+        // FIXME implement test
     }
 
     @Test
     public void updateUser() throws Exception {
-
+        // FIXME implement test
     }
 
     @Test
     public void deleteUser() throws Exception {
-
+        // FIXME implement test
     }
 
 }

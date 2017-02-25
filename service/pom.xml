@@ -16,8 +16,8 @@
             <artifactId>model</artifactId>
         </dependency>
         <dependency>
-        <groupId>com.epam.test</groupId>
-        <artifactId>dao</artifactId>
+            <groupId>com.epam.test</groupId>
+            <artifactId>dao</artifactId>
         </dependency>
         <dependency>
             <groupId>com.epam.test</groupId>
