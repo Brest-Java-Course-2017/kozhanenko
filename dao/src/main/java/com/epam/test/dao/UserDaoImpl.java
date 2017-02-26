@@ -96,7 +96,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int updateUser(User user) throws DataAccessException {
-
         LOGGER.debug("update user {}", user);
         Map<String, Object> params = new HashMap<>();
         params.put(USER_ID, user.getUserId());
@@ -108,7 +107,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int deleteUser(Integer userId) throws DataAccessException {
-
         LOGGER.debug("delete user with id = {}", userId);
         Map<String, Object> params = new HashMap<>();
         params.put(USER_ID, userId);
