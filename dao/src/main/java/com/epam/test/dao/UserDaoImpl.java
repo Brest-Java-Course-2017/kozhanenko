@@ -26,10 +26,10 @@ public class UserDaoImpl implements UserDao {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    static final String USER_ID = "user_id";
-    static final String LOGIN = "login";
-    static final String PASSWORD = "password";
-    static final String DESCRIPTION = "description";
+    private static final String USER_ID = "user_id";
+    private static final String LOGIN = "login";
+    private static final String PASSWORD = "password";
+    private static final String DESCRIPTION = "description";
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
