@@ -40,9 +40,10 @@ public class DemoApp {
         System.out.println("|        1. Get all users       |");
         System.out.println("|        2. Get user by login   |");
         System.out.println("|        3. Add user(login,pass)|");
-        System.out.println("|        4. Exit                |");
+        System.out.println("|        4. Update user         |");
+        System.out.println("|        5. Exit                |");
         System.out.println("=================================");
-        while (swValue != 4) {
+        while (swValue != 5) {
             System.out.print("Select option: ");
             if (sc.hasNextInt()) {
                 swValue = sc.nextInt();
@@ -65,6 +66,9 @@ public class DemoApp {
                 addUser();
                 break;
             case 4:
+                updateUser();
+                break;
+            case 5:
                 System.out.println("Exit.");
                 break;
             default:
@@ -108,6 +112,36 @@ public class DemoApp {
             User user = new User(userLogin, userPass);
             Integer userId = usersConsumer.addUser(user);
             System.out.print(" User with id: " + userId + " added.");
+        } catch (ServerDataAccessException ex){
+            System.out.println("    ERROR: " + ex.getMessage());
+        }
+    }
+
+    private void updateUser(){
+        String userId = "";
+        System.out.print("    Enter user id: ");
+        if (sc.hasNextLine()) {
+            userId = sc.next();
+        }
+        String userLogin = "";
+        System.out.print("    Enter new user login: ");
+        if (sc.hasNextLine()) {
+            userLogin = sc.next();
+        }
+        String userPass = "";
+        System.out.print("    Enter new user password: ");
+        if (sc.hasNextLine()) {
+            userPass = sc.next();
+        }
+        String userDes = "";
+        System.out.print("    Enter new user description: ");
+        if (sc.hasNextLine()) {
+            userDes = sc.next();
+        }
+        try {
+            User user = new User(Integer.valueOf(userId), userLogin, userPass, userDes);
+            usersConsumer.updateUser(user);
+            System.out.print(" It seems that everything is OK :)");
         } catch (ServerDataAccessException ex){
             System.out.println("    ERROR: " + ex.getMessage());
         }

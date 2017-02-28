@@ -57,10 +57,11 @@ public class UsersConsumerRest implements UsersConsumer {
         return (Integer) userId;
     }
 
-    //curl -X PUT -v localhost:8088/user/2/l1/p1/d1
+    //curl -X PUT -v localhost:8088/user/id/login/password/description
     @Override
-    public int updateUser(User user) throws ServerDataAccessException {
-        return 0;
+    public void updateUser(User user) throws ServerDataAccessException {
+        restTemplate.put(hostUrl + "/" + urlUser+ "/" + user.getUserId() +
+                "/" + user.getLogin() + "/" + user.getPassword() + "/" + user.getDescription(), User.class);
     }
 
     //curl -X DELETE -v localhost:8080/user/userId     -v???

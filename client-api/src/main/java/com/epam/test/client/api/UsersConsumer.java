@@ -43,12 +43,11 @@ public interface UsersConsumer {
     Integer addUser(User user) throws ServerDataAccessException;
 
     /**
-     * Update user.
      *
-     * @param user user.
-     * @return new user Id.
+     * @param user
+     * @throws ServerDataAccessException
      */
-    int updateUser(User user) throws ServerDataAccessException;
+    void updateUser(User user) throws ServerDataAccessException;
 
     /**
      *
