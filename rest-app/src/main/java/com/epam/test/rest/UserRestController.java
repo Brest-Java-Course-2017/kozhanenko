@@ -49,4 +49,14 @@ public class UserRestController {
         LOGGER.debug("getUser: login = {}", login);
         return userService.getUserByLogin(login);
     }
+
+    //curl -X DELETE -v localhost:8080/user/userId     -v???
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public @ResponseBody Integer deleteUser(@PathVariable(value = "userId") Integer userId) {
+        LOGGER.debug("deleteUser: userId = {}", userId);
+        return userService.deleteUser(userId);
+    }
+
+
 }

@@ -49,16 +49,21 @@ public class UsersConsumerRest implements UsersConsumer {
         return (User) user;
     }
 
+    //curl -H "Content-Type: application/json" -X POST -d '{"login":"xyz","password":"xyz"}' -v localhost:8080/user
     @Override
     public Integer addUser(User user) throws ServerDataAccessException {
-        return null;
+        ResponseEntity responseEntity = restTemplate.postForEntity(hostUrl + "/" + urlUser, user, Integer.class);
+        Object userId = responseEntity.getBody();
+        return (Integer) userId;
     }
 
+    //curl -X PUT -v localhost:8088/user/2/l1/p1/d1
     @Override
     public int updateUser(User user) throws ServerDataAccessException {
         return 0;
     }
 
+    //curl -X DELETE -v localhost:8080/user/userId     -v???
     @Override
     public int deleteUser(Integer userId) throws ServerDataAccessException {
         return 0;

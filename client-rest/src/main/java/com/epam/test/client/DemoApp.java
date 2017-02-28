@@ -39,9 +39,10 @@ public class DemoApp {
         System.out.println("| Options:                      |");
         System.out.println("|        1. Get all users       |");
         System.out.println("|        2. Get user by login   |");
-        System.out.println("|        3. Exit                |");
+        System.out.println("|        3. Add user(login,pass)|");
+        System.out.println("|        4. Exit                |");
         System.out.println("=================================");
-        while (swValue != 3) {
+        while (swValue != 4) {
             System.out.print("Select option: ");
             if (sc.hasNextInt()) {
                 swValue = sc.nextInt();
@@ -61,6 +62,9 @@ public class DemoApp {
                 getUserByLogin();
                 break;
             case 3:
+                addUser();
+                break;
+            case 4:
                 System.out.println("Exit.");
                 break;
             default:
@@ -85,6 +89,26 @@ public class DemoApp {
             User user = usersConsumer.getUserByLogin(userLogin);
             System.out.println("    User: " + user);
         } catch (ServerDataAccessException ex) {
+            System.out.println("    ERROR: " + ex.getMessage());
+        }
+    }
+
+    private void addUser(){
+        String userLogin = "";
+        System.out.print("    Enter user login: ");
+        if (sc.hasNextLine()) {
+            userLogin = sc.next();
+        }
+        String userPass = "";
+        System.out.print("    Enter user password: ");
+        if (sc.hasNextLine()) {
+            userPass = sc.next();
+        }
+        try {
+            User user = new User(userLogin, userPass);
+            Integer userId = usersConsumer.addUser(user);
+            System.out.print(" User with id: " + userId + " added.");
+        } catch (ServerDataAccessException ex){
             System.out.println("    ERROR: " + ex.getMessage());
         }
     }

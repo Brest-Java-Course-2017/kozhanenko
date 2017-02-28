@@ -19,7 +19,6 @@
         <dependency>
             <groupId>com.epam.test</groupId>
             <artifactId>client-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
