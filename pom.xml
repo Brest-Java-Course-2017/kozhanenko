@@ -19,6 +19,8 @@
         <module>test-db</module>
         <module>web-app</module>
         <module>rest-app</module>
+        <module>client-api</module>
+        <module>client-rest</module>
     </modules>
 
     <properties>
@@ -65,6 +67,16 @@
             <dependency>
                 <groupId>com.epam.test</groupId>
                 <artifactId>test-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.test</groupId>
+                <artifactId>client-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.epam.test</groupId>
+                <artifactId>client-rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -194,6 +206,9 @@
                         <webApp>
                             <contextPath>/</contextPath>
                         </webApp>
+                        <httpConnector>
+                            <port>8181</port>
+                        </httpConnector>
                     </configuration>
                 </plugin>
 

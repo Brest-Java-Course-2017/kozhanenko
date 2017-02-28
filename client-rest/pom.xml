@@ -9,22 +9,30 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-
-    <artifactId>rest-app</artifactId>
-    <packaging>war</packaging>
+    <artifactId>client-rest</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.epam.test</groupId>
-            <artifactId>service</artifactId>
+            <artifactId>model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.epam.test</groupId>
+            <artifactId>client-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
         </dependency>
 
         <dependency>
@@ -45,33 +53,10 @@
             <artifactId>spring-test</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-        </dependency>
+
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <webApp>
-                        <contextPath>/</contextPath>
-                    </webApp>
-                    <httpConnector>
-                        <port>8088</port>
-                    </httpConnector>
-                </configuration>
-            </plugin>
-
-        </plugins>
-    </build>
-
 
 </project>

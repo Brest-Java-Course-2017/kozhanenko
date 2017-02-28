@@ -18,7 +18,7 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    //curl -v localhost:8080/users
+    //curl -v localhost:8088/users
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public @ResponseBody List<User> getUsers() {
         LOGGER.debug("getUsers()");
@@ -33,7 +33,7 @@ public class UserRestController {
         return userService.addUser(user);
     }
 
-    //curl -X PUT -v localhost:8080/user/2/l1/p1/d1
+    //curl -X PUT -v localhost:8088/user/2/l1/p1/d1
     @RequestMapping(value = "/user/{id}/{login}/{password}/{desc}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.ACCEPTED)
     public void updateUser(@PathVariable(value = "id") int id, @PathVariable(value = "desc") String desc,
