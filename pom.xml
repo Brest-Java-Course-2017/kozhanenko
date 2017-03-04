@@ -12,6 +12,8 @@
 
     <modules>
         <module>model</module>
+        <module>dao-api</module>
+        <module>dao</module>
     </modules>
 
     <properties>
@@ -21,6 +23,21 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>by.eventcat</groupId>
+                <artifactId>model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>by.eventcat</groupId>
+                <artifactId>dao-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>by.eventcat</groupId>
+                <artifactId>dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
