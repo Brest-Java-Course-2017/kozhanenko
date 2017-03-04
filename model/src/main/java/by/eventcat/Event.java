@@ -1,7 +1,9 @@
 package by.eventcat;
 
+import java.util.Objects;
+
 /**
- * Created by andrei on 4.3.17.
+ *
  */
 public class Event {
     private int eventId;
@@ -41,5 +43,31 @@ public class Event {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return eventId == event.eventId &&
+                Objects.equals(eventName, event.eventName) &&
+                Objects.equals(place, event.place) &&
+                Objects.equals(category, event.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, eventName, place, category);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventId=" + eventId +
+                ", eventName='" + eventName + '\'' +
+                ", place=" + place +
+                ", category=" + category +
+                '}';
     }
 }
