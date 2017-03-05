@@ -1,5 +1,6 @@
 package by.eventcat;
 
+
 import java.util.Objects;
 
 /**
@@ -10,7 +11,6 @@ public class User {
     private String userName;
     private String loginEmail;
     private String password;
-    private String role;
 
     public User(){}
 
@@ -46,14 +46,6 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,13 +54,12 @@ public class User {
         return userId == user.userId &&
                 Objects.equals(userName, user.userName) &&
                 Objects.equals(loginEmail, user.loginEmail) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(role, user.role);
+                Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, loginEmail, password, role);
+        return Objects.hash(userId, userName, loginEmail, password);
     }
 
     @Override
@@ -78,7 +69,6 @@ public class User {
                 ", userName='" + userName + '\'' +
                 ", loginEmail='" + loginEmail + '\'' +
                 ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
                 '}';
     }
 }

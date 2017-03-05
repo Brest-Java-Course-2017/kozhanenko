@@ -3,7 +3,7 @@ package by.eventcat;
 import java.util.Objects;
 
 /**
- * Created by andrei on 4.3.17.
+ * Time Period stores data about event duration time
  */
 public class TimePeriod {
 

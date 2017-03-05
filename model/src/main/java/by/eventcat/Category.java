@@ -3,7 +3,7 @@ package by.eventcat;
 import java.util.Objects;
 
 /**
- * Created by andrei on 4.3.17.
+ * Category (Topic) of event
  */
 public class Category {
 

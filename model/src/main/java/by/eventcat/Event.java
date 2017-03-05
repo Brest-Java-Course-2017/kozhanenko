@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Event {
     private int eventId;
     private String eventName;
-    private Place place;
+    private EventPlace eventPlace;
     private Category category;
 
     public Event(){}
@@ -29,12 +29,12 @@ public class Event {
         this.eventName = eventName;
     }
 
-    public Place getPlace() {
-        return place;
+    public EventPlace getEventPlace() {
+        return eventPlace;
     }
 
-    public void setPlace(Place place) {
-        this.place = place;
+    public void setEventPlace(EventPlace eventPlace) {
+        this.eventPlace = eventPlace;
     }
 
     public Category getCategory() {
@@ -52,13 +52,13 @@ public class Event {
         Event event = (Event) o;
         return eventId == event.eventId &&
                 Objects.equals(eventName, event.eventName) &&
-                Objects.equals(place, event.place) &&
+                Objects.equals(eventPlace, event.eventPlace) &&
                 Objects.equals(category, event.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventId, eventName, place, category);
+        return Objects.hash(eventId, eventName, eventPlace, category);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Event {
         return "Event{" +
                 "eventId=" + eventId +
                 ", eventName='" + eventName + '\'' +
-                ", place=" + place +
+                ", eventPlace=" + eventPlace +
                 ", category=" + category +
                 '}';
     }
