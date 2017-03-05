@@ -29,4 +29,11 @@ public class EventPlaceTest {
         assertEquals(eventPlace.getEventPlaceAddress(), "Брест, Советская, 25");
     }
 
+    @Test
+    public void getCategoryId() throws Exception {
+        EventPlace eventPlace = new EventPlace();
+        eventPlace.setCategoryId(12);
+        assertEquals(eventPlace.getCategoryId(), 12);
+    }
+
 }

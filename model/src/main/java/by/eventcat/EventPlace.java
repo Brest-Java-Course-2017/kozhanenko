@@ -9,6 +9,7 @@ public class EventPlace {
     private int eventPlaceId;
     private String eventPlaceName;
     private String eventPlaceAddress;
+    private int categoryId;
 
     public EventPlace(){}
 
@@ -36,19 +37,28 @@ public class EventPlace {
         this.eventPlaceAddress = eventPlaceAddress;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EventPlace eventPlace = (EventPlace) o;
-        return eventPlaceId == eventPlace.eventPlaceId &&
-                Objects.equals(eventPlaceName, eventPlace.eventPlaceName) &&
-                Objects.equals(eventPlaceAddress, eventPlace.eventPlaceAddress);
+        EventPlace that = (EventPlace) o;
+        return eventPlaceId == that.eventPlaceId &&
+                categoryId == that.categoryId &&
+                Objects.equals(eventPlaceName, that.eventPlaceName) &&
+                Objects.equals(eventPlaceAddress, that.eventPlaceAddress);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventPlaceId, eventPlaceName, eventPlaceAddress);
+        return Objects.hash(eventPlaceId, eventPlaceName, eventPlaceAddress, categoryId);
     }
 
     @Override
@@ -57,6 +67,7 @@ public class EventPlace {
                 "eventPlaceId=" + eventPlaceId +
                 ", eventPlaceName='" + eventPlaceName + '\'' +
                 ", eventPlaceAddress='" + eventPlaceAddress + '\'' +
+                ", categoryId=" + categoryId +
                 '}';
     }
 }
