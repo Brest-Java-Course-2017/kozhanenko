@@ -48,7 +48,7 @@ public interface EventPlaceDao {
      * update event place
      *
      * @param eventPlace event place object with updates
-     * @return number of updated rows
+     * @return number of rows affected
      * @throws DataAccessException
      */
     int updateEventPlace(EventPlace eventPlace) throws DataAccessException;
@@ -56,10 +56,9 @@ public interface EventPlaceDao {
     /**
      *
      * @param eventPlaceId event place identifier
-     * @return
+     * @return number of rows affected
      * @throws DataAccessException
      */
     int deleteEventPlace(Integer eventPlaceId) throws DataAccessException;
-    //TODO: realise if there is needless to return something - REST do not permit any return when delete
     //TODO: DataAccessException description in javadoc???
 }

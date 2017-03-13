@@ -14,6 +14,7 @@
         <module>model</module>
         <module>dao-api</module>
         <module>dao</module>
+        <module>test-db</module>
     </modules>
 
     <properties>

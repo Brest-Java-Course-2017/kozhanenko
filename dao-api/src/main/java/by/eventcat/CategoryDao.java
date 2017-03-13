@@ -43,7 +43,7 @@ public interface CategoryDao {
     /**
      *
      * @param category object of changing category
-     * @return
+     * @return number of rows affected
      * @throws DataAccessException
      */
     int updateCategory (Category category) throws DataAccessException;
@@ -52,10 +52,9 @@ public interface CategoryDao {
     /**
      *
      * @param categoryId category identifier
-     * @return
+     * @return number of rows affected
      * @throws DataAccessException
      */
     int deleteCategory (Integer categoryId) throws DataAccessException;
-    //TODO: maybe it returns void???
 
 }

@@ -21,7 +21,7 @@ public interface UserDao {
      * Get user by Id.
      *
      * @param userId user identifier.
-     * @return user object.
+     * @return User object.
      * @throws DataAccessException
      */
     User getUserById(Integer userId) throws DataAccessException;
@@ -30,7 +30,7 @@ public interface UserDao {
      * Get user by login
      *
      * @param login user login (really email uses as login)
-     * @return user object
+     * @return User object
      * @throws DataAccessException
      */
     User getUserByLogin(String login) throws DataAccessException;
@@ -48,7 +48,7 @@ public interface UserDao {
      * Update user.
      *
      * @param user user object.
-     * @return new user Id.
+     * @return number of rows affected
      * @throws DataAccessException
      */
     int updateUser(User user) throws DataAccessException;
@@ -57,10 +57,9 @@ public interface UserDao {
      * Delete user.
      *
      * @param userId user identifier
-     * @return
+     * @return number of rows affected
      * @throws DataAccessException
      */
     int deleteUser(Integer userId) throws DataAccessException;
-    //TODO: realise if there is needless to return something - REST do not permit any return when delete
     //TODO: DataAccessException description in javadoc???
 }
