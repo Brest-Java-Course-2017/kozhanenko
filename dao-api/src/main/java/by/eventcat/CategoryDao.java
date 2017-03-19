@@ -14,9 +14,10 @@ public interface CategoryDao {
      * @return list of existing categories
      * @throws DataAccessException
      */
-    List<Category> getAllCaterories() throws DataAccessException;
+    List<Category> getAllCategories() throws DataAccessException;
 
     /**
+     * Gets category by identifier
      *
      * @param categoryId category identifier
      * @return category object
@@ -25,7 +26,7 @@ public interface CategoryDao {
     Category getCategoryById(Integer categoryId) throws DataAccessException;
 
     /**
-     *
+     * Get category by its name
      * @param categoryName category name
      * @return category object
      * @throws DataAccessException
@@ -33,6 +34,7 @@ public interface CategoryDao {
     Category getCategoryByCategoryName(String categoryName) throws DataAccessException;
 
     /**
+     * Add new category
      *
      * @param category category object
      * @return new category identifier
@@ -41,15 +43,16 @@ public interface CategoryDao {
     Integer addCategory (Category category) throws DataAccessException;
 
     /**
+     * Update category data
      *
      * @param category object of changing category
      * @return number of rows affected
      * @throws DataAccessException
      */
     int updateCategory (Category category) throws DataAccessException;
-    //TODO: what returns???
 
     /**
+     * Delete category
      *
      * @param categoryId category identifier
      * @return number of rows affected
