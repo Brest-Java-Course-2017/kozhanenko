@@ -5,6 +5,7 @@ INSERT  INTO `category` (`category_id`, `category_name`) VALUES
         (4, 'Open air'),
         (5, 'Музеи');
 
+/*
 INSERT INTO `event` (`event_id`, `event_name`, `category_id`, `event_place_id`) VALUES
         (1, 'Премьера "Весёлый вдовец"', 1, 4),
         (2, 'Три толстяка', 1, 4),
@@ -25,3 +26,4 @@ REPLACE INTO `user` (`user_id`, `user_name`, `user_login`, `user_pass`) VALUES
         (1, 'andrei', 'andrei@mail.ru', 'somepass'),
         (2, 'vasiliy', 'vasiliy@gmail.com', 'pass1'),
         (3, 'sergei', 'sergei@tut.by', 'pass2');
+*/

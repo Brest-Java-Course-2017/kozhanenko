@@ -57,12 +57,14 @@ public class CategoryDaoImplTest {
         Integer categoryId = categoryDao.addCategory(category);
         assertNotNull(categoryId);
 
-        Category newCategory = categoryDao.getCategoryById(categoryId);
-        assertNotNull(newCategory);
-        assertTrue(category.getCategoryName().equals(newCategory.getCategoryName()));
-
         categories = categoryDao.getAllCategories();
         assertEquals(quantityBefore + 1, categories.size());
+
+        Category newCategory = categoryDao.getCategoryById(categoryId);
+        assertNotNull(newCategory);
+        assertEquals(category.getCategoryName(), newCategory.getCategoryName());
+
+
     }
 
     //TODO: test adding dublicate category

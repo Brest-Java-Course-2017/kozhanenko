@@ -28,22 +28,22 @@ public class CategoryDaoImpl implements CategoryDao{
     private static final String CATEGORY_ID = "category_id";
     private static final String CATEGORY_NAME = "category_name";
 
-    @Value("$(category.selectAll)")
+    @Value("${category.selectAll}")
     String getAllCategoriesSQL;
 
-    @Value("$(category.selectCategoryById)")
+    @Value("${category.selectCategoryById}")
     String getCategoryByIdSql;
 
-    @Value("$(category.selectCategoryByName)")
+    @Value("${category.selectCategoryByName}")
     String getCategoryByNameSql;
 
-    @Value("$(category.insertCategory)")
+    @Value("${category.insertCategory}")
     String insertCategorySql;
 
-    @Value("$(category.updateCategory)")
+    @Value("${category.updateCategory}")
     String updateCategorySql;
 
-    @Value("$(category.deleteCategory)")
+    @Value("${category.deleteCategory}")
     String deleteCategorySql;
 
 
@@ -78,7 +78,7 @@ public class CategoryDaoImpl implements CategoryDao{
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue(CATEGORY_ID, category.getCategoryId());
         parameterSource.addValue(CATEGORY_NAME, category.getCategoryName());
-        namedParameterJdbcTemplate.update(insertCategorySql, parameterSource, keyHolder);
+        namedParameterJdbcTemplate.update(insertCategorySql, parameterSource, keyHolder, new String[]{"category_id"});
         return keyHolder.getKey().intValue();
     }
 
