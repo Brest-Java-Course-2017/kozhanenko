@@ -3,13 +3,13 @@ package by.eventcat;
 import java.util.Objects;
 
 /**
- *
+ * Class Event
  */
 public class Event {
     private int eventId;
-    private String eventName;
-    private EventPlace eventPlace;
     private Category category;
+    private String eventName;
+    private String eventPlace;
 
     public Event(){}
 
@@ -21,22 +21,6 @@ public class Event {
         this.eventId = eventId;
     }
 
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
-
-    public EventPlace getEventPlace() {
-        return eventPlace;
-    }
-
-    public void setEventPlace(EventPlace eventPlace) {
-        this.eventPlace = eventPlace;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -45,29 +29,45 @@ public class Event {
         this.category = category;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getEventPlace() {
+        return eventPlace;
+    }
+
+    public void setEventPlace(String eventPlace) {
+        this.eventPlace = eventPlace;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
         return eventId == event.eventId &&
+                Objects.equals(category, event.category) &&
                 Objects.equals(eventName, event.eventName) &&
-                Objects.equals(eventPlace, event.eventPlace) &&
-                Objects.equals(category, event.category);
+                Objects.equals(eventPlace, event.eventPlace);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventId, eventName, eventPlace, category);
+        return Objects.hash(eventId, category, eventName, eventPlace);
     }
 
     @Override
     public String toString() {
         return "Event{" +
                 "eventId=" + eventId +
-                ", eventName='" + eventName + '\'' +
-                ", eventPlace=" + eventPlace +
                 ", category=" + category +
+                ", eventName='" + eventName + '\'' +
+                ", eventPlace='" + eventPlace + '\'' +
                 '}';
     }
 }

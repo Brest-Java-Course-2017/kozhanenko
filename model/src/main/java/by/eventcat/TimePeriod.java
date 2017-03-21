@@ -3,17 +3,14 @@ package by.eventcat;
 import java.util.Objects;
 
 /**
- * Time Period stores data about event duration time
+ * Time Period stores data about event duration period
  */
 public class TimePeriod {
 
     private int timePeriodId;
-    private int eventId;
+    private Event event;
     private long beginning;
     private long end;
-
-    public TimePeriod() {
-    }
 
     public int getTimePeriodId() {
         return timePeriodId;
@@ -23,12 +20,12 @@ public class TimePeriod {
         this.timePeriodId = timePeriodId;
     }
 
-    public int getEventId() {
-        return eventId;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public long getBeginning() {
@@ -53,21 +50,21 @@ public class TimePeriod {
         if (o == null || getClass() != o.getClass()) return false;
         TimePeriod that = (TimePeriod) o;
         return timePeriodId == that.timePeriodId &&
-                eventId == that.eventId &&
                 beginning == that.beginning &&
-                end == that.end;
+                end == that.end &&
+                Objects.equals(event, that.event);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timePeriodId, eventId, beginning, end);
+        return Objects.hash(timePeriodId, event, beginning, end);
     }
 
     @Override
     public String toString() {
         return "TimePeriod{" +
                 "timePeriodId=" + timePeriodId +
-                ", eventId=" + eventId +
+                ", event=" + event +
                 ", beginning=" + beginning +
                 ", end=" + end +
                 '}';

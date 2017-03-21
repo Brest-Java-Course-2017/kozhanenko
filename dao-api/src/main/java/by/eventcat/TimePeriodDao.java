@@ -12,11 +12,11 @@ public interface TimePeriodDao {
     /**
      * Gets all time periods of certain event
      *
-     * @param eventId event identifier
+     * @param event event object
      * @return list of TimePeriod objects
      * @throws DataAccessException
      */
-    List<TimePeriod> getAllTimePeriodsByEventId(Integer eventId) throws DataAccessException;
+    List<TimePeriod> getAllTimePeriodsByEvent(Event event) throws DataAccessException;
 
     /**
      * Gets all time periods that running now (beginTime) or will begin till some time period (endTime)
@@ -35,6 +35,14 @@ public interface TimePeriodDao {
      * @throws DataAccessException
      */
     Integer addTimePeriod(TimePeriod timePeriod) throws DataAccessException;
+
+    /**
+     *
+     * @param timePeriods list of time periods
+     * @return count of rows affected
+     * @throws DataAccessException
+     */
+    int addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException;
 
     /**
      * updates time period
@@ -57,10 +65,10 @@ public interface TimePeriodDao {
     /**
      * Delete time periods of certain event
      *
-     * @param eventId event identifier
+     * @param event event object
      * @return number of rows affected
      * @throws DataAccessException
      */
-    int deleteTimePeriodsByEventId(Integer eventId) throws DataAccessException;
+    int deleteTimePeriodsByEvent(Event event) throws DataAccessException;
 
 }

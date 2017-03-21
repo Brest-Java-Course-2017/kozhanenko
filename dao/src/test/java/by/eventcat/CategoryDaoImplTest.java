@@ -1,5 +1,6 @@
 package by.eventcat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -49,6 +50,7 @@ public class CategoryDaoImplTest {
         assertEquals(CATEGORY_NAME_1, category.getCategoryName());
     }
 
+    @Ignore
     @Test
     public void addCategory() throws Exception {
         List<Category> categories = categoryDao.getAllCategories();
@@ -81,6 +83,7 @@ public class CategoryDaoImplTest {
         assertTrue(category.getCategoryName().equals(updatedCategory.getCategoryName()));
     }
 
+    @Ignore
     @Test
     public void deleteCategory() throws Exception {
         Integer categoryId = categoryDao.addCategory(category);

@@ -19,4 +19,12 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
+    <bean id="eventDao" class="by.eventcat.EventDaoImpl">
+         <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="timePeriodDao" class="by.eventcat.TimePeriodDaoImpl">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
 </beans>

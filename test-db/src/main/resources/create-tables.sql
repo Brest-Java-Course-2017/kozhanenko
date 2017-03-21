@@ -1,12 +1,24 @@
 DROP TABLE IF EXISTS category;
 CREATE TABLE category (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(50) NOT NULL,
+  `category_name` varchar(50) NOT NULL UNIQUE,
   PRIMARY KEY (`category_id`)
 );
 
+DROP TABLE IF EXISTS event;
+CREATE TABLE IF NOT EXISTS event (
+  `event_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_id` int(11) NOT NULL,
+  `event_name` varchar(150) NOT NULL,
+  `event_place_name` int(11) NOT NULL,
+  PRIMARY KEY (`event_id`),
+  KEY `FK_event_category` (`category_id`),
+  CONSTRAINT `FK_event_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
+);
+
 /*
-CREATE TABLE IF NOT EXISTS `event_place` (
+DROP TABLE IF EXISTS event_place;
+CREATE TABLE event_place (
   `event_place_id` int(11) NOT NULL AUTO_INCREMENT,
   `event_place_name` varchar(70) NOT NULL,
   `event_place_address` varchar(150) NOT NULL,
@@ -14,18 +26,6 @@ CREATE TABLE IF NOT EXISTS `event_place` (
   PRIMARY KEY (`event_place_id`),
   KEY `FK__category` (`category_id`),
   CONSTRAINT `FK__category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
-);
-
-CREATE TABLE IF NOT EXISTS `event` (
-  `event_id` int(11) NOT NULL AUTO_INCREMENT,
-  `event_name` varchar(150) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  `event_place_id` int(11) NOT NULL,
-  PRIMARY KEY (`event_id`),
-  KEY `FK_event_category` (`category_id`),
-  KEY `FK_event_event_place` (`event_place_id`),
-  CONSTRAINT `FK_event_event_place` FOREIGN KEY (`event_place_id`) REFERENCES `event_place` (`event_place_id`),
-  CONSTRAINT `FK_event_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
 );
 
 CREATE TABLE IF NOT EXISTS `time_period` (

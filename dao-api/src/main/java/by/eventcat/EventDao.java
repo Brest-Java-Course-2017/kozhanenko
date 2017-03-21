@@ -19,20 +19,20 @@ public interface EventDao {
     /**
      * Get all events of certain event place
      *
-     * @param eventPlaceId event place identifier
+     * @param eventPlaceName event place name
      * @return List of events
      * @throws DataAccessException
      */
-    List<Event> getAllEventsByEventPlace(Integer eventPlaceId) throws DataAccessException;
+    List<Event> getAllEventsByEventPlaceName(String eventPlaceName) throws DataAccessException;
 
     /**
      * Get all events of certain category
      *
-     * @param categoryId category identifier
+     * @param category category object
      * @return List of events
      * @throws DataAccessException
      */
-    List<Event> getAllEventsByCategoryId(Integer categoryId) throws DataAccessException;
+    List<Event> getAllEventsByCategory(Category category) throws DataAccessException;
 
     /**
      * Get event by identifier
