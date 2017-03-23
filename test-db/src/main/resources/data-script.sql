@@ -13,17 +13,8 @@ INSERT INTO `event` (`event_id`, `category_id`, `event_name`, `event_place_name`
         (5, 2, 'ЛОГАН: РОСОМАХА 2Д', 'Кинотеатр "МИР"');
 
 /*
-REPLACE INTO `event_place` (`event_place_id`, `event_place_name`, `event_place_address`, `category_id`) VALUES
-        (1, 'Кинотеатр "МИР"', 'г. Брест, ул. Пушкинская, 7', 2),
-        (2, 'Кинотеатр "Беларусь"', 'г. Брест, ул. Советская, 62', 2),
-        (3, 'Музей «Спасённые художественные ценности', 'г.Брест, ул.Ленина, 39', 5),
-        (4, '«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»', 'г.Брест, ул.Ленина, 21', 1);
 
-REPLACE INTO `time_period` (`time_period_id`, `event_id`, `beggining`, `end`) VALUES
+INSERT INTO `time_period` (`time_period_id`, `event_id`, `beginning`, `end`) VALUES
         (1, 5, '2017-03-13 22:49:49', '2017-03-13 23:55:00');
 
-REPLACE INTO `user` (`user_id`, `user_name`, `user_login`, `user_pass`) VALUES
-        (1, 'andrei', 'andrei@mail.ru', 'somepass'),
-        (2, 'vasiliy', 'vasiliy@gmail.com', 'pass1'),
-        (3, 'sergei', 'sergei@tut.by', 'pass2');
 */

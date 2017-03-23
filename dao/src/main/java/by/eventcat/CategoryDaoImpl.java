@@ -78,7 +78,7 @@ public class CategoryDaoImpl implements CategoryDao{
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue(CATEGORY_ID, category.getCategoryId());
         parameterSource.addValue(CATEGORY_NAME, category.getCategoryName());
-        namedParameterJdbcTemplate.update(insertCategorySql, parameterSource, keyHolder, new String[]{"category_id"});
+        namedParameterJdbcTemplate.update(insertCategorySql, parameterSource, keyHolder);
         return keyHolder.getKey().intValue();
     }
 

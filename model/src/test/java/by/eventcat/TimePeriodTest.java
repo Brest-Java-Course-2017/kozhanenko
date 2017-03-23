@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
  * TimePeriodTest
  */
 public class TimePeriodTest {
+
+
     @Test
     public void getTimePeriodId() throws Exception {
         TimePeriod timePeriod = new TimePeriod();
@@ -16,10 +18,10 @@ public class TimePeriodTest {
     }
 
     @Test
-    public void getEventId() throws Exception {
+    public void getEvent() throws Exception {
         TimePeriod timePeriod = new TimePeriod();
-        timePeriod.setEventId(12);
-        assertEquals(timePeriod.getEventId(), 12);
+        timePeriod.setEvent(new Event(1, new Category("Театр"), "Представление", "Где-то"));
+        assertEquals(timePeriod.getEvent(), new Event(1, new Category("Театр"), "Представление", "Где-то"));
     }
 
     @Test

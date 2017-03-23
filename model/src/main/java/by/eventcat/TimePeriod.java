@@ -12,6 +12,15 @@ public class TimePeriod {
     private long beginning;
     private long end;
 
+    public TimePeriod(){}
+
+    public TimePeriod(int timePeriodId, Event event, long beginning, long end) {
+        this.timePeriodId = timePeriodId;
+        this.event = event;
+        this.beginning = beginning;
+        this.end = end;
+    }
+
     public int getTimePeriodId() {
         return timePeriodId;
     }

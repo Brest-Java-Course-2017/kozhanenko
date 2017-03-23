@@ -3,10 +3,18 @@ package by.eventcat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Time Period Dao Implementation
@@ -16,32 +24,38 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    private static final String TIME_PERIOD_ID = "time_period_id";
+    private static final String EVENT_ID = "event_id";
+    private static final String BEGINNING = "beginning";
+    private static final String END = "end";
+
     TimePeriodDaoImpl(DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    @Value("${event.getAllTimePeriodsByEventId}")
+    @Value("${period.getAllTimePeriodsByEventId}")
     private String getAllTimePeriodsByEventSql;
 
-    @Value("${event.getAllTimePeriodsThatLastCertainTime}")
+    @Value("${period.getAllTimePeriodsThatLastCertainTime}")
     private String getAllTimePeriodsThatLastCertainTimeSql;
 
-    @Value("${event.addTimePeriod}")
+    @Value("${period.addTimePeriod}")
     private String addTimePeriodSql;
 
-    @Value("${event.updateTimePeriod}")
+    @Value("${period.updateTimePeriod}")
     private String updateTimePeriodSql;
 
-    @Value("${event.deleteTimePeriodById}")
+    @Value("${period.deleteTimePeriodById}")
     private String deleteTimePeriodSql;
 
-    @Value("${event.deleteTimePeriodsByEventId}")
+    @Value("${period.deleteTimePeriodsByEventId}")
     private String deleteTimePeriodsByEventSql;
 
     @Override
     public List<TimePeriod> getAllTimePeriodsByEvent(Event event) throws DataAccessException {
-        return null;
+        return jdbcTemplate.query(getAllTimePeriodsByEventSql, new String[]{Integer.toString(event.getEventId())},
+                new TimePeriodRowMapper());
     }
 
     @Override
@@ -51,26 +65,64 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
 
     @Override
     public Integer addTimePeriod(TimePeriod timePeriod) throws DataAccessException {
-        return null;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue(TIME_PERIOD_ID, timePeriod.getTimePeriodId());
+        parameterSource.addValue(EVENT_ID, timePeriod.getEvent().getEventId());
+        parameterSource.addValue(BEGINNING, timePeriod.getBeginning());
+        parameterSource.addValue(END, timePeriod.getEnd());
+        namedParameterJdbcTemplate.update(addTimePeriodSql, parameterSource, keyHolder);
+        return keyHolder.getKey().intValue();
     }
 
     @Override
     public int addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException {
-        return 0;
+        int rowsAffected  = 0;
+        for (TimePeriod timePeriod : timePeriods){
+            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+            parameterSource.addValue(TIME_PERIOD_ID, timePeriod.getTimePeriodId());
+            parameterSource.addValue(EVENT_ID, timePeriod.getEvent().getEventId());
+            parameterSource.addValue(BEGINNING, timePeriod.getBeginning());
+            parameterSource.addValue(END, timePeriod.getEnd());
+            rowsAffected += namedParameterJdbcTemplate.update(addTimePeriodSql, parameterSource);
+        }
+        return rowsAffected;
     }
 
     @Override
     public int updateTimePeriod(TimePeriod timePeriod) throws DataAccessException {
-        return 0;
+        Map<String, Object> params = new HashMap<>();
+        params.put(TIME_PERIOD_ID, timePeriod.getTimePeriodId());
+        params.put(EVENT_ID, timePeriod.getEvent().getEventId());
+        params.put(BEGINNING, timePeriod.getBeginning());
+        params.put(END, timePeriod.getEnd());
+        return namedParameterJdbcTemplate.update(updateTimePeriodSql, params);
     }
 
     @Override
     public int deleteTimePeriod(Integer timePeriodId) throws DataAccessException {
-        return 0;
+        Map<String, Integer> params = new HashMap<>();
+        params.put(TIME_PERIOD_ID, timePeriodId);
+        return namedParameterJdbcTemplate.update(deleteTimePeriodSql, params);
     }
 
     @Override
     public int deleteTimePeriodsByEvent(Event event) throws DataAccessException {
-        return 0;
+        Map<String, Integer> params = new HashMap<>();
+        params.put(EVENT_ID, event.getEventId());
+        return namedParameterJdbcTemplate.update(deleteTimePeriodsByEventSql, params);
+    }
+
+    private class TimePeriodRowMapper implements RowMapper<TimePeriod> {
+
+        @Override
+        public TimePeriod mapRow(ResultSet resultSet, int i) throws SQLException {
+            return new TimePeriod(
+                    resultSet.getInt(TIME_PERIOD_ID),
+                    new Event(resultSet.getInt(EVENT_ID)),
+                    resultSet.getLong(BEGINNING),
+                    resultSet.getLong(END)
+            );
+        }
     }
 }

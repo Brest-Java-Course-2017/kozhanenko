@@ -13,6 +13,17 @@ public class Event {
 
     public Event(){}
 
+    public Event(int eventId) {
+        this.eventId = eventId;
+    }
+
+    public Event(int eventId, Category category, String eventName, String eventPlace) {
+        this.eventId = eventId;
+        this.category = category;
+        this.eventName = eventName;
+        this.eventPlace = eventPlace;
+    }
+
     public int getEventId() {
         return eventId;
     }

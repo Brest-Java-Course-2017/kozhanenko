@@ -25,10 +25,8 @@ public class EventTest {
     @Test
     public void getEventPlace() throws Exception {
         Event event = new Event();
-        EventPlace eventPlace = new EventPlace();
-        event.setEventPlace(eventPlace);
-        assertEquals(event.getEventPlace(), eventPlace);
-
+        event.setEventPlace("Cinema");
+        assertEquals(event.getEventPlace(), "Cinema");
     }
 
     @Test
