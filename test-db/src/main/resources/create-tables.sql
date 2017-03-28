@@ -6,7 +6,7 @@ CREATE TABLE category (
 );
 
 DROP TABLE IF EXISTS event;
-CREATE TABLE IF NOT EXISTS event (
+CREATE TABLE event (
   `event_id` int(11) NOT NULL AUTO_INCREMENT,
   `category_id` int(11) NOT NULL,
   `event_name` varchar(150) NOT NULL,
@@ -16,15 +16,13 @@ CREATE TABLE IF NOT EXISTS event (
   CONSTRAINT `FK_event_category` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
 );
 
-/*
-CREATE TABLE IF NOT EXISTS `time_period` (
+DROP TABLE IF EXISTS time_period;
+CREATE TABLE time_period (
   `time_period_id` int(11) NOT NULL AUTO_INCREMENT,
   `event_id` int(11) NOT NULL,
-  `beginning` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `beginning` timestamp NOT NULL,
+  `end` timestamp NOT NULL,
   PRIMARY KEY (`time_period_id`),
-  KEY `FK__event` (`event_id`),
-  CONSTRAINT `FK__event` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`)
+  KEY `FK_event` (`event_id`),
+  CONSTRAINT `FK_event` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`)
 );
-
-*/

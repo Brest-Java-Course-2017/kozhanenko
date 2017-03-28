@@ -14,6 +14,12 @@ public class TimePeriod {
 
     public TimePeriod(){}
 
+    public TimePeriod(Event event, long beginning, long end) {
+        this.event = event;
+        this.beginning = beginning;
+        this.end = end;
+    }
+
     public TimePeriod(int timePeriodId, Event event, long beginning, long end) {
         this.timePeriodId = timePeriodId;
         this.event = event;
