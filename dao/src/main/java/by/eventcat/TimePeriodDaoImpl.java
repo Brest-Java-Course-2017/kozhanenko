@@ -50,6 +50,9 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     @Value("${period.addTimePeriod}")
     private String addTimePeriodSql;
 
+    @Value("${period.addTimePeriodsAsBatch}")
+    private String addTimePeriodsAsBatchSql;
+
     @Value("${period.updateTimePeriod}")
     private String updateTimePeriodSql;
 
@@ -96,16 +99,17 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     }
 
     @Override
-    public int addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException {
-        int rowsAffected  = 0;
-        for (TimePeriod timePeriod : timePeriods){
-            MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-            parameterSource.addValue(EVENT_ID, timePeriod.getEvent().getEventId());
-            parameterSource.addValue(BEGINNING, convertTimeFromSecondsToString(timePeriod.getBeginning()));
-            parameterSource.addValue(END, convertTimeFromSecondsToString(timePeriod.getEnd()));
-            rowsAffected += namedParameterJdbcTemplate.update(addTimePeriodSql, parameterSource);
+    public int[] addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException {
+        List<Object[]> batch = new ArrayList<>();
+        for (TimePeriod timePeriod: timePeriods){
+            Object[] values = new Object[] {
+                    timePeriod.getEvent().getEventId(),
+                    convertTimeFromSecondsToString(timePeriod.getBeginning()),
+                    convertTimeFromSecondsToString(timePeriod.getEnd())
+            };
+            batch.add(values);
         }
-        return rowsAffected;
+        return jdbcTemplate.batchUpdate(addTimePeriodsAsBatchSql, batch);
     }
 
     @Override

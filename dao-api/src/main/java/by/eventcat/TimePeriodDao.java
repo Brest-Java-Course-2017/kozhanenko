@@ -57,10 +57,10 @@ public interface TimePeriodDao {
     /**
      *
      * @param timePeriods list of time periods
-     * @return count of rows affected
+     * @return array of counts of rows affected
      * @throws DataAccessException
      */
-    int addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException;
+    int [] addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException;
 
     /**
      * updates time period

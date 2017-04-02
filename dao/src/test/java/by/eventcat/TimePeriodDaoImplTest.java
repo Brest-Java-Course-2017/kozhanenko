@@ -96,8 +96,8 @@ public class TimePeriodDaoImplTest {
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         int quantityBefore = timePeriods.size();
 
-        int rowsAffected = timePeriodDao.addTimePeriodList(TIME_PERIODS);
-        assertEquals(2, rowsAffected);
+        int [] rowsAffectedArr = timePeriodDao.addTimePeriodList(TIME_PERIODS);
+        assertEquals(2, rowsAffectedArr.length);
 
         timePeriods = timePeriodDao.getAllTimePeriods();
         assertEquals(quantityBefore + 2, timePeriods.size());
@@ -140,14 +140,14 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void deleteTimePeriodsByEventId() throws Exception {
-        int count = timePeriodDao.addTimePeriodList(TIME_PERIODS1);
-        assertEquals(2, count);
+        int[] count = timePeriodDao.addTimePeriodList(TIME_PERIODS1);
+        assertEquals(2, count.length);
 
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         int quantityBefore = timePeriods.size();
 
-        count = timePeriodDao.deleteTimePeriodsByEventId(new Event(6));
-        assertEquals(2, count);
+        int count1 = timePeriodDao.deleteTimePeriodsByEventId(new Event(6));
+        assertEquals(2, count1);
 
         timePeriods = timePeriodDao.getAllTimePeriods();
         assertEquals(quantityBefore - 2, timePeriods.size());
