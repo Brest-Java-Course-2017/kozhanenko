@@ -17,6 +17,12 @@ public class Event {
         this.eventId = eventId;
     }
 
+    public Event(Category category, String eventName, String eventPlace) {
+        this.category = category;
+        this.eventName = eventName;
+        this.eventPlace = eventPlace;
+    }
+
     public Event(int eventId, Category category, String eventName, String eventPlace) {
         this.eventId = eventId;
         this.category = category;

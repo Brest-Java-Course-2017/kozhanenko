@@ -9,6 +9,24 @@ import java.util.List;
  */
 public interface TimePeriodDao {
 
+
+    /**
+     * Get Time Period by its identifier
+     *
+     * @param timePeriodId TimePeriod identifier
+     * @return TimePeriod object
+     * @throws DataAccessException
+     */
+    TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException;
+
+    /**
+     * Get all Time Periods
+     *
+     * @return list of Time Periods
+     * @throws DataAccessException
+     */
+    List<TimePeriod> getAllTimePeriods() throws DataAccessException;
+
     /**
      * Gets all time periods of certain event
      *
@@ -16,7 +34,7 @@ public interface TimePeriodDao {
      * @return list of TimePeriod objects
      * @throws DataAccessException
      */
-    List<TimePeriod> getAllTimePeriodsByEvent(Event event) throws DataAccessException;
+    List<TimePeriod> getAllTimePeriodsByEventId(Event event) throws DataAccessException;
 
     /**
      * Gets all time periods that running now (beginTime) or will begin till some time period (endTime)
@@ -69,6 +87,6 @@ public interface TimePeriodDao {
      * @return number of rows affected
      * @throws DataAccessException
      */
-    int deleteTimePeriodsByEvent(Event event) throws DataAccessException;
+    int deleteTimePeriodsByEventId(Event event) throws DataAccessException;
 
 }

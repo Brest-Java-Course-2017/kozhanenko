@@ -39,9 +39,6 @@ public class EventDaoImpl implements EventDao{
     @Value("${event.getAllEventsByCategoryId}")
     private String getAllEventsByCategoryIdSql;
 
-    @Value("${event.getAllEventsByCategoryName}")
-    private String getAllEventsByCategoryNameSql;
-
     @Value("${event.getEventById}")
     private String getEventByIdSql;
 
@@ -70,15 +67,9 @@ public class EventDaoImpl implements EventDao{
     }
 
     @Override
-    public List<Event> getAllEventsByCategory(Category category) throws DataAccessException {
-        if (category.getCategoryName().length() > 0){
-            return jdbcTemplate.query(getAllEventsByCategoryNameSql, new String[]{category.getCategoryName()}, new EventRowMapper());
-        }
-        if (category.getCategoryId() != 0){
+    public List<Event> getAllEventsByCategoryId(Category category) throws DataAccessException {
             return jdbcTemplate.query(getAllEventsByCategoryIdSql, new String[]{Integer.toString(category.getCategoryId())},
                     new EventRowMapper());
-        }
-        return null;
     }
 
     @Override

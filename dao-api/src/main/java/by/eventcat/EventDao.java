@@ -32,7 +32,7 @@ public interface EventDao {
      * @return List of events
      * @throws DataAccessException
      */
-    List<Event> getAllEventsByCategory(Category category) throws DataAccessException;
+    List<Event> getAllEventsByCategoryId(Category category) throws DataAccessException;
 
     /**
      * Get event by identifier

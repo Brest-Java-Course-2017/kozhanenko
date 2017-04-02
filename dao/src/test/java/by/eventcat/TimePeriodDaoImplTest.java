@@ -29,54 +29,75 @@ public class TimePeriodDaoImplTest {
 
     private static final long BEGIN = convertTimeFromStringToMilliseconds("2017-03-14 10:55:00");
     private static final long END = convertTimeFromStringToMilliseconds("2017-03-14 22:30:00");
-    private static final long BEGIN1 = convertTimeFromStringToMilliseconds("2017-03-15 22:50:00");
-    private static final long END1 = convertTimeFromStringToMilliseconds("2017-03-15 22:55:10");
+    private static final long BEGIN1 = convertTimeFromStringToMilliseconds("2017-03-13 22:52:00");
     private static final TimePeriod TIME_PERIOD = new TimePeriod(new Event(1), BEGIN, END);
     private static final TimePeriod TIME_PERIOD1 = new TimePeriod(new Event(1), BEGIN, END);
+    private static final TimePeriod TIME_PERIOD2 = new TimePeriod(new Event(11), BEGIN, END);
+    private static final TimePeriod TIME_PERIOD3 = new TimePeriod(new Event(11), BEGIN, END);
     private static final List<TimePeriod> TIME_PERIODS = new ArrayList<>();
+    private static final List<TimePeriod> TIME_PERIODS1 = new ArrayList<>();
     static {
         TIME_PERIODS.add(TIME_PERIOD);
         TIME_PERIODS.add(TIME_PERIOD1);
+        TIME_PERIODS1.add(TIME_PERIOD2);
+        TIME_PERIODS1.add(TIME_PERIOD3);
     }
 
     @Test
-    public void getAllTimePeriodsByEvent() throws Exception {
-        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEvent(new Event(2));
-        assertTrue(timePeriods.size() == 2);
+    public void getTimePeriodById() throws Exception {
+        TimePeriod timePeriod = timePeriodDao.getTimePeriodById(1);
+        assertNotNull(timePeriod);
+        assertEquals(1, timePeriod.getTimePeriodId());
+        assertEquals(4, timePeriod.getEvent().getEventId());
+        assertEquals(convertTimeFromStringToMilliseconds("2017-03-13 22:49:49"), timePeriod.getBeginning());
+        assertEquals(convertTimeFromStringToMilliseconds("2017-03-13 23:55:00"), timePeriod.getEnd());
+    }
+
+    @Test
+    public void getAllTimePeriods() throws Exception{
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
+        assertTrue(timePeriods.size() > 0);
+    }
+
+    @Test
+    public void getAllTimePeriodsByEventId() throws Exception {
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEventId(new Event(4));
+        assertTrue(timePeriods.size() > 0);
     }
 
     @Test
     public void getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() throws Exception {
         List<TimePeriod> timePeriods = timePeriodDao.
                 getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGIN, END);
-        assertTrue(timePeriods.size() == 2);
+        assertTrue(timePeriods.size() > 0);
     }
 
     @Test
     public void addTimePeriod() throws Exception {
-        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEvent(new Event(1));
-        Integer quantityBefore = timePeriods.size();//1
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
+        int quantityBefore = timePeriods.size();
 
-        Integer timePeriodId = timePeriodDao.addTimePeriod(TIME_PERIOD);
+        int timePeriodId = timePeriodDao.addTimePeriod(TIME_PERIOD);
         assertNotNull(timePeriodId);
 
-        timePeriods = timePeriodDao.getAllTimePeriodsByEvent(new Event(1));
+        timePeriods = timePeriodDao.getAllTimePeriods();
         assertEquals(quantityBefore + 1, timePeriods.size());
 
-        TimePeriod newTimePeriod = timePeriods.get(timePeriods.size() - 1);
+        TimePeriod newTimePeriod = timePeriodDao.getTimePeriodById(timePeriodId);
         assertNotNull(newTimePeriod);
         assertEquals(newTimePeriod.getBeginning(), TIME_PERIOD.getBeginning());
+        assertEquals(newTimePeriod.getEnd(), TIME_PERIOD.getEnd());
     }
 
     @Test
     public void addTimePeriodList() throws Exception {
-        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEvent(new Event(1));
-        Integer quantityBefore = timePeriods.size();//1
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
+        int quantityBefore = timePeriods.size();
 
         int rowsAffected = timePeriodDao.addTimePeriodList(TIME_PERIODS);
         assertEquals(2, rowsAffected);
 
-        timePeriods = timePeriodDao.getAllTimePeriodsByEvent(new Event(1));
+        timePeriods = timePeriodDao.getAllTimePeriods();
         assertEquals(quantityBefore + 2, timePeriods.size());
 
         TimePeriod newTimePeriod = timePeriods.get(timePeriods.size() - 2);
@@ -90,19 +111,14 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void updateTimePeriod() throws Exception {
-        List <TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEvent(new Event(4));
-        TimePeriod timePeriod;
-        if (timePeriods !=  null){
-            timePeriod = timePeriods.get(0);
-            timePeriod.setBeginning(BEGIN1);
-            timePeriod.setEnd(END1);
+        TimePeriod timePeriod = timePeriodDao.getTimePeriodById(1);
+        timePeriod.setBeginning(BEGIN1);
 
-            int count = timePeriodDao.updateTimePeriod(timePeriod);
-            assertEquals(1, count);
-            TimePeriod updatedTimePeriod = timePeriodDao.getAllTimePeriodsByEvent(new Event(4)).get(0);
-            assertEquals(timePeriod.getBeginning(), updatedTimePeriod.getBeginning());
-            assertEquals(timePeriod.getEnd(), updatedTimePeriod.getEnd());
-        }
+        int count = timePeriodDao.updateTimePeriod(timePeriod);
+        assertEquals(1, count);
+
+        TimePeriod updatedTimePeriod = timePeriodDao.getTimePeriodById(timePeriod.getTimePeriodId());
+        assertEquals(BEGIN1, updatedTimePeriod.getBeginning());
     }
 
     @Test
@@ -110,19 +126,29 @@ public class TimePeriodDaoImplTest {
         Integer timePeriodId = timePeriodDao.addTimePeriod(TIME_PERIOD);
         assertNotNull(timePeriodId);
 
-        List<Category> categories = categoryDao.getAllCategories();
-        Integer quantityBefore = categories.size();
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
+        int quantityBefore = timePeriods.size();
 
-        int count = categoryDao.deleteCategory(categoryId);
+        int count = timePeriodDao.deleteTimePeriod(timePeriodId);
         assertEquals(1, count);
 
-        categories = categoryDao.getAllCategories();
-        assertEquals(quantityBefore - 1, categories.size());
+        timePeriods = timePeriodDao.getAllTimePeriods();
+        assertEquals(quantityBefore - 1, timePeriods.size());
     }
 
     @Test
-    public void deleteTimePeriodsByEvent() throws Exception {
-        
+    public void deleteTimePeriodsByEventId() throws Exception {
+        int count = timePeriodDao.addTimePeriodList(TIME_PERIODS1);
+        assertEquals(2, count);
+
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
+        int quantityBefore = timePeriods.size();
+
+        count = timePeriodDao.deleteTimePeriodsByEventId(new Event(11));
+        assertEquals(2, count);
+
+        timePeriods = timePeriodDao.getAllTimePeriods();
+        assertEquals(quantityBefore - 2, timePeriods.size());
     }
 
     /**

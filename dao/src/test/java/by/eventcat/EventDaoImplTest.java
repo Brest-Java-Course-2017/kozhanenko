@@ -19,6 +19,9 @@ import static org.junit.Assert.*;
 @Transactional
 public class EventDaoImplTest {
 
+    private static final Event EVENT = new Event(new Category(3), " The best from the west",
+            "Matrix club");
+
     @Autowired
     private EventDao eventDao;
 
@@ -31,32 +34,71 @@ public class EventDaoImplTest {
     @Test
     public void getAllEventsByEventPlaceName() throws Exception {
         List<Event> events = eventDao.getAllEventsByEventPlaceName("«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»");
-        assertTrue(events.size() == 2);
+        assertTrue(events.size() > 0);
     }
 
     @Test
-    public void getAllEventsByCategory() throws Exception {
-
+    public void getAllEventsByCategoryId() throws Exception {
+        List<Event> events = eventDao.getAllEventsByCategoryId(new Category(1));
+        assertTrue(events.size() > 0);
     }
 
     @Test
     public void getEventById() throws Exception {
-
+        Event event = eventDao.getEventById(1);
+        assertNotNull(event);
+        assertEquals(1, event.getEventId());
+        assertEquals(1, event.getCategory().getCategoryId());
+        assertEquals("Премьера \"Весёлый вдовец\"", event.getEventName());
+        assertEquals("«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»", event.getEventPlace());
     }
 
     @Test
     public void addEvent() throws Exception {
+        List<Event> events = eventDao.getAllEvents();
+        int quantityBefore = events.size();
 
+        int eventId = eventDao.addEvent(EVENT);
+        assertNotNull(eventId);
+
+        events = eventDao.getAllEvents();
+        assertEquals(quantityBefore + 1, events.size());
+
+        Event newEvent = eventDao.getEventById(eventId);
+        assertNotNull(newEvent);
+        assertEquals(EVENT.getCategory().getCategoryId(), newEvent.getCategory().getCategoryId());
+        assertEquals(EVENT.getEventName(), newEvent.getEventName());
+        assertEquals(EVENT.getEventPlace(), newEvent.getEventPlace());
     }
 
     @Test
     public void updateEvent() throws Exception {
+        Event event = eventDao.getEventById(3);
+        event.setCategory(new Category(4));
+        event.setEventName("Уличный Баскетбол");
+        event.setEventPlace("Площадь Ленина");
 
+        int count = eventDao.updateEvent(event);
+        assertEquals(1, count);
+
+        Event updatedEvent = eventDao.getEventById(event.getEventId());
+        assertEquals(4, updatedEvent.getCategory().getCategoryId());
+        assertEquals("Уличный Баскетбол", updatedEvent.getEventName());
+        assertEquals("Площадь Ленина", updatedEvent.getEventPlace());
     }
 
     @Test
     public void deleteEvent() throws Exception {
+        Integer eventId = eventDao.addEvent(EVENT);
+        assertNotNull(eventId);
 
+        List<Event> events = eventDao.getAllEvents();
+        int quantityBefore = events.size();
+
+        int count = eventDao.deleteEvent(eventId);
+        assertEquals(1, count);
+
+        events = eventDao.getAllEvents();
+        assertEquals(quantityBefore - 1, events.size());
     }
-
 }

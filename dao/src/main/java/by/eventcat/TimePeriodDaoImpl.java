@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -34,6 +35,12 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+    @Value("${period.getTimePeriodById}")
+    private String getTimePeriodByIdSql;
+
+    @Value("${period.getAllTimePeriods}")
+    private String getAllTimePeriodsSql;
+
     @Value("${period.getAllTimePeriodsByEventId}")
     private String getAllTimePeriodsByEventSql;
 
@@ -52,8 +59,21 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     @Value("${period.deleteTimePeriodsByEventId}")
     private String deleteTimePeriodsByEventSql;
 
+
     @Override
-    public List<TimePeriod> getAllTimePeriodsByEvent(Event event) throws DataAccessException {
+    public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException {
+        SqlParameterSource namedParameters = new MapSqlParameterSource("p_time_period_id", timePeriodId);
+        return namedParameterJdbcTemplate.queryForObject(
+                getTimePeriodByIdSql, namedParameters, new TimePeriodRowMapper());
+    }
+
+    @Override
+    public List<TimePeriod> getAllTimePeriods() throws DataAccessException {
+        return jdbcTemplate.query(getAllTimePeriodsSql, new TimePeriodRowMapper());
+    }
+
+    @Override
+    public List<TimePeriod> getAllTimePeriodsByEventId(Event event) throws DataAccessException {
         return jdbcTemplate.query(getAllTimePeriodsByEventSql, new String[]{Integer.toString(event.getEventId())},
                 new TimePeriodRowMapper());
     }
@@ -108,7 +128,7 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     }
 
     @Override
-    public int deleteTimePeriodsByEvent(Event event) throws DataAccessException {
+    public int deleteTimePeriodsByEventId(Event event) throws DataAccessException {
         Map<String, Integer> params = new HashMap<>();
         params.put(EVENT_ID, event.getEventId());
         return namedParameterJdbcTemplate.update(deleteTimePeriodsByEventSql, params);
