@@ -39,11 +39,11 @@ public interface TimePeriodDao {
     /**
      * Gets all time periods that running now (beginTime) or will begin till some time period (endTime)
      *
-     * @param beginTime begin of explored time
-     * @param endTime end of explored time
+     * @param beginTime begin of explored time (timestamp format)
+     * @param endTime end of explored time (timestamp format)
      * @return list of TimePeriod objects
      */
-    List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(long beginTime, long endTime);
+    List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime);
 
     /**
      * Adds time period
@@ -88,5 +88,4 @@ public interface TimePeriodDao {
      * @throws DataAccessException
      */
     int deleteTimePeriodsByEventId(Event event) throws DataAccessException;
-
 }

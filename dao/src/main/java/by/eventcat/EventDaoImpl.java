@@ -83,7 +83,6 @@ public class EventDaoImpl implements EventDao{
     public Integer addEvent(Event event) throws DataAccessException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue(EVENT_ID, event.getEventId());
         parameterSource.addValue(CATEGORY_ID, event.getCategory().getCategoryId());
         parameterSource.addValue(EVENT_NAME, event.getEventName());
         parameterSource.addValue(EVENT_PLACE_NAME, event.getEventPlace());

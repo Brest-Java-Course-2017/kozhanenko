@@ -1,5 +1,7 @@
 package by.eventcat;
 
+import static by.eventcat.TimeConverter.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -27,13 +25,15 @@ public class TimePeriodDaoImplTest {
     @Autowired
     private TimePeriodDao timePeriodDao;
 
-    private static final long BEGIN = convertTimeFromStringToMilliseconds("2017-03-14 10:55:00");
-    private static final long END = convertTimeFromStringToMilliseconds("2017-03-14 22:30:00");
-    private static final long BEGIN1 = convertTimeFromStringToMilliseconds("2017-03-13 22:52:00");
+    private static final String BEGIN_IN_STRING = "2017-03-14 10:55:00";
+    private static final long BEGIN = convertTimeFromStringToSeconds(BEGIN_IN_STRING);
+    private static final String END_IN_STRING = "2017-03-14 22:30:00";
+    private static final long END = convertTimeFromStringToSeconds(END_IN_STRING);
+    private static final long BEGIN1 = convertTimeFromStringToSeconds("2017-03-13 22:52:00");
     private static final TimePeriod TIME_PERIOD = new TimePeriod(new Event(1), BEGIN, END);
     private static final TimePeriod TIME_PERIOD1 = new TimePeriod(new Event(1), BEGIN, END);
-    private static final TimePeriod TIME_PERIOD2 = new TimePeriod(new Event(11), BEGIN, END);
-    private static final TimePeriod TIME_PERIOD3 = new TimePeriod(new Event(11), BEGIN, END);
+    private static final TimePeriod TIME_PERIOD2 = new TimePeriod(new Event(6), BEGIN, END);
+    private static final TimePeriod TIME_PERIOD3 = new TimePeriod(new Event(6), BEGIN, END);
     private static final List<TimePeriod> TIME_PERIODS = new ArrayList<>();
     private static final List<TimePeriod> TIME_PERIODS1 = new ArrayList<>();
     static {
@@ -49,8 +49,8 @@ public class TimePeriodDaoImplTest {
         assertNotNull(timePeriod);
         assertEquals(1, timePeriod.getTimePeriodId());
         assertEquals(4, timePeriod.getEvent().getEventId());
-        assertEquals(convertTimeFromStringToMilliseconds("2017-03-13 22:49:49"), timePeriod.getBeginning());
-        assertEquals(convertTimeFromStringToMilliseconds("2017-03-13 23:55:00"), timePeriod.getEnd());
+        assertEquals(convertTimeFromStringToSeconds("2017-03-13 22:49:49"), timePeriod.getBeginning());
+        assertEquals(convertTimeFromStringToSeconds("2017-03-13 23:55:00"), timePeriod.getEnd());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class TimePeriodDaoImplTest {
     @Test
     public void getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() throws Exception {
         List<TimePeriod> timePeriods = timePeriodDao.
-                getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGIN, END);
+                getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGIN_IN_STRING, END_IN_STRING);
         assertTrue(timePeriods.size() > 0);
     }
 
@@ -88,6 +88,8 @@ public class TimePeriodDaoImplTest {
         assertEquals(newTimePeriod.getBeginning(), TIME_PERIOD.getBeginning());
         assertEquals(newTimePeriod.getEnd(), TIME_PERIOD.getEnd());
     }
+
+    //TODO test for inserting time period with EventId of not existing event
 
     @Test
     public void addTimePeriodList() throws Exception {
@@ -144,28 +146,10 @@ public class TimePeriodDaoImplTest {
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         int quantityBefore = timePeriods.size();
 
-        count = timePeriodDao.deleteTimePeriodsByEventId(new Event(11));
+        count = timePeriodDao.deleteTimePeriodsByEventId(new Event(6));
         assertEquals(2, count);
 
         timePeriods = timePeriodDao.getAllTimePeriods();
         assertEquals(quantityBefore - 2, timePeriods.size());
     }
-
-    /**
-     * Convert time in String format to timestamp (milliseconds)
-     * @param timeInString time in format "yyyy-MM-dd HH:mm:ss"
-     * @return time in timestamp format
-     */
-    private static long convertTimeFromStringToMilliseconds(String timeInString){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        try{
-            date = simpleDateFormat.parse(timeInString);
-        }catch (ParseException ex){
-        }
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        return c.getTimeInMillis();
-    }
-
 }

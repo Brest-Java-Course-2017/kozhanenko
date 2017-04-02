@@ -76,7 +76,6 @@ public class CategoryDaoImpl implements CategoryDao{
     public Integer addCategory(Category category) throws DataAccessException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue(CATEGORY_ID, category.getCategoryId());
         parameterSource.addValue(CATEGORY_NAME, category.getCategoryName());
         namedParameterJdbcTemplate.update(insertCategorySql, parameterSource, keyHolder);
         return keyHolder.getKey().intValue();

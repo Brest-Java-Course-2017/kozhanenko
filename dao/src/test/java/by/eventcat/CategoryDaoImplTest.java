@@ -50,7 +50,6 @@ public class CategoryDaoImplTest {
         assertEquals(CATEGORY_NAME_1, category.getCategoryName());
     }
 
-    @Ignore
     @Test
     public void addCategory() throws Exception {
         List<Category> categories = categoryDao.getAllCategories();
@@ -65,8 +64,6 @@ public class CategoryDaoImplTest {
         Category newCategory = categoryDao.getCategoryById(categoryId);
         assertNotNull(newCategory);
         assertEquals(category.getCategoryName(), newCategory.getCategoryName());
-
-
     }
 
     //TODO: test adding dublicate category
@@ -83,7 +80,6 @@ public class CategoryDaoImplTest {
         assertTrue(category.getCategoryName().equals(updatedCategory.getCategoryName()));
     }
 
-    @Ignore
     @Test
     public void deleteCategory() throws Exception {
         Integer categoryId = categoryDao.addCategory(category);

@@ -1,5 +1,7 @@
 package by.eventcat;
 
+import static by.eventcat.TimeConverter.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,9 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Time Period Dao Implementation
@@ -79,8 +79,8 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     }
 
     @Override
-    public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(long beginTime, long endTime) {
-        return jdbcTemplate.query(getAllTimePeriodsThatLastCertainTimeSql, new Long[]{beginTime, endTime},
+    public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime) {
+        return jdbcTemplate.query(getAllTimePeriodsThatLastCertainTimeSql, new String[]{beginTime, endTime},
                 new TimePeriodRowMapper());
     }
 
@@ -88,10 +88,9 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     public Integer addTimePeriod(TimePeriod timePeriod) throws DataAccessException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue(TIME_PERIOD_ID, timePeriod.getTimePeriodId());
         parameterSource.addValue(EVENT_ID, timePeriod.getEvent().getEventId());
-        parameterSource.addValue(BEGINNING, timePeriod.getBeginning());
-        parameterSource.addValue(END, timePeriod.getEnd());
+        parameterSource.addValue(BEGINNING, convertTimeFromSecondsToString(timePeriod.getBeginning()));
+        parameterSource.addValue(END, convertTimeFromSecondsToString(timePeriod.getEnd()));
         namedParameterJdbcTemplate.update(addTimePeriodSql, parameterSource, keyHolder);
         return keyHolder.getKey().intValue();
     }
@@ -101,10 +100,9 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
         int rowsAffected  = 0;
         for (TimePeriod timePeriod : timePeriods){
             MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-            parameterSource.addValue(TIME_PERIOD_ID, timePeriod.getTimePeriodId());
             parameterSource.addValue(EVENT_ID, timePeriod.getEvent().getEventId());
-            parameterSource.addValue(BEGINNING, timePeriod.getBeginning());
-            parameterSource.addValue(END, timePeriod.getEnd());
+            parameterSource.addValue(BEGINNING, convertTimeFromSecondsToString(timePeriod.getBeginning()));
+            parameterSource.addValue(END, convertTimeFromSecondsToString(timePeriod.getEnd()));
             rowsAffected += namedParameterJdbcTemplate.update(addTimePeriodSql, parameterSource);
         }
         return rowsAffected;
@@ -115,8 +113,8 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
         Map<String, Object> params = new HashMap<>();
         params.put(TIME_PERIOD_ID, timePeriod.getTimePeriodId());
         params.put(EVENT_ID, timePeriod.getEvent().getEventId());
-        params.put(BEGINNING, timePeriod.getBeginning());
-        params.put(END, timePeriod.getEnd());
+        params.put(BEGINNING, convertTimeFromSecondsToString(timePeriod.getBeginning()));
+        params.put(END, convertTimeFromSecondsToString(timePeriod.getEnd()));
         return namedParameterJdbcTemplate.update(updateTimePeriodSql, params);
     }
 
@@ -141,9 +139,10 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
             return new TimePeriod(
                     resultSet.getInt(TIME_PERIOD_ID),
                     new Event(resultSet.getInt(EVENT_ID)),
-                    resultSet.getLong(BEGINNING),
-                    resultSet.getLong(END)
+                    convertTimeFromStringToSeconds(resultSet.getString(BEGINNING)),
+                    convertTimeFromStringToSeconds(resultSet.getString(END))
             );
         }
     }
+
 }
