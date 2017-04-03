@@ -1,15 +1,14 @@
 package by.eventcat;
 
-import org.junit.Ignore;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -22,6 +21,8 @@ import static org.junit.Assert.*;
 @Transactional
 public class CategoryDaoImplTest {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @Autowired
     private CategoryDao categoryDao;
 
@@ -32,12 +33,14 @@ public class CategoryDaoImplTest {
 
     @Test
     public void getAllCategories() throws Exception {
+        LOGGER.debug("test: getAllCategories()");
         List<Category> categories = categoryDao.getAllCategories();
         assertTrue(categories.size() > 0);
     }
 
     @Test
     public void getCategoryById() throws Exception {
+        LOGGER.debug("test: getCategoryById()");
         Category category = categoryDao.getCategoryById(1);
         assertNotNull(category);
         assertEquals(CATEGORY_NAME_1, category.getCategoryName());
@@ -45,6 +48,7 @@ public class CategoryDaoImplTest {
 
     @Test
     public void getCategoryByCategoryName() throws Exception {
+        LOGGER.debug("test: getCategoryByCategoryName()");
         Category category = categoryDao.getCategoryByCategoryName(CATEGORY_NAME_1);
         assertNotNull(category);
         assertEquals(CATEGORY_NAME_1, category.getCategoryName());
@@ -52,6 +56,8 @@ public class CategoryDaoImplTest {
 
     @Test
     public void addCategory() throws Exception {
+        LOGGER.debug("test: addCategory()");
+
         List<Category> categories = categoryDao.getAllCategories();
         Integer quantityBefore = categories.size();
 
@@ -66,10 +72,20 @@ public class CategoryDaoImplTest {
         assertEquals(category.getCategoryName(), newCategory.getCategoryName());
     }
 
-    //TODO: test adding dublicate category
+    @Test(expected = org.springframework.dao.DuplicateKeyException.class)
+    public void duplicateAddCategory() throws Exception{
+        LOGGER.debug("test: duplicateAddCategory()");
+
+        Category category = categoryDao.getCategoryById(1);
+        assertNotNull(category);
+        Integer categoryId = categoryDao.addCategory(category);
+        assertNotNull(categoryId);
+    }
 
     @Test
     public void updateCategory() throws Exception {
+        LOGGER.debug("test: updateCategory()");
+
         Category category = categoryDao.getCategoryById(1);
         category.setCategoryName("Классическая музыка");
 
@@ -82,6 +98,8 @@ public class CategoryDaoImplTest {
 
     @Test
     public void deleteCategory() throws Exception {
+        LOGGER.debug("test: deleteCategory()");
+
         Integer categoryId = categoryDao.addCategory(category);
         assertNotNull(categoryId);
 

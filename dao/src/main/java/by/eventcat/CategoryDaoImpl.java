@@ -1,5 +1,7 @@
 package by.eventcat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,6 +23,8 @@ import java.util.Map;
  * Category Dao Implementation
  */
 public class CategoryDaoImpl implements CategoryDao{
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -54,11 +58,13 @@ public class CategoryDaoImpl implements CategoryDao{
 
     @Override
     public List<Category> getAllCategories() throws DataAccessException {
+        LOGGER.debug("getAllCategories()");
         return jdbcTemplate.query(getAllCategoriesSQL, new CategoryRowMapper());
     }
 
     @Override
     public Category getCategoryById(Integer categoryId) throws DataAccessException {
+        LOGGER.debug("getCategoryById({})", categoryId);
         SqlParameterSource namedParameters = new MapSqlParameterSource("p_category_id", categoryId);
         return namedParameterJdbcTemplate.queryForObject(
                 getCategoryByIdSql, namedParameters, new CategoryRowMapper());
@@ -67,6 +73,7 @@ public class CategoryDaoImpl implements CategoryDao{
 
     @Override
     public Category getCategoryByCategoryName(String categoryName) throws DataAccessException {
+        LOGGER.debug("getCategoryByCategoryName({})", categoryName);
         SqlParameterSource namedParameters = new MapSqlParameterSource("p_category_name", categoryName);
         return namedParameterJdbcTemplate.queryForObject(
                 getCategoryByNameSql, namedParameters, new CategoryRowMapper());
@@ -74,6 +81,7 @@ public class CategoryDaoImpl implements CategoryDao{
 
     @Override
     public Integer addCategory(Category category) throws DataAccessException {
+        LOGGER.debug("addCategory(category): name = {}", category.getCategoryName());
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue(CATEGORY_NAME, category.getCategoryName());
@@ -83,6 +91,7 @@ public class CategoryDaoImpl implements CategoryDao{
 
     @Override
     public int updateCategory(Category category) throws DataAccessException {
+        LOGGER.debug("update category {}", category);
         Map<String, Object> params = new HashMap<>();
         params.put(CATEGORY_ID, category.getCategoryId());
         params.put(CATEGORY_NAME, category.getCategoryName());
@@ -91,6 +100,7 @@ public class CategoryDaoImpl implements CategoryDao{
 
     @Override
     public int deleteCategory(Integer categoryId) throws DataAccessException {
+        LOGGER.debug("delete category with categoryId = {}", categoryId);
         Map<String, Object> params = new HashMap<>();
         params.put(CATEGORY_ID, categoryId);
         return namedParameterJdbcTemplate.update(deleteCategorySql, params);

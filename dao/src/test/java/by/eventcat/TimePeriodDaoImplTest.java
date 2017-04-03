@@ -2,6 +2,8 @@ package by.eventcat;
 
 import static by.eventcat.TimeConverter.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"classpath*:test-spring-dao.xml"})
 @Transactional
 public class TimePeriodDaoImplTest {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired
     private TimePeriodDao timePeriodDao;
@@ -45,6 +49,7 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void getTimePeriodById() throws Exception {
+        LOGGER.debug("test: getTimePeriodById()");
         TimePeriod timePeriod = timePeriodDao.getTimePeriodById(1);
         assertNotNull(timePeriod);
         assertEquals(1, timePeriod.getTimePeriodId());
@@ -55,18 +60,21 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void getAllTimePeriods() throws Exception{
+        LOGGER.debug("test: getAllTimePeriods()");
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         assertTrue(timePeriods.size() > 0);
     }
 
     @Test
     public void getAllTimePeriodsByEventId() throws Exception {
+        LOGGER.debug("test: getAllTimePeriodsByEventId()");
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEventId(new Event(4));
         assertTrue(timePeriods.size() > 0);
     }
 
     @Test
     public void getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() throws Exception {
+        LOGGER.debug("test: getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() ");
         List<TimePeriod> timePeriods = timePeriodDao.
                 getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGIN_IN_STRING, END_IN_STRING);
         assertTrue(timePeriods.size() > 0);
@@ -74,6 +82,8 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void addTimePeriod() throws Exception {
+        LOGGER.debug("test: addTimePeriod()");
+
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         int quantityBefore = timePeriods.size();
 
@@ -89,10 +99,20 @@ public class TimePeriodDaoImplTest {
         assertEquals(newTimePeriod.getEnd(), TIME_PERIOD.getEnd());
     }
 
-    //TODO test for inserting time period with EventId of not existing event
+    @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
+    public void addTimePeriodWithNotExistingEvent() throws Exception{
+        LOGGER.debug("test: addTimePeriodWithNotExistingEvent()");
+        TimePeriod timePeriod = timePeriodDao.getTimePeriodById(1);
+        assertNotNull(timePeriod);
+        timePeriod.setEvent(new Event(999));
+        Integer timePeriodId = timePeriodDao.addTimePeriod(timePeriod);
+        assertNotNull(timePeriodId);
+    }
 
     @Test
     public void addTimePeriodList() throws Exception {
+        LOGGER.debug("test: addTimePeriodList()");
+
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         int quantityBefore = timePeriods.size();
 
@@ -113,6 +133,8 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void updateTimePeriod() throws Exception {
+        LOGGER.debug("test: updateTimePeriod()");
+
         TimePeriod timePeriod = timePeriodDao.getTimePeriodById(1);
         timePeriod.setBeginning(BEGIN1);
 
@@ -125,6 +147,8 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void deleteTimePeriod() throws Exception {
+        LOGGER.debug("test: updateTimePeriod()");
+
         Integer timePeriodId = timePeriodDao.addTimePeriod(TIME_PERIOD);
         assertNotNull(timePeriodId);
 
@@ -140,6 +164,8 @@ public class TimePeriodDaoImplTest {
 
     @Test
     public void deleteTimePeriodsByEventId() throws Exception {
+        LOGGER.debug("test: deleteTimePeriodsByEventId()");
+
         int[] count = timePeriodDao.addTimePeriodList(TIME_PERIODS1);
         assertEquals(2, count.length);
 
