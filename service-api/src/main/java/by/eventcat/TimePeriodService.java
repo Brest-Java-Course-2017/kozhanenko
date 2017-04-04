@@ -5,9 +5,9 @@ import org.springframework.dao.DataAccessException;
 import java.util.List;
 
 /**
- * public class TimePeriodDao
+ * TimePeriod Service
  */
-public interface TimePeriodDao {
+public interface TimePeriodService {
     /**
      * Get Time Period by its identifier
      *
