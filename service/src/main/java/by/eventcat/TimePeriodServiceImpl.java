@@ -1,13 +1,25 @@
 package by.eventcat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * TimePeriodService Implementation
  */
+@Service
+@Transactional
 public class TimePeriodServiceImpl implements TimePeriodService{
+
+    @Autowired
+    private TimePeriodDao timePeriodDao;
+
+    public void setTimePeriodDao(TimePeriodDao timePeriodDao) {
+        this.timePeriodDao = timePeriodDao;
+    }
 
     @Override
     public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException {

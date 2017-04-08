@@ -1,17 +1,31 @@
 package by.eventcat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
+import java.util.Locale;
 
 /**
- * CategoryService Implementation
+ * Category Service Implementation
  */
+@Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
+
+    @Autowired
+    private CategoryDao categoryDao;
+
+    public void setCategoryDao(CategoryDao categoryDao) {
+        this.categoryDao = categoryDao;
+    }
 
     @Override
     public List<Category> getAllCategories() throws DataAccessException {
-        return null;
+        return categoryDao.getAllCategories();
     }
 
     @Override

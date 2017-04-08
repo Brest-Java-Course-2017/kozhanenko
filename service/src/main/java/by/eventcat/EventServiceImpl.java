@@ -1,13 +1,25 @@
 package by.eventcat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * EventService Implementation
  */
+@Service
+@Transactional
 public class EventServiceImpl implements EventService{
+
+    @Autowired
+    private EventDao eventDao;
+
+    public void setEventDao(EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
 
     @Override
     public List<Event> getAllEvents() throws DataAccessException {
