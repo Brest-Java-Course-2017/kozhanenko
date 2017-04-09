@@ -40,8 +40,9 @@ public interface TimePeriodDao {
      * @param beginTime begin of explored time (timestamp format)
      * @param endTime end of explored time (timestamp format)
      * @return list of TimePeriod objects
+     * @throws DataAccessException
      */
-    List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime);
+    List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime) throws DataAccessException;
 
     /**
      * Adds time period

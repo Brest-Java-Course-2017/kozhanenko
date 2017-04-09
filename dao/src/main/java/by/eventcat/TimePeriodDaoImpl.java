@@ -89,7 +89,8 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     }
 
     @Override
-    public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime) {
+    public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime)
+            throws DataAccessException{
         LOGGER.debug("getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime({}, {})", beginTime, endTime);
         return jdbcTemplate.query(getAllTimePeriodsThatLastCertainTimeSql, new String[]{beginTime, endTime},
                 new TimePeriodRowMapper());

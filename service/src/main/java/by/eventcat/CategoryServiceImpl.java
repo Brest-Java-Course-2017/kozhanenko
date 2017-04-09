@@ -1,13 +1,13 @@
 package by.eventcat;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import by.eventcat.custom.exceptions.CustomErrorCodes;
+import by.eventcat.custom.exceptions.ServiceException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Category Service Implementation
@@ -16,7 +16,7 @@ import java.util.Locale;
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
 
-    @Autowired
+    //@Autowired
     private CategoryDao categoryDao;
 
     public void setCategoryDao(CategoryDao categoryDao) {
@@ -24,32 +24,61 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() throws DataAccessException {
-        return categoryDao.getAllCategories();
+    public List<Category> getAllCategories() throws DataAccessException, ServiceException {
+        List<Category> categories = categoryDao.getAllCategories();
+        if (categories == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        return categories;
     }
 
     @Override
-    public Category getCategoryById(Integer categoryId) throws DataAccessException {
-        return null;
+    public Category getCategoryById(Integer categoryId) throws DataAccessException, ServiceException {
+        if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
+        Category category = categoryDao.getCategoryById(categoryId);
+        if (category == null)  throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        return category;
     }
 
     @Override
-    public Category getCategoryByCategoryName(String categoryName) throws DataAccessException {
-        return null;
+    public Category getCategoryByCategoryName(String categoryName) throws DataAccessException, ServiceException {
+        if(categoryName == null || categoryName.length() < 2){
+            throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
+        }
+        Category category = categoryDao.getCategoryByCategoryName(categoryName);
+        if (category == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        return category;
     }
 
     @Override
-    public Integer addCategory(Category category) throws DataAccessException {
-        return null;
+    public Integer addCategory(Category category) throws DataAccessException, ServiceException {
+        if(category.getCategoryName() == null || category.getCategoryName().length() < 2){
+            throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
+        }
+        Category ex_category = categoryDao.getCategoryByCategoryName(category.getCategoryName());
+        if (ex_category != null) throw new ServiceException(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED);
+        int rowsAffected = categoryDao.addCategory(category);
+        if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
+        if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
+        return rowsAffected;
     }
 
     @Override
-    public int updateCategory(Category category) throws DataAccessException {
-        return 0;
+    public int updateCategory(Category category) throws DataAccessException, ServiceException {
+        if (category.getCategoryId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
+        if(category.getCategoryName() == null || category.getCategoryName().length() < 2){
+            throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
+        }
+        int rowsAffected = categoryDao.updateCategory(category);
+        if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
+        if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
+        return rowsAffected;
     }
 
     @Override
-    public int deleteCategory(Integer categoryId) throws DataAccessException {
-        return 0;
+    public int deleteCategory(Integer categoryId) throws DataAccessException, ServiceException {
+        if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
+        int rowsAffected = categoryDao.deleteCategory(categoryId);
+        if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
+        if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
+        return rowsAffected;
     }
 }

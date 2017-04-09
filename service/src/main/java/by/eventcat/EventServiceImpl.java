@@ -1,6 +1,6 @@
 package by.eventcat;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,7 @@ import java.util.List;
 @Transactional
 public class EventServiceImpl implements EventService{
 
-    @Autowired
+    //@Autowired
     private EventDao eventDao;
 
     public void setEventDao(EventDao eventDao) {
@@ -23,36 +23,36 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public List<Event> getAllEvents() throws DataAccessException {
-        return null;
+        return eventDao.getAllEvents();
     }
 
     @Override
     public List<Event> getAllEventsByEventPlaceName(String eventPlaceName) throws DataAccessException {
-        return null;
+        return eventDao.getAllEventsByEventPlaceName(eventPlaceName);
     }
 
     @Override
     public List<Event> getAllEventsByCategoryId(Category category) throws DataAccessException {
-        return null;
+        return eventDao.getAllEventsByCategoryId(category);
     }
 
     @Override
     public Event getEventById(Integer eventId) throws DataAccessException {
-        return null;
+        return eventDao.getEventById(eventId);
     }
 
     @Override
     public Integer addEvent(Event event) throws DataAccessException {
-        return null;
+        return eventDao.addEvent(event);
     }
 
     @Override
     public int updateEvent(Event event) throws DataAccessException {
-        return 0;
+        return eventDao.updateEvent(event);
     }
 
     @Override
     public int deleteEvent(Integer eventId) throws DataAccessException {
-        return 0;
+        return eventDao.deleteEvent(eventId);
     }
 }

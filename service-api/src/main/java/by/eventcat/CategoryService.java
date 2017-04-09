@@ -1,5 +1,6 @@
 package by.eventcat;
 
+import by.eventcat.custom.exceptions.ServiceException;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
@@ -9,12 +10,13 @@ import java.util.List;
  */
 public interface CategoryService {
     /**
-     * Get all categories list
+     * Get all categories
      *
-     * @return list of existing categories
+     * @return all categories list
      * @throws DataAccessException
+     * @throws ServiceException
      */
-    List<Category> getAllCategories() throws DataAccessException;
+    List<Category> getAllCategories() throws DataAccessException, ServiceException;
 
     /**
      * Gets category by identifier
@@ -22,8 +24,9 @@ public interface CategoryService {
      * @param categoryId category identifier
      * @return category object
      * @throws DataAccessException
+     *
      */
-    Category getCategoryById(Integer categoryId) throws DataAccessException;
+    Category getCategoryById(Integer categoryId) throws DataAccessException, ServiceException;
 
     /**
      * Get category by its name
@@ -31,7 +34,7 @@ public interface CategoryService {
      * @return category object
      * @throws DataAccessException
      */
-    Category getCategoryByCategoryName(String categoryName) throws DataAccessException;
+    Category getCategoryByCategoryName(String categoryName) throws DataAccessException, ServiceException;
 
     /**
      * Add new category
@@ -40,7 +43,7 @@ public interface CategoryService {
      * @return new category identifier
      * @throws DataAccessException
      */
-    Integer addCategory (Category category) throws DataAccessException;
+    Integer addCategory (Category category) throws DataAccessException, ServiceException;
 
     /**
      * Update category data
@@ -49,7 +52,7 @@ public interface CategoryService {
      * @return number of rows affected
      * @throws DataAccessException
      */
-    int updateCategory (Category category) throws DataAccessException;
+    int updateCategory (Category category) throws DataAccessException, ServiceException;
 
     /**
      * Delete category
@@ -58,5 +61,5 @@ public interface CategoryService {
      * @return number of rows affected
      * @throws DataAccessException
      */
-    int deleteCategory (Integer categoryId) throws DataAccessException;
+    int deleteCategory (Integer categoryId) throws DataAccessException, ServiceException;
 }
