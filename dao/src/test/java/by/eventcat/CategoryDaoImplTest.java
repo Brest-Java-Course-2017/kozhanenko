@@ -112,4 +112,18 @@ public class CategoryDaoImplTest {
         categories = categoryDao.getAllCategories();
         assertEquals(quantityBefore - 1, categories.size());
     }
+
+    @Test
+    public void deleteCategoryWrongIndex() throws Exception {
+        LOGGER.debug("test: deleteCategoryWrongIndex()");
+
+        List<Category> categories = categoryDao.getAllCategories();
+        int quantityBefore = categories.size();
+
+        int count = categoryDao.deleteCategory(-1);
+        assertEquals(0, count);
+
+        categories = categoryDao.getAllCategories();
+        assertEquals(quantityBefore, categories.size());
+    }
 }

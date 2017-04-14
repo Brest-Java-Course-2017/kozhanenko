@@ -3,6 +3,8 @@ package by.eventcat;
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +45,12 @@ public class CategoryServiceImpl implements CategoryService {
         if(categoryName == null || categoryName.length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         }
-        Category category = categoryDao.getCategoryByCategoryName(categoryName);
-        if (category == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        Category category;
+        try{
+            category = categoryDao.getCategoryByCategoryName(categoryName);
+        } catch (EmptyResultDataAccessException ex){
+            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
         return category;
     }
 
@@ -53,12 +59,13 @@ public class CategoryServiceImpl implements CategoryService {
         if(category.getCategoryName() == null || category.getCategoryName().length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
-        Category ex_category = categoryDao.getCategoryByCategoryName(category.getCategoryName());
-        if (ex_category != null) throw new ServiceException(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED);
-        int rowsAffected = categoryDao.addCategory(category);
-        if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
-        if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
-        return rowsAffected;
+        int categoryId;
+        try {
+            categoryId = categoryDao.addCategory(category);
+        } catch (DuplicateKeyException ex){
+            throw new ServiceException(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED);
+        }
+        return categoryId;
     }
 
     @Override
