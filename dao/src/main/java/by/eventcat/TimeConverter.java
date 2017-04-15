@@ -11,7 +11,7 @@ import java.util.Date;
  */
 class TimeConverter {
     /**
-     * Convert time in String format to timestamp (milliseconds)
+     * Convert time in String format to timestamp (seconds)
      * @param timeInString time in format "yyyy-MM-dd HH:mm:ss"
      * @return time in timestamp format
      */
@@ -27,13 +27,25 @@ class TimeConverter {
         return c.getTimeInMillis()/1000;
     }
 
+    /**
+     * Convert time in timestamp format (seconds) to String format
+     *
+     * @param timeInSeconds time in timestamp format
+     * @return time in format "yyyy-MM-dd HH:mm:ss"
+     */
     static String convertTimeFromSecondsToString (long timeInSeconds){
         Date date = new Date(timeInSeconds*1000);
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(date);
     }
 
-    static boolean isValidDateInString(String dateString) {
+    /**
+     * Check if date in string format matches pattern "yyyy-MM-dd HH:mm:ss"
+     *
+     * @param dateString testing date string
+     * @return if dateString matches pattern "yyyy-MM-dd HH:mm:ss"
+     */
+    static boolean isValidDateInStringFormat(String dateString) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             df.parse(dateString);
@@ -41,6 +53,48 @@ class TimeConverter {
         } catch (ParseException e) {
             return false;
         }
+    }
+
+    /**
+     * Check if string that matches pattern "yyyy-MM-dd HH:mm:ss" contains correct date and time
+     *
+     * @param dateString testing date string
+     * @return if testing date string contains correct date and time
+     */
+    static boolean isValidDateInString(String dateString){
+        if ( ! isValidDateInStringFormat(dateString)){
+            return false;
+        }
+        String [] arr = dateString.split(" ");
+        String [] date = arr[0].split("-");
+        String [] time = arr[1].split(":");
+
+        if ( ! isInteger(date[0]) || date[0].length() != 4) return false;
+        if (! isInteger(date[1]) || date[1].length() != 2 ||
+                Integer.parseInt(date[1]) < 1 || Integer.parseInt(date[1]) > 12) return false;
+        if (! isInteger(date[2]) || date[2].length() != 2 ||
+                Integer.parseInt(date[2]) < 1 || Integer.parseInt(date[2]) > 31) return false;
+        if (Integer.parseInt(date[1]) == 2 && Integer.parseInt(date[2]) > 29 ) return false;
+
+        if (! isInteger(time[0]) || time[0].length() != 2 ||
+                Integer.parseInt(time[0]) < 0 || Integer.parseInt(time[0]) > 23) return false;
+        if (! isInteger(time[1]) || time[1].length() != 2 ||
+                Integer.parseInt(time[1]) < 0 || Integer.parseInt(time[1]) > 59) return false;
+        if (! isInteger(time[2]) || time[2].length() != 2 ||
+                Integer.parseInt(time[2]) < 0 || Integer.parseInt(time[2]) > 59) return false;
+        return true;
+    }
+
+    private static boolean isInteger(String s) {
+        if(s.isEmpty()) return false;
+        for(int i = 0; i < s.length(); i++) {
+            if(i == 0 && s.charAt(i) == '-') {
+                if(s.length() == 1) return false;
+                else continue;
+            }
+            if(Character.digit(s.charAt(i), 10) < 0) return false;
+        }
+        return true;
     }
 
 }

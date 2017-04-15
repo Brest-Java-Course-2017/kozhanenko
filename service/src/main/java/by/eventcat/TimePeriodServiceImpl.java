@@ -3,6 +3,7 @@ package by.eventcat;
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +28,19 @@ public class TimePeriodServiceImpl implements TimePeriodService{
     @Override
     public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException, ServiceException {
         if (timePeriodId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        TimePeriod timePeriod = timePeriodDao.getTimePeriodById(timePeriodId);
-        if (timePeriod == null)  throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        TimePeriod timePeriod;
+        try{
+            timePeriod = timePeriodDao.getTimePeriodById(timePeriodId);
+        } catch (EmptyResultDataAccessException ex){
+            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
         return timePeriod;
     }
 
     @Override
     public List<TimePeriod> getAllTimePeriods() throws DataAccessException, ServiceException {
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
-        if (timePeriods == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if (timePeriods.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return timePeriods;
     }
 
@@ -43,18 +48,22 @@ public class TimePeriodServiceImpl implements TimePeriodService{
     public List<TimePeriod> getAllTimePeriodsByEventId(Event event) throws DataAccessException, ServiceException {
         if (event.getEventId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEventId(event);
-        if (timePeriods == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if (timePeriods.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return timePeriods;
     }
 
     @Override
     public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime)
             throws DataAccessException, ServiceException{
-        if ( ! isValidDateInString(beginTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE_STRING);
-        if ( ! isValidDateInString(endTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE_STRING);
+        if ( ! isValidDateInStringFormat(beginTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE_FORMAT);
+        if ( ! isValidDateInStringFormat(endTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE_FORMAT);
+        if ( ! isValidDateInString(beginTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE);
+        if ( ! isValidDateInString(endTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE);
+        if (convertTimeFromStringToSeconds(beginTime) > convertTimeFromStringToSeconds(endTime))
+            throw  new ServiceException(CustomErrorCodes.INCORRECT_REQUEST_PARAMETERS);
         List<TimePeriod> timePeriods = timePeriodDao.
                 getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(beginTime, endTime);
-        if (timePeriods == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if (timePeriods.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return timePeriods;
     }
 

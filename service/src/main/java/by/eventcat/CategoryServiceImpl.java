@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> getAllCategories() throws DataAccessException, ServiceException {
         List<Category> categories = categoryDao.getAllCategories();
-        if (categories == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if (categories.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return categories;
     }
 
