@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -35,6 +36,18 @@ public class TimePeriodServiceImplTest {
     private static final String END2 = "2016-03-14 18:16:00";
     private static final String WRONG_BEGINNING = "2017-03-13 22:49";
     private static final String WRONG_BEGINNING1 = "2017-99-13 22:49:00";
+    private static final TimePeriod TIME_PERIOD_CONST = new TimePeriod(new Event(1),
+            convertTimeFromStringToSeconds(BEGINNING), convertTimeFromStringToSeconds(END));
+    private static final TimePeriod TIME_PERIOD = new TimePeriod(new Event(1),
+            convertTimeFromStringToSeconds(BEGINNING), convertTimeFromStringToSeconds(END));
+    private static final TimePeriod TIME_PERIOD1 = new TimePeriod(new Event(2),
+            convertTimeFromStringToSeconds(BEGINNING1), convertTimeFromStringToSeconds(END1));
+    private static final List<TimePeriod> TIME_PERIODS = new ArrayList<>();
+    static {
+        TIME_PERIODS.add(TIME_PERIOD);
+        TIME_PERIODS.add(TIME_PERIOD1);
+    }
+
 
     @Autowired
     private TimePeriodServiceImpl timePeriodService;
@@ -145,31 +158,195 @@ public class TimePeriodServiceImplTest {
         }
     }
 
-
-
     @Test
     public void addTimePeriod() throws Exception {
         LOGGER.debug("test: addTimePeriod()");
+
+        List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriods();
+        Integer quantityBefore = timePeriods.size();
+
+        Integer timePeriodId = timePeriodService.addTimePeriod(TIME_PERIOD_CONST);
+        assertNotNull(timePeriodId);
+        timePeriods = timePeriodService.getAllTimePeriods();
+        assertEquals(quantityBefore + 1, timePeriods.size());
+
+        TimePeriod newTimePeriod = timePeriodService.getTimePeriodById(timePeriodId);
+        assertNotNull(newTimePeriod);
+        assertEquals(TIME_PERIOD_CONST.getEvent().getEventId(), newTimePeriod.getEvent().getEventId());
+        assertEquals(TIME_PERIOD_CONST.getBeginning(), newTimePeriod.getBeginning());
+        assertEquals(TIME_PERIOD_CONST.getEnd(), newTimePeriod.getEnd());
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void addTimePeriodWrongInputData() throws Exception {
+        LOGGER.debug("test: addTimePeriodWrongInputData()");
+        TIME_PERIOD.setEvent(new Event(-1));
+        try{
+            timePeriodService.addTimePeriod(TIME_PERIOD);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void addTimePeriodWithNonExistingEvent() throws Exception {
+        LOGGER.debug("test: addTimePeriodWrongInputData()");
+        TIME_PERIOD.getEvent().setEventId(999);
+        try{
+            timePeriodService.addTimePeriod(TIME_PERIOD);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_EVENT, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
     public void addTimePeriodList() throws Exception {
         LOGGER.debug("test: addTimePeriodList()");
+
+        List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriods();
+        Integer quantityBefore = timePeriods.size();
+
+        int [] res = timePeriodService.addTimePeriodList(TIME_PERIODS);
+        for (int val: res) assertEquals(1, val);
+        timePeriods = timePeriodService.getAllTimePeriods();
+        assertEquals(quantityBefore + 2, timePeriods.size());
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void addTimePeriodListIncorrectInputData() throws Exception {
+        LOGGER.debug("test: addTimePeriodListIncorrectInputData()");
+        TIME_PERIODS.get(0).getEvent().setEventId(-1);
+        try{
+            timePeriodService.addTimePeriodList(TIME_PERIODS);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void addTimePeriodListWithNonExistingEvent() throws Exception {
+        LOGGER.debug("test: ddTimePeriodListWithNonExistingEvent()");
+        TIME_PERIODS.get(0).getEvent().setEventId(999);
+        try{
+            timePeriodService.addTimePeriodList(TIME_PERIODS);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_EVENT, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
     public void updateTimePeriod() throws Exception {
         LOGGER.debug("test: updateTimePeriod()");
+
+        TimePeriod timePeriod = timePeriodService.getTimePeriodById(1);
+        timePeriod.setBeginning(convertTimeFromStringToSeconds(BEGINNING1));
+
+        int count = timePeriodService.updateTimePeriod(timePeriod);
+        assertEquals(1, count);
+
+        TimePeriod updatedTimePeriod = timePeriodService.getTimePeriodById(1);
+        assertEquals(timePeriod.getBeginning(), (updatedTimePeriod.getBeginning()));
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void updateTimePeriodIncorrectInputData() throws Exception {
+        LOGGER.debug("test: updateTimePeriodIncorrectInputData()");
+
+        TimePeriod timePeriod = timePeriodService.getTimePeriodById(1);
+        timePeriod.setBeginning(-10000000);
+        try{
+            timePeriodService.updateTimePeriod(timePeriod);
+        }catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
-    public void deleteTimePeriod() throws Exception {
-        LOGGER.debug("test: deleteTimePeriod()");
+    public void deleteTimePeriodById() throws Exception {
+        LOGGER.debug("test: deleteTimePeriodById()");
+
+        Integer addedCategoryId = timePeriodService.addTimePeriod(TIME_PERIOD);
+        assertNotNull(addedCategoryId);
+        List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriods();
+        Integer quantityBefore = timePeriods.size();
+        int count = timePeriodService.deleteTimePeriodById(addedCategoryId);
+        assertEquals(1, count);
+        timePeriods = timePeriodService.getAllTimePeriods();
+        assertEquals(quantityBefore - 1, timePeriods.size());
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteTimePeriodByIdIncorrectIndex() throws Exception {
+        LOGGER.debug("test: deleteTimePeriodByIdIncorrectIndex() ");
+
+        try{
+            timePeriodService.deleteTimePeriodById(0);
+        }catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteTimePeriodByIdNonExistingIndex() throws Exception {
+        LOGGER.debug("test: deleteTimePeriodByIdIncorrectIndex() ");
+
+        try{
+            timePeriodService.deleteTimePeriodById(999);
+        }catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_ACTIONS_MADE, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
     public void deleteTimePeriodsByEventId() throws Exception {
-        LOGGER.debug("test: deleteTimePeriodsByEventId())");
+        LOGGER.debug("test: deleteTimePeriodsByEventId()");
+
+        TIME_PERIOD.getEvent().setEventId(3);
+        Integer addedCategoryId = timePeriodService.addTimePeriod(TIME_PERIOD);
+        assertNotNull(addedCategoryId);
+
+        int totalBefore = timePeriodService.getAllTimePeriods().size();
+
+        List<TimePeriod> timePeriods1 = timePeriodService.getAllTimePeriodsByEventId(new Event(3));
+        int totalToDelete = timePeriods1.size();
+        int count = timePeriodService.deleteTimePeriodsByEventId(new Event(3));
+        assertEquals(totalToDelete, count);
+
+        int totalAfter = timePeriodService.getAllTimePeriods().size();
+        assertEquals(totalBefore - totalToDelete, totalAfter);
     }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteTimePeriodsByEventIdIncorrectIndex() throws Exception {
+        LOGGER.debug("test: deleteTimePeriodsByEventIdIncorrectIndex()");
+
+        try{
+            timePeriodService.deleteTimePeriodsByEventId(new Event(-3));
+        }catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteTimePeriodsByEventIdNonExistingIndex() throws Exception {
+        LOGGER.debug("test: deleteTimePeriodsByEventIdNonExistingIndex()");
+
+        try{
+            timePeriodService.deleteTimePeriodsByEventId(new Event(999));
+        }catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_ACTIONS_MADE, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+
 
 }

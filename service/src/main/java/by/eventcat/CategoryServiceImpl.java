@@ -2,6 +2,8 @@ package by.eventcat;
 
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +20,8 @@ import java.util.List;
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     //@Autowired
     private CategoryDao categoryDao;
 
@@ -27,6 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories() throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllCategories()");
+
         List<Category> categories = categoryDao.getAllCategories();
         if (categories.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return categories;
@@ -34,6 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Integer categoryId) throws DataAccessException, ServiceException {
+        LOGGER.debug("getCategoryById({})", categoryId);
+
         if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         Category category = categoryDao.getCategoryById(categoryId);
         if (category == null)  throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
@@ -42,6 +50,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryByCategoryName(String categoryName) throws DataAccessException, ServiceException {
+        LOGGER.debug("getCategoryByCategoryName({})", categoryName);
+
         if(categoryName == null || categoryName.length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         }
@@ -56,6 +66,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Integer addCategory(Category category) throws DataAccessException, ServiceException {
+        LOGGER.debug("addCategory(category): name = {}", category.getCategoryName());
+
         if(category.getCategoryName() == null || category.getCategoryName().length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
@@ -70,6 +82,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public int updateCategory(Category category) throws DataAccessException, ServiceException {
+        LOGGER.debug("update category {}", category);
+
         if (category.getCategoryId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         if(category.getCategoryName() == null || category.getCategoryName().length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
@@ -82,6 +96,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public int deleteCategory(Integer categoryId) throws DataAccessException, ServiceException {
+        LOGGER.debug("delete category with categoryId = {}", categoryId);
+
         if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         int rowsAffected = categoryDao.deleteCategory(categoryId);
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);

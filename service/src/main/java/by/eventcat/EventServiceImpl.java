@@ -3,7 +3,10 @@ package by.eventcat;
 
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ import java.util.List;
 @Transactional
 public class EventServiceImpl implements EventService{
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     //@Autowired
     private EventDao eventDao;
 
@@ -26,6 +31,8 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public List<Event> getAllEvents() throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllEvents()");
+
         List<Event> events = eventDao.getAllEvents();
         if (events == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return events;
@@ -33,40 +40,44 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public List<Event> getAllEventsByEventPlaceName(String eventPlaceName) throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllEventsByEventPlaceName({})", eventPlaceName);
+
         if(eventPlaceName == null || eventPlaceName.length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         }
-        List<Event> events;
-        try{
-            events = eventDao.getAllEventsByEventPlaceName(eventPlaceName);
-        } catch (EmptyResultDataAccessException ex){
-            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
-        }
+        List<Event> events = eventDao.getAllEventsByEventPlaceName(eventPlaceName);
+        if(events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return events;
     }
 
     @Override
     public List<Event> getAllEventsByCategoryId(Category category) throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllEventsByCategoryId({})", category.getCategoryId());
+
         if (category.getCategoryId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        List<Event> events;
-        try{
-            events = eventDao.getAllEventsByCategoryId(category);
-        } catch (EmptyResultDataAccessException ex){
-            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
-        }
+        List<Event> events = eventDao.getAllEventsByCategoryId(category);
+        if(events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return events;
     }
 
     @Override
     public Event getEventById(Integer eventId) throws DataAccessException, ServiceException {
+        LOGGER.debug("getEventById({})", eventId);
+
         if (eventId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        Event event = eventDao.getEventById(eventId);
-        if (event == null)  throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        Event event;
+        try {
+            event = eventDao.getEventById(eventId);
+        } catch (EmptyResultDataAccessException ex){
+            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
         return event;
     }
 
     @Override
     public Integer addEvent(Event event) throws DataAccessException, ServiceException {
+        LOGGER.debug("addEvent(event): name = {}", event.getEventName());
+
         if (event.getCategory().getCategoryId() <= 0 ||
                 event.getEventName() == null ||
                 event.getEventName().length() < 2 ||
@@ -74,11 +85,19 @@ public class EventServiceImpl implements EventService{
                 event.getEventPlace().length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
-        return eventDao.addEvent(event);
+        Integer eventId;
+        try{
+            eventId = eventDao.addEvent(event);
+        } catch (DataIntegrityViolationException ex){
+            throw new ServiceException(CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_CATEGORY);
+        }
+        return eventId;
     }
 
     @Override
     public int updateEvent(Event event) throws DataAccessException, ServiceException {
+        LOGGER.debug("updateEvent {}", event);
+
         if (event.getEventId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         if (event.getCategory().getCategoryId() <= 0 ||
                 event.getEventName() == null ||
@@ -95,6 +114,8 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public int deleteEvent(Integer eventId) throws DataAccessException, ServiceException {
+        LOGGER.debug("delete event with eventId = {}", eventId);
+
         if (eventId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         int rowsAffected = eventDao.deleteEvent(eventId);
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);

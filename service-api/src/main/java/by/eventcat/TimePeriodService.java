@@ -87,7 +87,7 @@ public interface TimePeriodService {
      * @throws DataAccessException
      * @throws ServiceException
      */
-    int deleteTimePeriod(Integer timePeriodId) throws DataAccessException, ServiceException;
+    int deleteTimePeriodById(Integer timePeriodId) throws DataAccessException, ServiceException;
 
     /**
      * Delete time periods of certain event

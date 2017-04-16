@@ -2,7 +2,10 @@ package by.eventcat;
 
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,8 @@ import static by.eventcat.TimeConverter.*;
 @Transactional
 public class TimePeriodServiceImpl implements TimePeriodService{
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     //@Autowired
     private TimePeriodDao timePeriodDao;
 
@@ -27,6 +32,8 @@ public class TimePeriodServiceImpl implements TimePeriodService{
 
     @Override
     public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException, ServiceException {
+        LOGGER.debug("getTimePeriodById({})", timePeriodId);
+
         if (timePeriodId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         TimePeriod timePeriod;
         try{
@@ -39,6 +46,8 @@ public class TimePeriodServiceImpl implements TimePeriodService{
 
     @Override
     public List<TimePeriod> getAllTimePeriods() throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllTimePeriods()");
+
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriods();
         if (timePeriods.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return timePeriods;
@@ -46,6 +55,8 @@ public class TimePeriodServiceImpl implements TimePeriodService{
 
     @Override
     public List<TimePeriod> getAllTimePeriodsByEventId(Event event) throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllTimePeriodsByEventId({})", event.getEventId());
+
         if (event.getEventId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsByEventId(event);
         if (timePeriods.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
@@ -55,6 +66,8 @@ public class TimePeriodServiceImpl implements TimePeriodService{
     @Override
     public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime)
             throws DataAccessException, ServiceException{
+        LOGGER.debug("getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime({}, {})", beginTime, endTime);
+
         if ( ! isValidDateInStringFormat(beginTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE_FORMAT);
         if ( ! isValidDateInStringFormat(endTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE_FORMAT);
         if ( ! isValidDateInString(beginTime)) throw new ServiceException(CustomErrorCodes.INCORRECT_DATE);
@@ -65,27 +78,50 @@ public class TimePeriodServiceImpl implements TimePeriodService{
                 getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(beginTime, endTime);
         if (timePeriods.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return timePeriods;
-    }
+}
 
     @Override
     public Integer addTimePeriod(TimePeriod timePeriod) throws DataAccessException, ServiceException {
+        LOGGER.debug("addTimePeriod({})", timePeriod);
+
         if (timePeriod.getEvent().getEventId() <= 0 ||
                 timePeriod.getBeginning() <= 0 ||
                 timePeriod.getEnd() <= 0){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
-        //TODO: check what data returns if error
-        return timePeriodDao.addTimePeriod(timePeriod);
+        int timePeriodId;
+        try {
+            timePeriodId = timePeriodDao.addTimePeriod(timePeriod);
+        } catch (DataIntegrityViolationException ex){
+            throw new ServiceException(CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_EVENT);
+        }
+        return timePeriodId;
     }
 
     @Override
     public int[] addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException, ServiceException {
-        //TODO: check what Exception butch update throws
-        return timePeriodDao.addTimePeriodList(timePeriods);
+        LOGGER.debug("addTimePeriodList()");
+
+        for (TimePeriod timePeriod: timePeriods){
+            if (timePeriod.getEvent().getEventId() <= 0 ||
+                    timePeriod.getBeginning() <= 0 ||
+                    timePeriod.getEnd() <= 0){
+                throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
+            }
+        }
+        int [] rowsAffected;
+        try {
+            rowsAffected = timePeriodDao.addTimePeriodList(timePeriods);
+        } catch (DataIntegrityViolationException ex){
+            throw new ServiceException(CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_EVENT);
+        }
+        return rowsAffected;
     }
 
     @Override
     public int updateTimePeriod(TimePeriod timePeriod) throws DataAccessException, ServiceException {
+        LOGGER.debug("updateTimePeriod({})", timePeriod);
+
         if (timePeriod.getTimePeriodId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         if (timePeriod.getEvent().getEventId() <= 0 ||
                 timePeriod.getBeginning() <= 0 ||
@@ -99,7 +135,9 @@ public class TimePeriodServiceImpl implements TimePeriodService{
     }
 
     @Override
-    public int deleteTimePeriod(Integer timePeriodId) throws DataAccessException, ServiceException {
+    public int deleteTimePeriodById(Integer timePeriodId) throws DataAccessException, ServiceException {
+        LOGGER.debug("delete TimePeriod with id = {}", timePeriodId);
+
         if (timePeriodId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         int rowsAffected = timePeriodDao.deleteTimePeriod(timePeriodId);
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
@@ -109,10 +147,11 @@ public class TimePeriodServiceImpl implements TimePeriodService{
 
     @Override
     public int deleteTimePeriodsByEventId(Event event) throws DataAccessException, ServiceException {
+        LOGGER.debug("delete TimePeriods with eventId = {}", event.getEventId());
+
         if (event.getEventId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         int rowsAffected = timePeriodDao.deleteTimePeriodsByEventId(event);
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
-        if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
         return rowsAffected;
     }
 }
