@@ -28,8 +28,10 @@ public class EventServiceImplTest {
     private static final String EVENT_PLACE_NAME = "«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»";
     private static final int CATEGORY_ID = 1;
     private static final String EVENT_NAME = "Премьера \"Весёлый вдовец\"";
+    private static final String EVENT_NAME2 = "Радостный человек";
     private static final Event EVENT_CONST = new Event(new Category(4), EVENT_NAME, EVENT_PLACE_NAME);
     private static final Event EVENT = new Event(new Category(4), EVENT_NAME, EVENT_PLACE_NAME);
+    private static final Event EVENT1 = new Event(new Category(4), EVENT_NAME, EVENT_PLACE_NAME);
 
     @Autowired
     private EventServiceImpl eventService;
@@ -185,11 +187,95 @@ public class EventServiceImplTest {
     @Test
     public void updateEvent() throws Exception {
         LOGGER.debug("test: updateEvent()");
+
+        Event event = eventService.getEventById(1);
+        event.setEventName(EVENT_NAME2);
+
+        int count = eventService.updateEvent(event);
+        assertEquals(1, count);
+
+        Event updatedEvent = eventService.getEventById(1);
+        assertEquals(event.getEventName(), updatedEvent.getEventName());
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void updateEventIncorrectIndex() throws Exception {
+        LOGGER.debug("test: updateEventIncorrectIndex()");
+
+        Event event = eventService.getEventById(1);
+        event.setEventId(-1);
+        try{
+            eventService.updateEvent(event);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void updateEventIncorrectInputData() throws Exception {
+        LOGGER.debug("test: updateEventIncorrectInputData()");
+
+        Event event = eventService.getEventById(1);
+        event.setEventName("G");
+        try{
+            eventService.updateEvent(event);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void updateEventNoActionsMade() throws Exception {
+        LOGGER.debug("test: updateEventNoActionsMade()");
+
+        Event event = eventService.getEventById(1);
+        event.setEventId(999);
+        try{
+            eventService.updateEvent(event);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_ACTIONS_MADE, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
     public void deleteEvent() throws Exception {
         LOGGER.debug("test: deleteEvent()");
+
+        Integer addedEventId = eventService.addEvent(EVENT1);
+        assertNotNull(addedEventId);
+        int quantityBefore = eventService.getAllEvents().size();
+        int count = eventService.deleteEvent(addedEventId);
+        assertEquals(1, count);
+        int quantityAfter = eventService.getAllEvents().size();
+        assertEquals(quantityBefore - 1, quantityAfter);
     }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteEventIncorrectIndex() throws Exception {
+        LOGGER.debug("test: deleteEventIncorrectIndex()");
+
+        try{
+            eventService.deleteEvent(-5);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteEventNoActionsMade() throws Exception {
+        LOGGER.debug("test: deleteEventNoActionsMade()");
+
+        try{
+            eventService.deleteEvent(999);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_ACTIONS_MADE, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
 
 }

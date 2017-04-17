@@ -42,9 +42,13 @@ public class CategoryServiceImpl implements CategoryService {
     public Category getCategoryById(Integer categoryId) throws DataAccessException, ServiceException {
         LOGGER.debug("getCategoryById({})", categoryId);
 
+        Category category;
         if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        Category category = categoryDao.getCategoryById(categoryId);
-        if (category == null)  throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        try{
+            category = categoryDao.getCategoryById(categoryId);
+        } catch (EmptyResultDataAccessException ex){
+            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
         return category;
     }
 

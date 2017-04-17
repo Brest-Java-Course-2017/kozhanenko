@@ -1,5 +1,7 @@
 package by.eventcat;
 
+import by.eventcat.custom.exceptions.CustomErrorCodes;
+import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -50,7 +52,23 @@ public class CategoryServiceImplTest {
     @Test (expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void getCategoryByIdWrongIndex() throws Exception {
         LOGGER.debug("test: getCategoryByIdWrongIndex()");
-        categoryService.getCategoryById(0);
+        try{
+            categoryService.getCategoryById(0);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test (expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void getCategoryByIdNoCallingDataFound() throws Exception {
+        LOGGER.debug("test: getCategoryByIdNoCallingDataFound()");
+        try{
+            categoryService.getCategoryById(999);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
@@ -64,13 +82,24 @@ public class CategoryServiceImplTest {
     @Test (expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void getCategoryByCategoryNameIncorrectName() throws Exception {
         LOGGER.debug("test: getCategoryByCategoryNameIncorrectName()");
-        categoryService.getCategoryByCategoryName(INCORRECT_CATEGORY_NAME_1);
+        try{
+            categoryService.getCategoryByCategoryName(INCORRECT_CATEGORY_NAME_1);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test (expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void getCategoryByCategoryNameNoDataFound() throws Exception {
         LOGGER.debug("test: getCategoryByCategoryNameIncorrectName()");
-        categoryService.getCategoryByCategoryName(INCORRECT_CATEGORY_NAME_2);
+
+        try{
+            categoryService.getCategoryByCategoryName(INCORRECT_CATEGORY_NAME_2);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
@@ -91,9 +120,29 @@ public class CategoryServiceImplTest {
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void addCategoryIncorrectData() throws Exception {
+        LOGGER.debug("test: addCategoryIncorrectData()");
+
+        Category category = categoryService.getCategoryById(1);
+        category.setCategoryName("G");
+        try{
+            categoryService.addCategory(category);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void addDuplicateCategory() throws Exception {
         LOGGER.debug("test: addDuplicateCategory()");
-        categoryService.addCategory(DUPLICATE_CATEGORY);
+
+        try{
+            categoryService.addCategory(DUPLICATE_CATEGORY);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
@@ -111,12 +160,31 @@ public class CategoryServiceImplTest {
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void updateCategoryIncorrectIndex() throws Exception {
+        LOGGER.debug("test: updateCategoryIncorrectIndex()");
+
+        Category category = categoryService.getCategoryById(1);
+        category.setCategoryId(-5);
+        try{
+            categoryService.updateCategory(category);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void updateCategoryWrongNewData() throws Exception {
         LOGGER.debug("test: updateCategoryWrongNewData()");
 
         Category category = categoryService.getCategoryById(1);
         category.setCategoryName("");
-        categoryService.updateCategory(category);
+        try{
+            categoryService.updateCategory(category);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
@@ -124,7 +192,12 @@ public class CategoryServiceImplTest {
         LOGGER.debug("test: updateCategoryWrongNewData()");
 
         Category category = new Category(999, "some name");
-        categoryService.updateCategory(category);
+        try{
+            categoryService.updateCategory(category);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_ACTIONS_MADE, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 
     @Test
@@ -142,8 +215,25 @@ public class CategoryServiceImplTest {
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteCategoryIncorrectIndex() throws Exception {
+        LOGGER.debug("test: deleteCategory() for service");
+        try{
+            categoryService.deleteCategory(-1);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void deleteCategoryWithNonExistingIndex() throws Exception {
         LOGGER.debug("test: deleteCategory() for service");
-        categoryService.deleteCategory(100);
+
+        try{
+            categoryService.deleteCategory(100);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_ACTIONS_MADE, ex.getCustomErrorCode());
+            throw ex;
+        }
     }
 }
