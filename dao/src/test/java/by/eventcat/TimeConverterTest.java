@@ -88,9 +88,6 @@ public class TimeConverterTest {
         assertFalse(isValidDateInString(WRONG_DATE3));
         assertFalse(isValidDateInString(WRONG_DATE4));
         assertFalse(isValidDateInString(WRONG_DATE5_FEB));
-
-
-
     }
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="categoryDao" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="by.eventcat.CategoryDao"/>
+    </bean>
+
+    <bean id="categoryService" class="by.eventcat.CategoryServiceImpl">
+        <property name="categoryDao" ref="categoryDao"/>
+    </bean>
+
+    <bean id="eventDao" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="by.eventcat.EventDao"/>
+    </bean>
+
+    <bean id="eventService" class="by.eventcat.EventServiceImpl">
+        <property name="eventDao" ref="eventDao"/>
+    </bean>
+
+    <bean id="timePeriodDao" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="by.eventcat.TimePeriodDao"/>
+    </bean>
+
+    <bean id="timePeriodService" class="by.eventcat.TimePeriodServiceImpl">
+        <property name="timePeriodDao" ref="timePeriodDao"/>
+    </bean>
+
+</beans>
