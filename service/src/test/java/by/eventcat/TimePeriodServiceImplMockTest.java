@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * TimePeriodServiceImplMockTest
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:test-mock-spring-service.xml"})
 public class TimePeriodServiceImplMockTest {
 
