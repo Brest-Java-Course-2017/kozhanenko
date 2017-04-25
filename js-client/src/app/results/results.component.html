@@ -1,0 +1,49 @@
+<div class="row">
+  <div class="col-md-3">
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Выберите период</button>
+      <div class="dropdown-menu" aria-labelledby="dropdownBasic1">
+        <button class="dropdown-item">Ближайший час</button>
+        <button class="dropdown-item">Ближайшие 2 часа</button>
+        <button class="dropdown-item">Сегодня</button>
+        <button class="dropdown-item">Завтра</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <p style="text-align: right">либо выберите дату:</p>
+  </div>
+  <div class="col-md-6">
+    <ngbd-datepicker-popup></ngbd-datepicker-popup>
+  </div>
+</div>
+<div class="row padding-top-20">
+  <div class="col-md-10">
+    <ul class="list-group">
+      <li class="list-group-item justify-content-between">
+        Кино
+        <span class="badge badge-default badge-pill">14</span>
+      </li>
+      <li class="list-group-item justify-content-between">
+        Театр
+        <span class="badge badge-default badge-pill">2</span>
+      </li>
+      <li class="list-group-item justify-content-between">
+        Музеи
+        <span class="badge badge-default badge-pill">1</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="row padding-top-20">
+  <div class="col-md-2">
+    <ul class="list-group">
+      <li class="list-group-item justify-content-between">
+        Всего:
+        <span class="badge badge-default badge-pill">17</span>
+      </li>
+    </ul>
+  </div>
+</div>
+

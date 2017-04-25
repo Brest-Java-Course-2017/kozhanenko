@@ -1,0 +1,28 @@
+
+<nav class="navbar navbar-inverse bg-inverse navbar-toggleable-md">
+  <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExampleCenteredNav">
+    <ul class="navbar-nav">
+
+      <p id="app-name" class="nav-link disabled">Event Aggregator v.1.0</p>
+
+      <li class="nav-item">
+        <a routerLink="/results" class="nav-link"  routerLinkActive="active">Просмотр <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/categories" class="nav-link" routerLinkActive="active">Категории</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/events" class="nav-link" routerLinkActive="active">События</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container main-container">
+  <div class="jumbotron">
+    <div class="col-md-12">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
