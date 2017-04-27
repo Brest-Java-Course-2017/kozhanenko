@@ -8,6 +8,7 @@ import { JsonpModule } from '@angular/http';
 import { AppComponent }  from './app.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { EventsComponent } from './events/events.component';
+import { EventComponent } from './events/event.component';
 import { ResultsComponent } from './results/results.component'
 import { NgbdDatepickerPopup } from './common-components/datepicker-popup';
 
@@ -24,6 +25,7 @@ import { NgbdDatepickerPopup } from './common-components/datepicker-popup';
     AppComponent,
     CategoriesComponent,
     EventsComponent,
+    EventComponent,
     ResultsComponent,
     NgbdDatepickerPopup
   ],
