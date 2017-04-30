@@ -1,0 +1,1 @@
+{"data":[{"categoryId":1,"categoryName":"Театр"},{"categoryId":2,"categoryName":"Кино"},{"categoryId":3,"categoryName":"Вечеринка"},{"categoryId":4,"categoryName":"Open air"},{"categoryId":5,"categoryName":"Музеи"}]}

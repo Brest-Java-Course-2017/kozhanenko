@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-9">
-    <p class="text-success">Операция завершена успешно</p>
-    <p class="text-danger">Произошла ошибка</p>
+    <p *ngIf="successMessage" class="text-success">{{successMessage}}</p>
+    <p *ngIf="errorMessage" class="text-danger">{{errorMessage}}</p>
   </div>
 </div>
 
@@ -10,26 +10,16 @@
   <div class="col-md-9">
     <table class="table table-sm" style="background-color: lightgrey;">
       <tbody>
-      <tr>
-        <td class="central">Театр</td>
+      <tr *ngFor="let category of categories">
+        <td class="central">{{category.categoryName}}</td>
         <td><button type="button" class="btn btn-warning">Редактировать</button></td>
         <td><button type="button" class="btn btn-danger">Удалить</button></td>
       </tr>
-      <tr>
-        <td class="central">Кино</td>
-        <td><button type="button" class="btn btn-warning">Редактировать</button></td>
-        <td><button type="button" class="btn btn-danger">Удалить</button></td>
-      </tr>
-      <tr class="bg-info">
-        <td class="central"><input type="email" class="form-control" id="exampleInputCategory" placeholder="Имя категории" value="Классическая музыка"></td>
-        <td><button type="button" class="btn btn-success">Сохранить</button></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td class="central">Музеи</td>
-        <td><button type="button" class="btn btn-warning">Редактировать</button></td>
-        <td><button type="button" class="btn btn-danger">Удалить</button></td>
-      </tr>
+      <!--<tr class="bg-info">-->
+        <!--<td class="central"><input type="email" class="form-control" id="exampleInputCategory" placeholder="Имя категории" value="Классическая музыка"></td>-->
+        <!--<td><button type="button" class="btn btn-success">Сохранить</button></td>-->
+        <!--<td></td>-->
+      <!--</tr>-->
       </tbody>
     </table>
   </div>
@@ -40,8 +30,12 @@
     <table class="table table-sm">
       <tbody>
       <tr>
-        <td><input type="email" class="form-control" id="ddexampleInputCategory" placeholder="Имя категории" value="Классическая музыка"></td>
-        <td><button type="button" class="btn btn-success">Добавить категорию</button></td>
+        <td><input class="form-control" #newCategoryName placeholder="Имя категории"></td>
+        <td>
+          <button type="button" class="btn btn-success" (click)="addCategory(newCategoryName.value); newCategoryName.value=''">
+          Добавить категорию
+          </button>
+        </td>
         <td></td>
       </tr>
       </tbody>
