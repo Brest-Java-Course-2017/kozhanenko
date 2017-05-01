@@ -22,6 +22,8 @@
             <list>
                 <value>classpath:app.properties</value>
                 <value>classpath:database.properties</value>
+                <value>classpath:ru.error.messages.properties</value>
+                <value>classpath:ru.success.messages.properties</value>
             </list>
         </property>
     </bean>

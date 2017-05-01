@@ -92,7 +92,12 @@ public class CategoryServiceImpl implements CategoryService {
         if(category.getCategoryName() == null || category.getCategoryName().length() < 2){
             throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
-        int rowsAffected = categoryDao.updateCategory(category);
+        int rowsAffected;
+        try{
+            rowsAffected = categoryDao.updateCategory(category);
+        } catch (DuplicateKeyException ex){
+            throw new ServiceException(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED);
+        }
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
         if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
         return rowsAffected;

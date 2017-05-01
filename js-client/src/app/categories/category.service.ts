@@ -35,7 +35,7 @@ export class CategoryService {
   private extractData(res: Response) {
     console.log("");
     let body = res.json();
-    return body || { };//return body.data || { };
+    return body.data || { };//return body.data || { };
   }
 
   private handleError (error: Response | any) {

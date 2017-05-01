@@ -160,6 +160,20 @@ public class CategoryServiceImplTest {
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void updateCategoryDuplicateIndex() throws Exception {
+        LOGGER.debug("test: updateCategoryDuplicateIndex()");
+
+        Category category = categoryService.getCategoryById(2);
+        category.setCategoryName(CATEGORY_NAME_1);
+        try{
+            categoryService.updateCategory(category);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void updateCategoryIncorrectIndex() throws Exception {
         LOGGER.debug("test: updateCategoryIncorrectIndex()");
 
