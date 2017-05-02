@@ -23,7 +23,7 @@ import java.util.Map;
 public class CategoryRestController {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private Map<String, Object> responseObject = new HashMap<>();
+    private Map<String, Object> responseObject;
 
     @Autowired
     private CategoryService categoryService;
@@ -49,12 +49,16 @@ public class CategoryRestController {
     @Value("${no_actions_made}")
     private String noActionsMade;
 
+    @Value("${category_deleted}")
+    private String categoryDeleted;
 
     //curl -v localhost:8090/categories
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> getCategories() {
         LOGGER.debug(" getCategories()");
+        responseObject = new HashMap<>();
+
         try{
             responseObject.put("data", categoryService.getAllCategories());
         } catch (ServiceException ex){
@@ -87,8 +91,10 @@ public class CategoryRestController {
     @RequestMapping(value = "/category", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody//returns new category id
-    Map<String, Object> addUser(@RequestBody Category category) {
+    Map<String, Object> addCategory(@RequestBody Category category) {
         LOGGER.debug("addCategory: category = {}", category);
+        responseObject = new HashMap<>();
+
         try{
             responseObject.put("data", categoryService.addCategory(category));
             responseObject.put("successMessage", categoryAdded);
@@ -108,11 +114,13 @@ public class CategoryRestController {
 
     //curl -X PUT -v localhost:8090/category/{categoryId}/{categoryName}
     @RequestMapping(value = "/category/{categoryId}/{categoryName}", method = RequestMethod.PUT)
-    @ResponseStatus(value = HttpStatus.ACCEPTED)
+    @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
-    Map<String, Object> updateUser(@PathVariable(value = "categoryId") int categoryId,
+    Map<String, Object> updateCategory(@PathVariable(value = "categoryId") int categoryId,
                            @PathVariable(value = "categoryName") String categoryName) {
         LOGGER.debug("updateCategory: id = {}", categoryId);
+        responseObject = new HashMap<>();
+
         try{
             categoryService.updateCategory(new Category(categoryId, categoryName));
             responseObject.put("successMessage", categoryUpdated);
@@ -135,5 +143,33 @@ public class CategoryRestController {
         }
         return responseObject;
     }
+
+    //curl -X DELETE localhost:8090/category/{categoryId}
+    @RequestMapping(value = "/category/{categoryId}", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public @ResponseBody
+    Map<String, Object> deleteCategoryById(@PathVariable(value = "categoryId") int categoryId) {
+        LOGGER.debug("deleteCategoryById id={}", categoryId);
+        responseObject = new HashMap<>();
+
+        try{
+            categoryService.deleteCategory(categoryId);
+            responseObject.put("successMessage", categoryDeleted);
+        } catch (ServiceException ex){
+            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INDEX)){
+                responseObject.put("errorMessage", programError);
+            } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.NO_ACTIONS_MADE)){
+                responseObject.put("errorMessage", noActionsMade);
+            } else {
+                //the same error from CustomErrorCodes.ACTIONS_ERROR
+                responseObject.put("errorMessage", programError);
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+        }
+        return responseObject;
+    }
+
+
 
 }

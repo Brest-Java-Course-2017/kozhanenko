@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Category} from "./category";
+import {Category} from "./models/category";
 import {CategoryService} from "./category.service";
 
 @Component({
@@ -22,18 +22,51 @@ export class CategoriesComponent implements OnInit{
   getCategories() {
     this.categoryService.getCategories()
       .subscribe(
-        categories => this.categories = categories,
+        res => {
+          this.categories = res.data;
+          this.errorMessage = res.errorMessage;
+        },
         error =>  this.errorMessage = <any>error);
   }
 
   addCategory(name: string) {
+    let categoryId: number;
     if (!name) { return; }
     this.categoryService.create(name)
       .subscribe(
-        //category  => this.categories.push(category),
+        res => {
+          this.successMessage = res.successMessage;
+          this.errorMessage = res.errorMessage;
+          categoryId = res.data;
+          if (categoryId){
+            this.categories.push(new Category(categoryId, name));
+          }
+        },
         error =>  this.errorMessage = <any>error);
+  }
 
-    this.getCategories();
+  deleteCategory(categoryId: string) {
+    if (!categoryId) { return; }
+    this.categoryService.deleteCategory(categoryId)
+      .subscribe(
+        res => {
+          this.successMessage = res.successMessage;
+          this.errorMessage = res.errorMessage;
+          if (this.successMessage){
+            let ind: number = 0;
+            let index: number = -1;
+            for (let entry of this.categories) {
+              if (entry.categoryId.toString() == categoryId){
+                index = ind;
+              }
+              ind++;
+            }
+            if (index > -1) {
+              this.categories.splice(index, 1);
+            }
+          }
+        },
+        error =>  this.errorMessage = <any>error);
   }
 
 }

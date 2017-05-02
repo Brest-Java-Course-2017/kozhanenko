@@ -12,8 +12,8 @@
       <tbody>
       <tr *ngFor="let category of categories">
         <td class="central">{{category.categoryName}}</td>
-        <td><button type="button" class="btn btn-warning">Редактировать</button></td>
-        <td><button type="button" class="btn btn-danger">Удалить</button></td>
+        <td><button type="button" class="btn btn-outline-warning">Редактировать</button></td>
+        <td><button type="button" class="btn btn-outline-danger" (click)="deleteCategory(category.categoryId);">Удалить</button></td>
       </tr>
       <!--<tr class="bg-info">-->
         <!--<td class="central"><input type="email" class="form-control" id="exampleInputCategory" placeholder="Имя категории" value="Классическая музыка"></td>-->
