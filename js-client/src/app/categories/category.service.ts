@@ -8,7 +8,6 @@ import 'rxjs/add/observable/throw';
 import {ResponseGAC} from "./models/response-get-all-categories-model";
 import {ResponseAC} from "./models/response-add-category-model";
 import {ResponseUDC} from "./models/response-update-delete-category-model";
-import {map} from "rxjs/operator/map";
 
 
 @Injectable()
@@ -21,13 +20,16 @@ export class CategoryService {
   constructor (private http: Http) {}
 
   getCategories(): Observable<ResponseGAC> {
-    return this.http.get(this.categoriesUrl)
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.get(this.categoriesUrl, options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
   create(categoryName: string): Observable<ResponseAC> {
-    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
     let options = new RequestOptions({ headers: headers });
 
     return this.http.post(this.categoryUrl, { categoryName }, options)
@@ -36,15 +38,24 @@ export class CategoryService {
   }
 
   deleteCategory(categoryId: string): Observable<ResponseUDC>{
-    //let headers = new Headers({ 'Content-Type': 'application/json' });
-    //let options = new RequestOptions({ headers: headers });
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
+    let options = new RequestOptions({ headers: headers });
 
     return this.http
-      .delete(this.categoryUrl + "/" + categoryId)
+      .delete(this.categoryUrl + "/" + categoryId, options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
+  updateCategory(categoryId: string, categoryName: string): Observable<ResponseUDC>{
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http
+      .put(this.categoryUrl + "/" + categoryId + "/" + categoryName, {}, options)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
 
   private extractData(res: Response) {
     console.log("");

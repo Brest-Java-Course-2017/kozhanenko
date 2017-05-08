@@ -1,25 +1,35 @@
 <div class="row">
   <div class="col-md-9">
-    <p *ngIf="successMessage" class="text-success">{{successMessage}}</p>
-    <p *ngIf="errorMessage" class="text-danger">{{errorMessage}}</p>
+    <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
   </div>
 </div>
 
 
 <div class="row">
   <div class="col-md-9">
-    <table class="table table-sm" style="background-color: lightgrey;">
+    <table class="table table-sm" style="background-color: #e6e6e6;">
       <tbody>
-      <tr *ngFor="let category of categories">
-        <td class="central">{{category.categoryName}}</td>
-        <td><button type="button" class="btn btn-outline-warning">Редактировать</button></td>
-        <td><button type="button" class="btn btn-outline-danger" (click)="deleteCategory(category.categoryId);">Удалить</button></td>
-      </tr>
-      <!--<tr class="bg-info">-->
-        <!--<td class="central"><input type="email" class="form-control" id="exampleInputCategory" placeholder="Имя категории" value="Классическая музыка"></td>-->
-        <!--<td><button type="button" class="btn btn-success">Сохранить</button></td>-->
-        <!--<td></td>-->
-      <!--</tr>-->
+        <tr *ngFor="let category of categories">
+          <td class="central">
+            <p [hidden]="category.visibility">{{category.categoryName}}</p>
+            <input class="form-control" [hidden]="!category.visibility" value="{{category.placeholder}}"
+                   (focusout)="setUpdateValue($event, category.categoryId);">
+          </td>
+
+          <td>
+            <button [hidden]="category.visibility" type="button" class="btn btn-outline-warning"
+                      (click)="category.visibility = !category.visibility">Редактировать</button>
+            <button [hidden]="!category.visibility" type="button"
+                    class="btn btn-outline-warning" (click)="updateCategory(category.categoryId)">Готово</button>
+          </td>
+          <td>
+            <button [hidden]="category.visibility" type="button" class="btn btn-outline-danger"
+                      (click)="setCategoryToDelete(category.categoryId, category.categoryName); open(content);">Удалить</button>
+            <button [hidden]="!category.visibility" type="button" class="btn btn-outline-danger"
+                    (click)="category.visibility = !category.visibility">Отмена</button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -42,3 +52,19 @@
     </table>
   </div>
 </div>
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title ">Внимание!!!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Вы действительно хотите удалить категорию "{{categoryNameToDelete}}"?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="c('Close click'); deleteCategory();">Удалить</button>
+    <button type="button" class="btn btn-outline-info" (click)="c('Close click')">Отмена</button>
+  </div>
+</ng-template>

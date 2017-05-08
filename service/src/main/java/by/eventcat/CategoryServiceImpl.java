@@ -5,6 +5,7 @@ import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -108,7 +109,12 @@ public class CategoryServiceImpl implements CategoryService {
         LOGGER.debug("delete category with categoryId = {}", categoryId);
 
         if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        int rowsAffected = categoryDao.deleteCategory(categoryId);
+        int rowsAffected = 0;
+        try {
+            rowsAffected = categoryDao.deleteCategory(categoryId);
+        } catch (DataIntegrityViolationException ex){
+            throw new ServiceException(CustomErrorCodes.DELETING_DATA_IS_USED);
+        }
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
         if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
         return rowsAffected;

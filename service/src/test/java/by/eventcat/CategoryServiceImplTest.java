@@ -250,4 +250,16 @@ public class CategoryServiceImplTest {
             throw ex;
         }
     }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteUsedCategory() throws Exception {
+        LOGGER.debug("test: deleteUsedCategory() for service");
+        try{
+            categoryService.deleteCategory(1);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.DELETING_DATA_IS_USED, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
 }

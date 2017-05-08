@@ -52,6 +52,9 @@ public class CategoryRestController {
     @Value("${category_deleted}")
     private String categoryDeleted;
 
+    @Value("${data_is_in_use_error}")
+    private String dataIsInUseError;
+
     //curl -v localhost:8090/categories
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     public @ResponseBody
@@ -158,6 +161,8 @@ public class CategoryRestController {
         } catch (ServiceException ex){
             if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INDEX)){
                 responseObject.put("errorMessage", programError);
+            } else if(ex.getCustomErrorCode().equals(CustomErrorCodes.DELETING_DATA_IS_USED)){
+                responseObject.put("errorMessage", dataIsInUseError);
             } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.NO_ACTIONS_MADE)){
                 responseObject.put("errorMessage", noActionsMade);
             } else {
