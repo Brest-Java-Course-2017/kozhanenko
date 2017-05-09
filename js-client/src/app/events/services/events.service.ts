@@ -5,9 +5,11 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import {ResponseGAE} from "../models/response-get-all-events-model";
+import {MyEvent} from "../models/event";
 
 @Injectable()
 export class EventsService {
+  //TODO: solve Access-Control-Allow-Origin problem
 
   private eventsUrl = 'http://localhost:8090/events';
   //private eventsUrl = 'res.txt';
@@ -21,6 +23,10 @@ export class EventsService {
     return this.http.get(this.eventsUrl, options)
       .map(this.extractData)
       .catch(this.handleError);
+  }
+
+  getEvent(eventId: number): Observable<MyEvent>{
+    return null;
   }
 
   private extractData(res: Response) {

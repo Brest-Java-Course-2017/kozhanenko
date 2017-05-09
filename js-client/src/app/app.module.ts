@@ -5,13 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { CategoriesModule } from './categories/categories.module';
+import { MyEventsModule } from './events/events.module';
 
 import { AppComponent }  from './app.component';
 //import { CategoriesComponent } from './categories/categories.component';
 import { EventsComponent } from './events/components/events.component';
-import { EventComponent } from './events/components/event.component';
+import { EventAddingComponent } from './events/components/event-adding.component';
+import { EventUpdatingComponent } from './events/components/event-updating.component';
 import { ResultsComponent } from './results/results.component'
 import { NgbdDatepickerPopup } from './common-components/datepicker-popup';
+
 
 //import { CategoryService } from './categories/category.service';
 import { EventsService } from './events/services/events.service';
@@ -25,17 +28,19 @@ import { EventsService } from './events/services/events.service';
     ReactiveFormsModule,
     HttpModule,
     JsonpModule,
-    CategoriesModule
+    CategoriesModule,
+    MyEventsModule
   ],
   declarations: [
     AppComponent,
     //CategoriesComponent,
     EventsComponent,
-    EventComponent,
+    EventAddingComponent,
+    EventUpdatingComponent,
     ResultsComponent,
-    NgbdDatepickerPopup
+    NgbdDatepickerPopup,
   ],
-  providers: [ EventsService ],//CategoryService ],
+  providers: [ ], //EventsService ],//CategoryService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

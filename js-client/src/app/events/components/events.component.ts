@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {EventsService} from "../services/events.service";
 import {MyEvent} from "../models/event";
-import {Category} from "../../categories/models/category";
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'my-events',
@@ -9,6 +9,8 @@ import {Category} from "../../categories/models/category";
 })
 export class EventsComponent implements OnInit{
 
+  private _success = new Subject<string>();
+  private _error = new Subject<string>();
   errorMessage: string;
   successMessage: string;
   events: MyEvent[] = [];
@@ -16,10 +18,11 @@ export class EventsComponent implements OnInit{
   constructor (private eventsService: EventsService) {}
   //
   ngOnInit() {
-    //this.events.push(new MyEvent(1, new Category(1, "sadas", true, "dsfdf"), "sdasd", "sdasd"));
-     this.getEvents();
+    this.getEvents();
+    this._success.subscribe((message) => this.successMessage = message);
+    this._error.subscribe((message) => this.errorMessage = message);
   }
-  //
+
   getEvents() {
     this.eventsService.getEvents()
       .subscribe(

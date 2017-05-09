@@ -1,11 +1,11 @@
 <div class="row">
-    <div class="col-md-3">
-      <button type="button" class="btn btn-outline-info" (click)="goBack()">Назад</button>
-    </div>
-    <div class="col-md-6">
-      <p class="text-success">Операция завершена успешно</p>
-      <!--<p class="text-danger">Произошла ошибка</p>-->
-    </div>
+<div class="col-md-3">
+  <button type="button" class="btn btn-outline-info" (click)="goBack()">Назад</button>
+</div>
+<div class="col-md-6">
+  <p class="text-success">Операция завершена успешно</p>
+  <!--<p class="text-danger">Произошла ошибка</p>-->
+</div>
 </div>
 
 <div class="row padding-top-20">
@@ -16,14 +16,14 @@
         <td>Категория:</td>
         <td>
           <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Выберите категорию</button>
-          <div class="dropdown-menu" aria-labelledby="dropdownBasic1">
-            <button class="dropdown-item">Ближайший час</button>
-            <button class="dropdown-item">Ближайшие 2 часа</button>
-            <button class="dropdown-item">Сегодня</button>
-            <button class="dropdown-item">Завтра</button>
-          </div>
-        </div></td>
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Выберите категорию</button>
+            <div class="dropdown-menu" aria-labelledby="dropdownBasic1">
+              <button class="dropdown-item">Ближайший час</button>
+              <button class="dropdown-item">Ближайшие 2 часа</button>
+              <button class="dropdown-item">Сегодня</button>
+              <button class="dropdown-item">Завтра</button>
+            </div>
+          </div></td>
         <td>Наименование:</td>
         <td><input type="email" class="form-control" id="dfs" placeholder="Имя категории" value="Классическая музыка"></td>
       </tr>
@@ -83,6 +83,3 @@
     <button type="button" class="btn btn-outline-success" style="float: right">Редактировать</button>
   </div>
 </div>
-
-
-

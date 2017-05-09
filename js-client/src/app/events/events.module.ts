@@ -6,26 +6,30 @@ import { HttpModule, JsonpModule } from '@angular/http';
 
 
 import { EventsComponent } from './components/events.component';
-import { EventComponent } from './components/event.component';
+import { EventAddingComponent } from './components/event-adding.component';
+import { EventUpdatingComponent } from './components/event-updating.component';
 
 import { EventsService } from './services/events.service';
+import {DateConverterService} from "./services/date-converter.service";
 
 @NgModule({
-  imports:      [
+  imports: [
     NgbModule.forRoot(),
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
-    JsonpModule
+    JsonpModule,
   ],
   declarations: [
     //EventsComponent,
-    //EventComponent
+    //EventAddingComponent,
+    //EventUpdatingComponent
   ],
   providers: [
     EventsService,
+    DateConverterService
   ],
-  exports: [ ]//EventsComponent, EventComponent ]
+  exports: [ ]//EventsComponent, EventAddingComponent, EventUpdatingComponent  ]
 })
-export class EventsModule { }
+export class MyEventsModule { }
