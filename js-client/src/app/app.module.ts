@@ -8,12 +8,13 @@ import { CategoriesModule } from './categories/categories.module';
 
 import { AppComponent }  from './app.component';
 //import { CategoriesComponent } from './categories/categories.component';
-import { EventsComponent } from './events/events.component';
-import { EventComponent } from './events/event.component';
+import { EventsComponent } from './events/components/events.component';
+import { EventComponent } from './events/components/event.component';
 import { ResultsComponent } from './results/results.component'
 import { NgbdDatepickerPopup } from './common-components/datepicker-popup';
 
-import { CategoryService } from './categories/category.service';
+//import { CategoryService } from './categories/category.service';
+import { EventsService } from './events/services/events.service';
 
 @NgModule({
   imports:      [
@@ -34,7 +35,7 @@ import { CategoryService } from './categories/category.service';
     ResultsComponent,
     NgbdDatepickerPopup
   ],
-  providers: [ ],//CategoryService ],
+  providers: [ EventsService ],//CategoryService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

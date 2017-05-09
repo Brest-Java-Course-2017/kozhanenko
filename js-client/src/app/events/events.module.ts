@@ -5,9 +5,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 
 
-import { CategoriesComponent } from './categories.component';
+import { EventsComponent } from './components/events.component';
+import { EventComponent } from './components/event.component';
 
-import { CategoryService } from './category.service';
+import { EventsService } from './services/events.service';
 
 @NgModule({
   imports:      [
@@ -19,11 +20,12 @@ import { CategoryService } from './category.service';
     JsonpModule
   ],
   declarations: [
-    CategoriesComponent,
+    //EventsComponent,
+    //EventComponent
   ],
   providers: [
-    CategoryService,
+    EventsService,
   ],
-  exports: [ CategoriesComponent ]
+  exports: [ ]//EventsComponent, EventComponent ]
 })
-export class CategoriesModule { }
+export class EventsModule { }
