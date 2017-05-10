@@ -6,6 +6,7 @@ import {Category} from "../../categories/models/category";
 import { CategoryService } from '../../categories/category.service';
 import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {DateConverterService} from "../services/date-converter.service";
+import {MyEvent} from '../models/event';
 
 @Component({
   selector: 'my-events',
@@ -20,13 +21,13 @@ export class EventAddingComponent implements OnInit{
   categories: Category[];
   private INITIAL_SELECTION: Category = new Category(-1, "Выберите категорию", true, "");
   private selectedCategory: Category = this.INITIAL_SELECTION;
-  newEventName: string;
-  newEventPlaceName: string;
+  newEventName: string = "";
+  newEventPlaceName: string = "";
   timePeriods: EventsTimePeriod [] = [];
-  selectedBeginningTime: {} = null;
-  selectedBeginningDate: {} = null;
-  selectedEndTime: {} = null;
-  selectedEndDate: {} = null;
+  selectedBeginningTime: any = null;
+  selectedBeginningDate: any = null;
+  selectedEndTime: any = null;
+  selectedEndDate: any = null;
 
 
   constructor(private location: Location,
@@ -70,7 +71,54 @@ export class EventAddingComponent implements OnInit{
   }
 
   pushNewTimePeriod(){
+    if (this.selectedBeginningTime != null && this.selectedBeginningDate != null &&
+      this.selectedEndTime != null && this.selectedEndDate != null){
+        if (this.dateConverterService.convertDateFromMapToSeconds(this.selectedBeginningDate, this.selectedBeginningTime) <
+          this.dateConverterService.convertDateFromMapToSeconds(this.selectedEndDate, this.selectedEndTime)){
+            this.timePeriods.push(new EventsTimePeriod(
+              this.dateConverterService.convertDateFromMapToSeconds(this.selectedBeginningDate, this.selectedBeginningTime),
+              this.dateConverterService.convertDateFromMapToString(this.selectedBeginningDate, this.selectedBeginningTime),
+              this.dateConverterService.convertDateFromMapToSeconds(this.selectedEndDate, this.selectedEndTime),
+              this.dateConverterService.convertDateFromMapToString(this.selectedEndDate, this.selectedEndTime)
+            ));
+            this.selectedBeginningTime = null;
+            this.selectedBeginningDate = null;
+            this.selectedEndTime = null;
+            this.selectedEndDate = null;
+        } else {
+          this.errorMessage = "Время начала события позже либо идентично времени окончания события";
+        }
+    } else {
+      this.errorMessage = "Данные о периоде проведения события заполнены не полностью";
+    }
+  }
 
+  addNewEvent(){
+    if (this.selectedCategory == this.INITIAL_SELECTION){
+      this.errorMessage = "Вы не выбрали категорию события из выпадающего списка";
+    } else if (this.newEventName.length < 2){
+      this.errorMessage = "Наименование события должно иметь не менее 2 символов";
+    } else if (this.newEventPlaceName.length < 2){
+      this.errorMessage = "Наименование места проведения события должно иметь не менее 2 символов";
+    } else if (this.timePeriods.length == 0){
+      this.errorMessage = "Вы не указали ни одного периода проведения мероприятия";
+    } else {
+      this.eventsService.create(
+        new MyEvent(-1, this.selectedCategory, this.newEventName, this.newEventPlaceName),
+        this.timePeriods)
+        .subscribe(
+        res => {
+          this.successMessage = res.successMessage;
+          this.errorMessage = res.errorMessage;
+          if (this.successMessage){
+            this.selectedCategory = this.INITIAL_SELECTION;
+            this.newEventName= "";
+            this.newEventPlaceName= "";
+            this.timePeriods = [];
+          }
+        },
+        error =>  this.errorMessage = <any>error);
+    }
   }
 
   goBack(): void {

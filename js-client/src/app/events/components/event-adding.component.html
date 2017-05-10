@@ -53,18 +53,18 @@
       <tbody>
       <tr *ngFor="let timePeriod of timePeriods; let i = index">
         <td><p *ngIf="i == 0">Периоды начала и конца:</p></td>
-        <td>{{timePeriod.eventBeginningTimeInString}}</td>
-        <td>{{timePeriod.eventEndTimeInString}}</td>
+        <td>
+          {{timePeriod.eventBeginningTimeInString}}
+          <!--{{timePeriod.eventBeginningTime}}-->
+        </td>
+        <td>
+          {{timePeriod.eventEndTimeInString}}
+          <!--{{timePeriod.eventEndTime}}-->
+        </td>
         <td><button type="button" class="btn btn-outline-danger" (click)="removeTimePeriod(i)">-</button></td>
       </tr>
       </tbody>
     </table>
-      <!--<tr>-->
-        <!--<td></td>-->
-        <!--<td>11.05.2017 22:35</td>-->
-        <!--<td>11.05.2017 23:35</td>-->
-        <!--<td><button type="button" class="btn btn-outline-danger">-</button></td>-->
-      <!--</tr>-->
     <table class="table table-sm" style="vertical-align: middle;">
       <tbody>
       <tr style="border: 2px solid lightgrey; margin-top: 5px;">
@@ -72,7 +72,7 @@
         <td>
           <p>Введите начало периода события:</p>
           <ngb-timepicker [(ngModel)]="selectedBeginningTime"></ngb-timepicker>
-          {{ selectedBeginningTime | json }}
+          <!--{{ selectedBeginningTime | json }}-->
           <form class="form-inline">
             <div class="form-group">
               <div class="input-group">
@@ -84,12 +84,12 @@
               </div>
             </div>
           </form>
-          {{ selectedBeginningDate | json }}
+          <!--{{ selectedBeginningDate | json }}-->
         </td>
         <td>
           <p>Введите конец периода события:</p>
           <ngb-timepicker [(ngModel)]="selectedEndTime"></ngb-timepicker>
-          {{ selectedEndTime | json }}
+          <!--{{ selectedEndTime | json }}-->
           <form class="form-inline">
             <div class="form-group">
               <div class="input-group">
@@ -101,7 +101,7 @@
               </div>
             </div>
           </form>
-          {{ selectedEndDate | json }}
+          <!--{{ selectedEndDate | json }}-->
         </td>
         <td><button type="button" class="btn btn-outline-success" (click)="pushNewTimePeriod()">+</button></td>
       </tr>
@@ -112,7 +112,7 @@
 
 <div class="row">
   <div class="col-md-9">
-    <button type="button" class="btn btn-outline-success" style="float: right">Добавить событие</button>
+    <button type="button" class="btn btn-outline-success" (click)="addNewEvent()">Добавить событие</button>
   </div>
 </div>
 
