@@ -1,1 +1,3 @@
 {"data":[{"categoryId":1,"categoryName":"Театр"},{"categoryId":2,"categoryName":"Кино"},{"categoryId":3,"categoryName":"Вечеринка"},{"categoryId":4,"categoryName":"Open air"},{"categoryId":5,"categoryName":"Музеи"}]}
+
+{ "timePeriods": [ { "timePeriodId": 0, "event": { "eventId": -1, "category": { "categoryId": 1, "categoryName": "Театр" }, "eventName": "sdfasdf", "eventPlace": "asdfasdf" }, "beginning": 1494277260584, "end": 1494709260584 } ] }

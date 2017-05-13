@@ -29,6 +29,7 @@ public class EventRestController {
 
     @Autowired
     private EventService eventService;
+    @Autowired
     private TimePeriodService timePeriodService;
 
     @Value("${program_error}")
@@ -73,11 +74,12 @@ public class EventRestController {
         return responseObject;
     }
 
-    //curl -H "Content-Type: application/json" -X POST -d '{ timePeriod[] }' -v localhost:8090/event
+    //curl -H "Content-Type: application/json" -X POST -d '{ "timePeriods": [ { "timePeriodId": 0, "event": { "eventId": -1, "category": { "categoryId": 1, "categoryName": "Театр" }, "eventName": "sdfasdf", "eventPlace": "asdfasdf" }, "beginning": 1494277260584, "end": 1494709260584 } ] }' -v localhost:8090/event
     @RequestMapping(value = "/event", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody//returns new category id
-    Map<String, Object> addEvent(@RequestBody List<TimePeriod> timePeriods) {
+    Map<String, Object> addEvent(@RequestBody Map<String, List<TimePeriod>> requestBody) {
+        List<TimePeriod> timePeriods = requestBody.get("timePeriods");
         LOGGER.debug("addEvent: event = {}", timePeriods.get(0).getEvent());
         Map<String, Object> responseObject = new HashMap<>();
         Event newEvent = timePeriods.get(0).getEvent();

@@ -9,6 +9,7 @@ import {MyEvent} from "../models/event";
 import {ResponseCE} from "../models/response-create-event-model";
 import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {TimePeriod} from "../models/timePeriod";
+import {RealEvent} from "../models/real-event";
 
 @Injectable()
 export class EventsService {
@@ -33,12 +34,15 @@ export class EventsService {
     return null;
   }
 
-  create(event: MyEvent, clientTimePeriods: EventsTimePeriod[]): Observable<ResponseCE> {
+  create(event: RealEvent, clientTimePeriods: EventsTimePeriod[]): Observable<ResponseCE> {
     let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
     let options = new RequestOptions({ headers: headers });
-    let timePeriods: TimePeriod [] = [];
+
+    let timePeriods: TimePeriod[] = new Array(clientTimePeriods.length);
+    let i = 0;
     for (let clientTimePeriod of clientTimePeriods) {
-      timePeriods.push(new TimePeriod(0, event, clientTimePeriod.eventBeginningTime, clientTimePeriod.eventEndTime));
+      timePeriods[i] = new TimePeriod(0, event, clientTimePeriod.eventBeginningTime, clientTimePeriod.eventEndTime);
+      i++;
     }
     return this.http.post(this.eventUrl, { timePeriods }, options)
       .map(this.extractData)

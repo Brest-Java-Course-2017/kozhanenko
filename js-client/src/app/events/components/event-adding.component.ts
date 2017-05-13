@@ -7,6 +7,8 @@ import { CategoryService } from '../../categories/category.service';
 import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {DateConverterService} from "../services/date-converter.service";
 import {MyEvent} from '../models/event';
+import {RealCategory} from "../../categories/models/real-category";
+import {RealEvent} from "../models/real-event";
 
 @Component({
   selector: 'my-events',
@@ -103,8 +105,12 @@ export class EventAddingComponent implements OnInit{
     } else if (this.timePeriods.length == 0){
       this.errorMessage = "Вы не указали ни одного периода проведения мероприятия";
     } else {
+      let realCategory: RealCategory = new RealCategory(this.selectedCategory.categoryId,
+        this.selectedCategory.categoryName);
+
+
       this.eventsService.create(
-        new MyEvent(-1, this.selectedCategory, this.newEventName, this.newEventPlaceName),
+        new RealEvent(-1, realCategory, this.newEventName, this.newEventPlaceName),
         this.timePeriods)
         .subscribe(
         res => {

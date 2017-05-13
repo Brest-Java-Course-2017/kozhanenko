@@ -1,9 +1,9 @@
-import {MyEvent} from "./event";
+import {RealEvent} from "./real-event";
 
 export class TimePeriod {
   constructor(
     private timePeriodId: number,
-    private event: MyEvent,
+    private event: RealEvent,
     private beginning: number,
     private end: number
   ){}
