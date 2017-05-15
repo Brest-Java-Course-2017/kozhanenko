@@ -6,7 +6,6 @@ import {Category} from "../../categories/models/category";
 import { CategoryService } from '../../categories/category.service';
 import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {DateConverterService} from "../services/date-converter.service";
-import {MyEvent} from '../models/event';
 import {RealCategory} from "../../categories/models/real-category";
 import {RealEvent} from "../models/real-event";
 

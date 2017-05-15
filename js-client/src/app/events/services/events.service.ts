@@ -5,11 +5,11 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import {ResponseGAE} from "../models/response-get-all-events-model";
-import {MyEvent} from "../models/event";
 import {ResponseCE} from "../models/response-create-event-model";
 import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {TimePeriod} from "../models/timePeriod";
 import {RealEvent} from "../models/real-event";
+import {ResponseGFE} from "../models/response-get-full-event-model";
 
 @Injectable()
 export class EventsService {
@@ -17,7 +17,7 @@ export class EventsService {
 
   private eventsUrl = 'http://localhost:8090/events';
   private eventUrl = 'http://localhost:8090/event';
-  //private eventsMockUrl = 'res.txt';
+  private eventsMockUrl = 'res3.txt';
 
   constructor (private http: Http) {}
 
@@ -30,8 +30,13 @@ export class EventsService {
       .catch(this.handleError);
   }
 
-  getEvent(eventId: number): Observable<MyEvent>{
-    return null;
+  getEvent(eventId: number): Observable<ResponseGFE>{
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.get(this.eventUrl+ "/" + eventId, options)
+      .map(this.extractData)
+      .catch(this.handleError);
   }
 
   create(event: RealEvent, clientTimePeriods: EventsTimePeriod[]): Observable<ResponseCE> {

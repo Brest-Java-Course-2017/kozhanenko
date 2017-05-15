@@ -32,6 +32,9 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
 
     private static final String TIME_PERIOD_ID = "time_period_id";
     private static final String EVENT_ID = "event_id";
+    private static final String CATEGORY_ID = "category_id";
+    private static final String EVENT_NAME = "event_name";
+    private static final String EVENT_PLACE_NAME = "event_place_name";
     private static final String BEGINNING = "beginning";
     private static final String END = "end";
 
@@ -67,6 +70,9 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     @Value("${period.deleteTimePeriodsByEventId}")
     private String deleteTimePeriodsByEventSql;
 
+    @Value("${period.getAllTimePeriodsWithFullEventByEventId}")
+    private String getAllTimePeriodsWithFullEventByEventIdSql;
+
 
     @Override
     public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException {
@@ -74,6 +80,13 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
         SqlParameterSource namedParameters = new MapSqlParameterSource("p_time_period_id", timePeriodId);
         return namedParameterJdbcTemplate.queryForObject(
                 getTimePeriodByIdSql, namedParameters, new TimePeriodRowMapper());
+    }
+
+    @Override
+    public List<TimePeriod> getTimePeriodListOfCertainEventByEventId(Event event) throws DataAccessException {
+        LOGGER.debug("getTimePeriodListOfCertainEventByEventId({})", event.getEventId());
+        return jdbcTemplate.query(getAllTimePeriodsWithFullEventByEventIdSql, new String[]{Integer.toString(event.getEventId())},
+                new FullTimePeriodRowMapper());
     }
 
     @Override
@@ -159,6 +172,20 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
             return new TimePeriod(
                     resultSet.getInt(TIME_PERIOD_ID),
                     new Event(resultSet.getInt(EVENT_ID)),
+                    convertTimeFromStringToSeconds(resultSet.getString(BEGINNING)),
+                    convertTimeFromStringToSeconds(resultSet.getString(END))
+            );
+        }
+    }
+
+    private class FullTimePeriodRowMapper implements RowMapper<TimePeriod> {
+
+        @Override
+        public TimePeriod mapRow(ResultSet resultSet, int i) throws SQLException {
+            return new TimePeriod(
+                    resultSet.getInt(TIME_PERIOD_ID),
+                    new Event(resultSet.getInt(EVENT_ID), new Category(resultSet.getInt(CATEGORY_ID)),
+                            resultSet.getString(EVENT_NAME), resultSet.getString(EVENT_PLACE_NAME)),
                     convertTimeFromStringToSeconds(resultSet.getString(BEGINNING)),
                     convertTimeFromStringToSeconds(resultSet.getString(END))
             );

@@ -73,6 +73,13 @@ public class TimePeriodDaoImplTest {
     }
 
     @Test
+    public void getTimePeriodListOfCertainEventByEventId() throws Exception{
+        LOGGER.debug("test: getTimePeriodListOfCertainEventByEventId()");
+        List<TimePeriod> timePeriods = timePeriodDao.getTimePeriodListOfCertainEventByEventId(new Event(1));
+        assertTrue(timePeriods.size() > 0);
+    }
+
+    @Test
     public void getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() throws Exception {
         LOGGER.debug("test: getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() ");
         List<TimePeriod> timePeriods = timePeriodDao.

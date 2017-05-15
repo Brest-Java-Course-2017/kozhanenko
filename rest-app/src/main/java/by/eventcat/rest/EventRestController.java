@@ -53,6 +53,9 @@ public class EventRestController {
     @Value("${use_index_of_non_existing_event}")
     private String indexOfNonExistingEvent;
 
+    @Value("${use_incorrect_event_index}")
+    private String incorrectEventIndex;
+
     //curl -v localhost:8090/events
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     public @ResponseBody
@@ -74,7 +77,34 @@ public class EventRestController {
         return responseObject;
     }
 
-    //curl -H "Content-Type: application/json" -X POST -d '{ "timePeriods": [ { "timePeriodId": 0, "event": { "eventId": -1, "category": { "categoryId": 1, "categoryName": "Театр" }, "eventName": "sdfasdf", "eventPlace": "asdfasdf" }, "beginning": 1494277260584, "end": 1494709260584 } ] }' -v localhost:8090/event
+//    curl -v localhost:8090/event/1
+    @RequestMapping(value = "/event/{eventId}", method = RequestMethod.GET)
+    //@ResponseStatus(value = HttpStatus.FOUND)
+    public @ResponseBody
+    Map<String, Object> getFullEventById(@PathVariable(value = "eventId") int eventId) {
+        LOGGER.debug("getFullEventById id={}", eventId);
+
+        Map<String, Object> responseObject = new HashMap<>();
+        try{
+            responseObject.put("data", timePeriodService.getTimePeriodListOfCertainEventByEventId(new Event(eventId)));
+        } catch (ServiceException ex){
+            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INDEX)){
+                responseObject.put("errorMessage", incorrectEventIndex);
+            } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.NO_CALLING_DATA_FOUND)){
+                responseObject.put("errorMessage", dataNotFound);
+            } else {
+                responseObject.put("errorMessage", programError);
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+        }
+        return responseObject;
+    }
+
+    //curl -H "Content-Type: application/json" -X POST -d '{ "timePeriods": [ { "timePeriodId": 0, "event":
+    // { "eventId": -1, "category": { "categoryId": 1, "categoryName": "Театр" },
+    // "eventName": "sdfasdf", "eventPlace": "asdfasdf" }, "beginning": 1494277260584, "end": 1494709260584 } ] }'
+    // -v localhost:8090/event
     @RequestMapping(value = "/event", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody//returns new category id
@@ -83,9 +113,11 @@ public class EventRestController {
         LOGGER.debug("addEvent: event = {}", timePeriods.get(0).getEvent());
         Map<String, Object> responseObject = new HashMap<>();
         Event newEvent = timePeriods.get(0).getEvent();
+        int newEventId;
 
         try{
-            responseObject.put("data", eventService.addEvent(newEvent));
+            newEventId = eventService.addEvent(newEvent);
+            responseObject.put("data", newEventId);
         } catch (ServiceException ex){
             if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INPUT_DATA)){
                 responseObject.put("errorMessage", incorrectEventInputData);
@@ -103,6 +135,9 @@ public class EventRestController {
         }
 
         try{
+            for (TimePeriod timePeriod: timePeriods){
+                timePeriod.getEvent().setEventId(newEventId);
+            }
             timePeriodService.addTimePeriodList(timePeriods);
             responseObject.put("successMessage", eventSuccessfullyAdded);
         } catch (ServiceException ex){
@@ -122,6 +157,8 @@ public class EventRestController {
         }
         return responseObject;
     }
+
+
 
 
 

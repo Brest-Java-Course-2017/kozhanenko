@@ -18,7 +18,15 @@ export class DateConverterService {
   }
 
   public convertDateFromSecondsToString(dateInSeconds: number): string{
-    return null;
+    let date: Date = new Date(dateInSeconds);
+
+    let month: string = date.getMonth() + 1 > 9 ? (date.getMonth() + 1).toString() : ("0" + (date.getMonth()+1));
+    let day: string = date.getDay() + 1 > 9 ? (date.getDay() +1).toString() : ("0" + (date.getDay() + 1));
+    let hour: string = date.getHours() > 9 ? date.getHours().toString() : ("0" + date.getHours());
+    let minute: string = date.getMinutes() > 9 ? date.getMinutes().toString() : ("0" + date.getMinutes());
+
+    return date.getFullYear() + "." + month + "." + day
+      + " " + hour + ":" + minute;
   }
 
 }

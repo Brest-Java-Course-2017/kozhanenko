@@ -18,6 +18,15 @@ public interface TimePeriodDao {
     TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException;
 
     /**
+     * Get TimePeriods List of certain Event by event identifier
+     *
+     * @param event Event object
+     * @return List of TimePeriod with full Event data
+     * @throws DataAccessException
+     */
+    List<TimePeriod> getTimePeriodListOfCertainEventByEventId(Event event) throws DataAccessException;
+
+    /**
      * Get all Time Periods
      *
      * @return list of Time Periods

@@ -1,11 +1,11 @@
 <div class="row">
-<div class="col-md-3">
-  <button type="button" class="btn btn-outline-info" (click)="goBack()">Назад</button>
-</div>
-<div class="col-md-6">
-  <p class="text-success">Операция завершена успешно</p>
-  <!--<p class="text-danger">Произошла ошибка</p>-->
-</div>
+  <div class="col-md-3">
+    <button routerLink="/events" type="button" class="btn btn-outline-info">Назад</button>
+  </div>
+  <div class="col-md-9">
+    <ngb-alert *ngIf="successMessage" type="success" (close)="successMessage = null">{{ successMessage }}</ngb-alert>
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
+  </div>
 </div>
 
 <div class="row padding-top-20">
@@ -16,16 +16,17 @@
         <td>Категория:</td>
         <td>
           <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Выберите категорию</button>
-            <div class="dropdown-menu" aria-labelledby="dropdownBasic1">
-              <button class="dropdown-item">Ближайший час</button>
-              <button class="dropdown-item">Ближайшие 2 часа</button>
-              <button class="dropdown-item">Сегодня</button>
-              <button class="dropdown-item">Завтра</button>
+            <button class="btn btn-outline-primary" id="dropdownBasic"
+                    ngbDropdownToggle>{{selectedCategory.categoryName}}</button>
+            <div class="dropdown-menu" aria-labelledby="dropdownBasic">
+              <button *ngFor="let category of categories" class="dropdown-item"
+                      (click)="SetSelectedCategory(category)">{{category.categoryName}}</button>
             </div>
-          </div></td>
+          </div>
+        </td>
         <td>Наименование:</td>
-        <td><input type="email" class="form-control" id="dfs" placeholder="Имя категории" value="Классическая музыка"></td>
+        <td><input class="form-control" placeholder="Имя события" value="{{newEventName}}"
+                   (focusout)="setNewEventName($event);"></td>
       </tr>
       </tbody>
     </table>
@@ -38,7 +39,8 @@
       <tbody>
       <tr style="float: right;">
         <td>Место проведения:</td>
-        <td><input type="email" class="form-control" id="df" placeholder="Имя категории" value="Классическая музыка"></td>
+        <td><input class="form-control" placeholder="Место проведения" value="{{newEventPlaceName}}"
+                   (focusout)="setNewEventPlaceName($event);"></td>
       </tr>
       </tbody>
     </table>
@@ -49,29 +51,59 @@
   <div class="col-md-9">
     <table class="table table-sm" style="vertical-align: middle;">
       <tbody>
-      <tr>
-        <td>Дата и время начала и конца проведения события:</td>
-        <td>11.05.2017 22:35</td>
-        <td>11.05.2017 23:35</td>
-        <td><button type="button" class="btn btn-outline-danger">-</button></td>
+      <tr *ngFor="let timePeriod of timePeriods; let i = index">
+        <td><p *ngIf="i == 0">Периоды начала и конца:</p></td>
+        <td>
+          {{timePeriod.eventBeginningTimeInString}}
+          <!--{{timePeriod.eventBeginningTime}}-->
+        </td>
+        <td>
+          {{timePeriod.eventEndTimeInString}}
+          <!--{{timePeriod.eventEndTime}}-->
+        </td>
+        <td><button type="button" class="btn btn-outline-danger" (click)="removeTimePeriod(i)">-</button></td>
       </tr>
-      <tr>
+      </tbody>
+    </table>
+    <table class="table table-sm" style="vertical-align: middle;">
+      <tbody>
+      <tr style="border: 2px solid lightgrey; margin-top: 5px;">
         <td></td>
-        <td>11.05.2017 22:35</td>
-        <td>11.05.2017 23:35</td>
-        <td><button type="button" class="btn btn-outline-danger">-</button></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>11.05.2017 22:35</td>
-        <td>11.05.2017 23:35</td>
-        <td><button type="button" class="btn btn-outline-danger">-</button></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><ngb-timepicker [(ngModel)]="time"></ngb-timepicker> <ngbd-datepicker-popup></ngbd-datepicker-popup></td>
-        <td><ngb-timepicker [(ngModel)]="time"></ngb-timepicker> <ngbd-datepicker-popup></ngbd-datepicker-popup></td>
-        <td><button type="button" class="btn btn-outline-success">+</button></td>
+        <td>
+          <p>Введите начало периода события:</p>
+          <ngb-timepicker [(ngModel)]="selectedBeginningTime"></ngb-timepicker>
+          <!--{{ selectedBeginningTime | json }}-->
+          <form class="form-inline">
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="dp1" [(ngModel)]="selectedBeginningDate" ngbDatepicker #d1="ngbDatepicker">
+                <div class="input-group-addon" (click)="d1.toggle()" >
+                  <img src="../../img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                </div>
+              </div>
+            </div>
+          </form>
+          <!--{{ selectedBeginningDate | json }}-->
+        </td>
+        <td>
+          <p>Введите конец периода события:</p>
+          <ngb-timepicker [(ngModel)]="selectedEndTime"></ngb-timepicker>
+          <!--{{ selectedEndTime | json }}-->
+          <form class="form-inline">
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="dp2" [(ngModel)]="selectedEndDate" ngbDatepicker #d2="ngbDatepicker">
+                <div class="input-group-addon" (click)="d2.toggle()" >
+                  <img src="../../img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+                </div>
+              </div>
+            </div>
+          </form>
+          <!--{{ selectedEndDate | json }}-->
+        </td>
+        <td><button type="button" class="btn btn-outline-success" (click)="pushNewTimePeriod()">+</button></td>
       </tr>
       </tbody>
     </table>
@@ -80,6 +112,7 @@
 
 <div class="row">
   <div class="col-md-9">
-    <button type="button" class="btn btn-outline-success" style="float: right">Редактировать</button>
+    <button type="button" class="btn btn-outline-success" (click)="updateEvent()">Редактировать событие</button>
   </div>
 </div>
+

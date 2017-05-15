@@ -108,6 +108,35 @@ public class TimePeriodServiceImplTest {
     }
 
     @Test
+    public void getTimePeriodListOfCertainEventByEventId() throws Exception{
+        LOGGER.debug("test: getTimePeriodListOfCertainEventByEventId()");
+        List<TimePeriod> timePeriods = timePeriodService.getTimePeriodListOfCertainEventByEventId(new Event(4));
+        assertTrue(timePeriods.size() > 0);
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void getTimePeriodListOfCertainEventByEventIdIncorrectIndex() throws Exception{
+        LOGGER.debug("test: getTimePeriodListOfCertainEventByEventIdIncorrectIndex()");
+        try{
+            List<TimePeriod> timePeriods = timePeriodService.getTimePeriodListOfCertainEventByEventId(new Event(-5));
+        } catch(ServiceException ex) {
+            assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void getTimePeriodListOfCertainEventByEventIdNoDataFound() throws Exception{
+        LOGGER.debug("test: getTimePeriodListOfCertainEventByEventIdNoDataFound()");
+        try{
+           timePeriodService.getTimePeriodListOfCertainEventByEventId(new Event(99));
+        } catch(ServiceException ex) {
+            assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test
     public void getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() throws Exception {
         LOGGER.debug("test: getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime()");
         List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGINNING1, END1);

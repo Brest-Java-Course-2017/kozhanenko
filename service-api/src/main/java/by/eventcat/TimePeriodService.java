@@ -20,6 +20,15 @@ public interface TimePeriodService {
     TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException, ServiceException;
 
     /**
+     * Get TimePeriods of certain Event with full Event data
+     * @param event Event object
+     * @return list of TimePeriod object with full Event data
+     * @throws DataAccessException
+     * @throws ServiceException
+     */
+    List<TimePeriod> getTimePeriodListOfCertainEventByEventId(Event event) throws DataAccessException, ServiceException;
+
+    /**
      * Get all Time Periods
      *
      * @return list of Time Periods

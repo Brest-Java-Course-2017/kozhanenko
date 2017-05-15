@@ -45,6 +45,17 @@ public class TimePeriodServiceImpl implements TimePeriodService{
     }
 
     @Override
+    public List<TimePeriod> getTimePeriodListOfCertainEventByEventId(Event event) throws DataAccessException, ServiceException {
+        LOGGER.debug("getTimePeriodListOfCertainEventByEventId({})", event.getEventId());
+        if (event.getEventId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
+        List<TimePeriod> timePeriods = timePeriodDao.getTimePeriodListOfCertainEventByEventId(event);
+        if (timePeriods.size() == 0){
+            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
+        return timePeriods;
+    }
+
+    @Override
     public List<TimePeriod> getAllTimePeriods() throws DataAccessException, ServiceException {
         LOGGER.debug("getAllTimePeriods()");
 
