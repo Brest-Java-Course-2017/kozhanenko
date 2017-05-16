@@ -182,12 +182,23 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
 
         @Override
         public TimePeriod mapRow(ResultSet resultSet, int i) throws SQLException {
+            long beginning, end;
+            if (resultSet.getString(BEGINNING) == null){
+                beginning = 0;
+            } else {
+                beginning = convertTimeFromStringToSeconds(resultSet.getString(BEGINNING));
+            }
+            if (resultSet.getString(END) == null){
+                end = 0;
+            } else {
+                end = convertTimeFromStringToSeconds(resultSet.getString(END));
+            }
             return new TimePeriod(
                     resultSet.getInt(TIME_PERIOD_ID),
                     new Event(resultSet.getInt(EVENT_ID), new Category(resultSet.getInt(CATEGORY_ID)),
                             resultSet.getString(EVENT_NAME), resultSet.getString(EVENT_PLACE_NAME)),
-                    convertTimeFromStringToSeconds(resultSet.getString(BEGINNING)),
-                    convertTimeFromStringToSeconds(resultSet.getString(END))
+                    beginning,
+                    end
             );
         }
     }

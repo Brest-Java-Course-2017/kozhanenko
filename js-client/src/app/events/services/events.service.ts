@@ -10,6 +10,7 @@ import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {TimePeriod} from "../models/timePeriod";
 import {RealEvent} from "../models/real-event";
 import {ResponseGFE} from "../models/response-get-full-event-model";
+import {ResponseUE} from "../models/response-update-event-model";
 
 @Injectable()
 export class EventsService {
@@ -17,7 +18,7 @@ export class EventsService {
 
   private eventsUrl = 'http://localhost:8090/events';
   private eventUrl = 'http://localhost:8090/event';
-  private eventsMockUrl = 'res3.txt';
+  //private eventsMockUrl = 'res3.txt';
 
   constructor (private http: Http) {}
 
@@ -50,6 +51,21 @@ export class EventsService {
       i++;
     }
     return this.http.post(this.eventUrl, { timePeriods }, options)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  update(event: RealEvent, clientTimePeriods: EventsTimePeriod[]): Observable<ResponseUE> {
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
+    let options = new RequestOptions({ headers: headers });
+
+    let timePeriods: TimePeriod[] = new Array(clientTimePeriods.length);
+    let i = 0;
+    for (let clientTimePeriod of clientTimePeriods) {
+      timePeriods[i] = new TimePeriod(0, event, clientTimePeriod.eventBeginningTime, clientTimePeriod.eventEndTime);
+      i++;
+    }
+    return this.http.put(this.eventUrl, { timePeriods }, options)
       .map(this.extractData)
       .catch(this.handleError);
   }
