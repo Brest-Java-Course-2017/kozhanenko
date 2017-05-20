@@ -113,7 +113,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             rowsAffected = categoryDao.deleteCategory(categoryId);
         } catch (DataIntegrityViolationException ex){
-            throw new ServiceException(CustomErrorCodes.DELETING_DATA_IS_USED);
+            throw new ServiceException(CustomErrorCodes.DELETING_DATA_IS_IN_USE);
         }
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
         if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);

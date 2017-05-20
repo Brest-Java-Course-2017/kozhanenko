@@ -277,5 +277,15 @@ public class EventServiceImplTest {
         }
     }
 
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void deleteEventDataIntegrityException() throws Exception {
+        LOGGER.debug("test: deleteEventDataIntegrityException()");
 
+        try{
+            eventService.deleteEvent(1);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.DELETING_DATA_IS_IN_USE, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
 }

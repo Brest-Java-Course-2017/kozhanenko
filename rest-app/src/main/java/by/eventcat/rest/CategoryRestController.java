@@ -161,7 +161,7 @@ public class CategoryRestController {
         } catch (ServiceException ex){
             if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INDEX)){
                 responseObject.put("errorMessage", programError);
-            } else if(ex.getCustomErrorCode().equals(CustomErrorCodes.DELETING_DATA_IS_USED)){
+            } else if(ex.getCustomErrorCode().equals(CustomErrorCodes.DELETING_DATA_IS_IN_USE)){
                 responseObject.put("errorMessage", dataIsInUseError);
             } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.NO_ACTIONS_MADE)){
                 responseObject.put("errorMessage", noActionsMade);

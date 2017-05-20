@@ -50,11 +50,35 @@ public class EventRestController {
     @Value("${incorrect_time_period_data}")
     private String incorrectTimePeriodInputData;
 
+    @Value("${incorrect_time_period_data_deleting}")
+    private String incorrectTimePeriodInputDataWhenDeleting;
+
     @Value("${use_index_of_non_existing_event}")
     private String indexOfNonExistingEvent;
 
     @Value("${use_incorrect_event_index}")
     private String incorrectEventIndex;
+
+    @Value("${no_actions_made}")
+    private String noActionsMade;
+
+    @Value("${time_periods_not_added}")
+    private String timePeriodsNotAdded;
+
+    @Value("${event_successfully_updated}")
+    private String eventSuccessfullyUpdated;
+
+    @Value("${event_not_deleted}")
+    private String noActionsMadeWhenDeletingEvent;
+
+    @Value("${event_fully_deleted}")
+    private String eventSuccessfullyDeleted;
+
+    @Value("${time_periods_not_deleted}")
+    private String timePeriodsNotDeleted;
+
+    @Value("${event_to_delete_in_use}")
+    private String deletingEventIsInUse;
 
     //curl -v localhost:8090/events
     @RequestMapping(value = "/events", method = RequestMethod.GET)
@@ -141,7 +165,7 @@ public class EventRestController {
             timePeriodService.addTimePeriodList(timePeriods);
             responseObject.put("successMessage", eventSuccessfullyAdded);
         } catch (ServiceException ex){
-            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INPUT_DATA)){
+            if (CustomErrorCodes.INCORRECT_INPUT_DATA.equals(ex.getCustomErrorCode())){
                 responseObject.put("errorMessage", incorrectTimePeriodInputData);
                 return responseObject;
             } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_EVENT)){
@@ -158,7 +182,124 @@ public class EventRestController {
         return responseObject;
     }
 
+    //curl -X PUT -H "Content-Type: application/json" -d '{ "timePeriods": [ { "timePeriodId": 0, "event":
+    // { "eventId": 6, "category": { "categoryId": 5, "categoryName": "Музеи" }, "eventName": "\"Камни Беларуси\"",
+    // "eventPlace": "\"Краеведческий музей\"" }, "beginning": 1494536460231, "end": 1494709260231 } ] }'
+    // localhost:8090/event/4
+    @RequestMapping(value = "/event/{eventId}", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.OK)
+    public @ResponseBody
+    Map<String, Object> updateEvent(@PathVariable(value = "eventId") int eventId,
+                                    @RequestBody Map<String, List<TimePeriod>> requestBody) {
+        LOGGER.debug("updateEvent id={}", eventId);
+        List<TimePeriod> timePeriods = requestBody.get("timePeriods");
+        Event updatingEvent = timePeriods.get(0).getEvent();
+        Map<String, Object> responseObject = new HashMap<>();
 
+        try{
+            eventService.updateEvent(updatingEvent);
+        } catch (ServiceException ex){
+            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INDEX)){
+                responseObject.put("errorMessage", incorrectEventIndex);
+                return responseObject;
+            } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INPUT_DATA)){
+                responseObject.put("errorMessage", incorrectEventInputData);
+                return responseObject;
+            } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.NO_ACTIONS_MADE)){
+                responseObject.put("errorMessage", noActionsMade);
+                return responseObject;
+            } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.ACTIONS_ERROR)){
+                responseObject.put("errorMessage", programError);
+                return responseObject;
+            } else {
+                responseObject.put("errorMessage", programError);
+                return responseObject;
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+            return responseObject;
+        }
+
+        try{
+            timePeriodService.deleteTimePeriodsByEventId(updatingEvent);
+        } catch (ServiceException ex) {
+            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INDEX)) {
+                responseObject.put("errorMessage", incorrectTimePeriodInputData);
+                return responseObject;
+            } else if ( ! ex.getCustomErrorCode().equals(CustomErrorCodes.NO_ACTIONS_MADE)) {
+                responseObject.put("errorMessage", programError);
+                return responseObject;
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+            return responseObject;
+        }
+
+        try{
+            timePeriodService.addTimePeriodList(timePeriods);
+            responseObject.put("successMessage", eventSuccessfullyUpdated);
+        } catch (ServiceException ex){
+            if (CustomErrorCodes.INPUT_INDEX_OF_NON_EXISTING_EVENT.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", indexOfNonExistingEvent);
+            } else if (CustomErrorCodes.INCORRECT_INPUT_DATA.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", incorrectTimePeriodInputData);
+            }   else {
+                responseObject.put("errorMessage", programError);
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+        }
+        return responseObject;
+    }
+
+    //curl -X DELETE localhost:8090/event/1
+    @RequestMapping(value = "/event/{eventId}", method = RequestMethod.DELETE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public @ResponseBody
+    Map<String, Object> deleteEventById(@PathVariable(value = "eventId") int eventId) {
+        LOGGER.debug("deleteEventById id={}", eventId);
+        Map<String, Object> responseObject = new HashMap<>();
+
+        try{
+            timePeriodService.deleteTimePeriodsByEventId(new Event(eventId));
+        } catch (ServiceException ex){
+            if (CustomErrorCodes.INCORRECT_INDEX.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", incorrectTimePeriodInputDataWhenDeleting);
+                return responseObject;
+            } else if( ! CustomErrorCodes.NO_ACTIONS_MADE.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", programError);
+                return responseObject;
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+            return responseObject;
+        }
+
+        try{
+            eventService.deleteEvent(eventId);
+            responseObject.put("successMessage", eventSuccessfullyDeleted);
+        } catch (ServiceException ex){
+            if (CustomErrorCodes.INCORRECT_INDEX.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", incorrectEventIndex);
+                return responseObject;
+            } else if(CustomErrorCodes.DELETING_DATA_IS_IN_USE.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", deletingEventIsInUse);
+                return responseObject;
+            } else if(CustomErrorCodes.NO_ACTIONS_MADE.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", noActionsMadeWhenDeletingEvent);
+                return responseObject;
+            } else if (CustomErrorCodes.ACTIONS_ERROR.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", programError);
+                return responseObject;
+            } else {
+                responseObject.put("errorMessage", programError);
+                return responseObject;
+            }
+        } catch (DataAccessException ex){
+            return responseObject;
+        }
+        return responseObject;
+    }
 
 
 

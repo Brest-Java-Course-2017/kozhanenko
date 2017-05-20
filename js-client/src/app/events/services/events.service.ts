@@ -10,7 +10,7 @@ import {EventsTimePeriod} from "../models/eventsTimePeriod";
 import {TimePeriod} from "../models/timePeriod";
 import {RealEvent} from "../models/real-event";
 import {ResponseGFE} from "../models/response-get-full-event-model";
-import {ResponseUE} from "../models/response-update-event-model";
+import {ResponseUDE} from "../models/response-update-delete-event-model";
 
 @Injectable()
 export class EventsService {
@@ -55,7 +55,7 @@ export class EventsService {
       .catch(this.handleError);
   }
 
-  update(event: RealEvent, clientTimePeriods: EventsTimePeriod[]): Observable<ResponseUE> {
+  update(event: RealEvent, clientTimePeriods: EventsTimePeriod[]): Observable<ResponseUDE> {
     let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
     let options = new RequestOptions({ headers: headers });
 
@@ -65,7 +65,17 @@ export class EventsService {
       timePeriods[i] = new TimePeriod(0, event, clientTimePeriod.eventBeginningTime, clientTimePeriod.eventEndTime);
       i++;
     }
-    return this.http.put(this.eventUrl, { timePeriods }, options)
+    return this.http.put(this.eventUrl+ "/" + event.eventId, { timePeriods }, options)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  deleteEvent(eventId: string): Observable<ResponseUDE>{
+    let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*'  });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http
+      .delete(this.eventUrl + "/" + eventId, options)
       .map(this.extractData)
       .catch(this.handleError);
   }
@@ -90,6 +100,7 @@ export class EventsService {
     console.error(errMsg);
     return Observable.throw(errMsg);
   }
+
 
 
 }

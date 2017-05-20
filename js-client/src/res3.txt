@@ -1,1 +1,1 @@
-{"data":[{"timePeriodId":4,"event":{"eventId":1,"category":{"categoryId":1,"categoryName":null},"eventName":"Премьера \"Весёлый вдовец\"","eventPlace":"«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»"},"beginning":1489474800,"end":1489395600}]}a
+{"data":[{"timePeriodId":4,"event":{"eventId":1,"category":{"categoryId":1,"categoryName":null},"eventName":"Премьера \"Весёлый вдовец\"","eventPlace":"«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»"},"beginning":1489474800,"end":1489395600}]}

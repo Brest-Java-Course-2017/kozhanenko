@@ -23,7 +23,7 @@ export class CategoriesComponent implements OnInit{
   private categoryNameToDelete: string;
 
   constructor (private categoryService: CategoryService, private modalService: NgbModal) {}
-  //TODO: make modal window as new component
+
   ngOnInit() {
     this.getCategories();
     this._success.subscribe((message) => this.successMessage = message);

@@ -117,7 +117,12 @@ public class EventServiceImpl implements EventService{
         LOGGER.debug("delete event with eventId = {}", eventId);
 
         if (eventId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        int rowsAffected = eventDao.deleteEvent(eventId);
+        int rowsAffected;
+        try{
+            rowsAffected = eventDao.deleteEvent(eventId);
+        } catch (DataIntegrityViolationException ex){
+            throw new ServiceException(CustomErrorCodes.DELETING_DATA_IS_IN_USE);
+        }
         if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
         if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
         return rowsAffected;

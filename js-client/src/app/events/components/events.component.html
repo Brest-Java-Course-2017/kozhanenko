@@ -13,7 +13,7 @@
         <td class="central">{{event.eventName}}</td>
         <td class="central">{{event.eventPlace}}</td>
         <td><a><button routerLink="/event/{{event.eventId}}" type="button" class="btn btn-outline-warning">Редактировать</button></a></td>
-        <td><button type="button" class="btn btn-outline-danger" (click)="deleteEvent(event.eventId)">Удалить</button></td>
+        <td><button type="button" class="btn btn-outline-danger" (click)="setEventToDelete(event.eventId, event.eventName); open(content);">Удалить</button></td>
       </tr>
       </tbody>
     </table>
@@ -32,3 +32,19 @@
     </table>
   </div>
 </div>
+
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title ">Внимание!!!</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Вы действительно хотите удалить событие "{{eventNameToDelete}}"?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="c('Close click'); deleteEvent();">Удалить</button>
+    <button type="button" class="btn btn-outline-info" (click)="c('Close click')">Отмена</button>
+  </div>
+</ng-template>

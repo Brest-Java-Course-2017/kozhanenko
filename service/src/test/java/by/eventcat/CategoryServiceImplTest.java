@@ -257,7 +257,7 @@ public class CategoryServiceImplTest {
         try{
             categoryService.deleteCategory(1);
         } catch (ServiceException ex){
-            assertEquals(CustomErrorCodes.DELETING_DATA_IS_USED, ex.getCustomErrorCode());
+            assertEquals(CustomErrorCodes.DELETING_DATA_IS_IN_USE, ex.getCustomErrorCode());
             throw ex;
         }
     }
