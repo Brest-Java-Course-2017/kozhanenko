@@ -117,9 +117,13 @@ export class EventAddingComponent implements OnInit{
           this.errorMessage = res.errorMessage;
           if (this.successMessage){
             this.selectedCategory = this.INITIAL_SELECTION;
-            this.newEventName= "";
+            this.newEventName = "";
             this.newEventPlaceName= "";
             this.timePeriods = [];
+            this.selectedBeginningTime = null;
+            this.selectedBeginningDate = null;
+            this.selectedEndTime = null;
+            this.selectedEndDate = null;
           }
         },
         error =>  this.errorMessage = <any>error);

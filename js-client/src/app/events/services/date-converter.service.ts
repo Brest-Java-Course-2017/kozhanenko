@@ -1,12 +1,16 @@
+import { DatePipe } from '@angular/common';
+
 import {Injectable} from "@angular/core";
 
 @Injectable()
 export class DateConverterService {
 
+  constructor(private datePipe: DatePipe){}
+
   public convertDateFromMapToSeconds(fullYear: any, time: any): number {
     //fullYear.month - in human format
     let date1: number = new Date().setFullYear(fullYear.year, fullYear.month - 1, fullYear.day);
-    return new Date(date1).setHours(time.hour, time.minute, 0);
+    return (new Date(date1).setHours(time.hour, time.minute, 0))/1000;
   }
 
   public convertDateFromMapToString(fullYear: any, time: any): string {
@@ -17,16 +21,7 @@ export class DateConverterService {
     return fullYear.year + "." + month + "." + day + " " + hour + ":" + minute;
   }
 
-  public convertDateFromSecondsToString(dateInSeconds: number): string{
-    let date: Date = new Date(dateInSeconds);
-
-    let month: string = date.getMonth() + 1 > 9 ? (date.getMonth() + 1).toString() : ("0" + (date.getMonth()+1));
-    let day: string = date.getDay() + 1 > 9 ? (date.getDay() +1).toString() : ("0" + (date.getDay() + 1));
-    let hour: string = date.getHours() > 9 ? date.getHours().toString() : ("0" + date.getHours());
-    let minute: string = date.getMinutes() > 9 ? date.getMinutes().toString() : ("0" + date.getMinutes());
-
-    return date.getFullYear() + "." + month + "." + day
-      + " " + hour + ":" + minute;
+  public convertDateFromSecondsToString(dateInSeconds: number): string {
+    return this.datePipe.transform(new Date(dateInSeconds * 1000), 'yyyy.MM.dd HH:mm');
   }
-
 }

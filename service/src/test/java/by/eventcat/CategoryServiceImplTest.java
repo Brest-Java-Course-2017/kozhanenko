@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static by.eventcat.TimeConverter.convertTimeFromStringToSeconds;
 import static org.junit.Assert.*;
 
 /**
@@ -33,6 +34,11 @@ public class CategoryServiceImplTest {
     private static final String INCORRECT_CATEGORY_NAME_2 = "Некорректное имя";
     private static final Category CATEGORY = new Category("Барды");
     private static final Category DUPLICATE_CATEGORY = new Category(CATEGORY_NAME_1);
+    private static final String BEGIN_TIME = "2017-03-01 00:00:00";
+    private static final String END_TIME ="2017-04-01 00:00:00";
+    private static final String BEGIN_TIME1 = "2099-03-01 00:00:00";
+    private static final String END_TIME1 ="2099-04-01 00:00:00";
+
 
     @Test
     public void getAllCategories() throws Exception {
@@ -98,6 +104,44 @@ public class CategoryServiceImplTest {
             categoryService.getCategoryByCategoryName(INCORRECT_CATEGORY_NAME_2);
         } catch (ServiceException ex){
             assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test
+    public void getEventsCountForCertainTimeIntervalGroupByCategory() throws Exception {
+        LOGGER.debug("test: getEventsCountForCertainTimeIntervalGroupByCategory()");
+
+        List<CategoryWithCount> categoriesWithCount = categoryService.getEventsCountForCertainTimeIntervalGroupByCategory(
+                convertTimeFromStringToSeconds(BEGIN_TIME),
+                convertTimeFromStringToSeconds(END_TIME)
+        );
+        assertTrue(categoriesWithCount.size() > 0);
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void getEventsCountForCertainTimeIntervalGroupByCategoryNoDataFound() throws Exception {
+        LOGGER.debug("test: getEventsCountForCertainTimeIntervalGroupByCategoryNoDataFound()");
+
+        try{
+            categoryService.getEventsCountForCertainTimeIntervalGroupByCategory(
+                    convertTimeFromStringToSeconds(BEGIN_TIME1),
+                    convertTimeFromStringToSeconds(END_TIME1)
+            );
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public void getEventsCountForCertainTimeIntervalGroupByCategoryIncorrectInputData() throws Exception {
+        LOGGER.debug("test: getEventsCountForCertainTimeIntervalGroupByCategoryIncorrectInputData()");
+
+        try{
+            categoryService.getEventsCountForCertainTimeIntervalGroupByCategory(0, -4532452343563456L);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
             throw ex;
         }
     }

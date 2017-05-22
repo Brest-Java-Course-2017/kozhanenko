@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static by.eventcat.TimeConverter.*;
+
 /**
  * Category Dao Implementation
  */
@@ -31,6 +33,7 @@ public class CategoryDaoImpl implements CategoryDao{
 
     private static final String CATEGORY_ID = "category_id";
     private static final String CATEGORY_NAME = "category_name";
+    private static final String TOTAL_EVENTS = "total_events";
 
     @Value("${category.selectAll}")
     String getAllCategoriesSQL;
@@ -50,6 +53,8 @@ public class CategoryDaoImpl implements CategoryDao{
     @Value("${category.deleteCategory}")
     String deleteCategorySql;
 
+    @Value("${category.getCategoriesWithEventCount}")
+    String getCategoriesWithEventCount;
 
     CategoryDaoImpl(DataSource dataSource){
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -80,6 +85,14 @@ public class CategoryDaoImpl implements CategoryDao{
     }
 
     @Override
+    public List<CategoryWithCount> getEventsCountForCertainTimeIntervalGroupByCategory
+            (long beginOfInterval, long endOfInterval) throws DataAccessException {
+        LOGGER.debug("getEventsCountForCertainTimeIntervalGroupByCategory()");
+        return jdbcTemplate.query(getCategoriesWithEventCount, new String[]{convertTimeFromSecondsToString(beginOfInterval),
+                convertTimeFromSecondsToString(endOfInterval)}, new CategoryWithCountRowMapper());
+    }
+
+    @Override
     public Integer addCategory(Category category) throws DataAccessException {
         LOGGER.debug("addCategory(category): name = {}", category.getCategoryName());
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -107,12 +120,21 @@ public class CategoryDaoImpl implements CategoryDao{
     }
 
     private class CategoryRowMapper implements RowMapper<Category> {
-
         @Override
         public Category mapRow(ResultSet resultSet, int i) throws SQLException {
             return new Category(
                     resultSet.getInt(CATEGORY_ID),
                     resultSet.getString(CATEGORY_NAME));
+        }
+    }
+
+    private class CategoryWithCountRowMapper implements RowMapper<CategoryWithCount> {
+        @Override
+        public CategoryWithCount mapRow(ResultSet resultSet, int i) throws SQLException {
+            return new CategoryWithCount(
+                    new Category(resultSet.getInt(CATEGORY_ID), resultSet.getString(CATEGORY_NAME)),
+                    resultSet.getInt(TOTAL_EVENTS)
+                    );
         }
     }
 }

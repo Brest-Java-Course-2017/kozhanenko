@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static by.eventcat.TimeConverter.*;
 
 /**
  * Tests for CategoryDaoImpl
@@ -27,6 +28,8 @@ public class CategoryDaoImplTest {
     private CategoryDao categoryDao;
 
     private static final String CATEGORY_NAME_1 = "Театр";
+    private static final String BEGIN_TIME = "2017-03-01 00:00:00";
+    private static final String END_TIME ="2017-04-01 00:00:00";
 
     // sample category object for tests.
     private static final Category category = new Category("Барды");
@@ -52,6 +55,16 @@ public class CategoryDaoImplTest {
         Category category = categoryDao.getCategoryByCategoryName(CATEGORY_NAME_1);
         assertNotNull(category);
         assertEquals(CATEGORY_NAME_1, category.getCategoryName());
+    }
+
+    @Test
+    public void getEventsCountForCertainTimeIntervalGroupByCategory() throws Exception{
+        LOGGER.debug("test: getEventsCountForCertainTimeIntervalGroupByCategory()");
+        List<CategoryWithCount> categoriesWithCount = categoryDao.getEventsCountForCertainTimeIntervalGroupByCategory(
+                convertTimeFromStringToSeconds(BEGIN_TIME),
+                convertTimeFromStringToSeconds(END_TIME)
+        );
+        assertTrue(categoriesWithCount.size() > 0);
     }
 
     @Test

@@ -25,7 +25,7 @@
           </div>
         </td>
         <td>Наименование:</td>
-        <td><input class="form-control" placeholder="Имя события"
+        <td><input class="form-control" placeholder="Имя события" value="{{newEventName}}"
                    (focusout)="setNewEventName($event);"></td>
       </tr>
       </tbody>
@@ -39,7 +39,7 @@
       <tbody>
       <tr style="float: right;">
         <td>Место проведения:</td>
-        <td><input class="form-control" placeholder="Место проведения"
+        <td><input class="form-control" placeholder="Место проведения" value="{{newEventPlaceName}}"
                    (focusout)="setNewEventPlaceName($event);"></td>
       </tr>
       </tbody>

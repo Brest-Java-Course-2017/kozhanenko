@@ -70,6 +70,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<CategoryWithCount> getEventsCountForCertainTimeIntervalGroupByCategory(
+            long beginOfInterval, long endOfInterval) throws DataAccessException, ServiceException {
+        LOGGER.debug("getEventsCountForCertainTimeIntervalGroupByCategory()");
+
+        if (beginOfInterval <= 0 || endOfInterval <= 0){
+            throw new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
+        }
+        List<CategoryWithCount> categoriesWithCount = categoryDao.getEventsCountForCertainTimeIntervalGroupByCategory(
+                beginOfInterval, endOfInterval);
+        if (categoriesWithCount.size() == 0 ){
+            throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
+        return categoriesWithCount;
+    }
+
+    @Override
     public Integer addCategory(Category category) throws DataAccessException, ServiceException {
         LOGGER.debug("addCategory(category): name = {}", category.getCategoryName());
 

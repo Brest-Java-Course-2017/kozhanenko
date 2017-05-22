@@ -12,12 +12,14 @@ import { AppComponent }  from './app.component';
 import { EventsComponent } from './events/components/events.component';
 import { EventAddingComponent } from './events/components/event-adding.component';
 import { EventUpdatingComponent } from './events/components/event-updating.component';
-import { ResultsComponent } from './results/results.component'
+import { ResultsComponent } from './results/components/results.component'
 import { NgbdDatepickerPopup } from './common-components/datepicker-popup';
 
 
 //import { CategoryService } from './categories/category.service';
 import { EventsService } from './events/services/events.service';
+import {DatePipe} from "@angular/common";
+import {ResultsModule} from "./results/results.module";
 
 @NgModule({
   imports:      [
@@ -29,7 +31,8 @@ import { EventsService } from './events/services/events.service';
     HttpModule,
     JsonpModule,
     CategoriesModule,
-    MyEventsModule
+    MyEventsModule,
+    ResultsModule
   ],
   declarations: [
     AppComponent,
@@ -40,7 +43,7 @@ import { EventsService } from './events/services/events.service';
     ResultsComponent,
     NgbdDatepickerPopup,
   ],
-  providers: [ ], //EventsService ],//CategoryService ],
+  providers: [ DatePipe ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

@@ -55,6 +55,12 @@ public class CategoryRestController {
     @Value("${data_is_in_use_error}")
     private String dataIsInUseError;
 
+    @Value("${bad_input_interval_data}")
+    private String badInputIntervalData;
+
+    @Value("${no_data_about_events_in_interval}")
+    private String noDataAboutEventsInIntervalFound;
+
     //curl -v localhost:8090/categories
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     public @ResponseBody
@@ -76,18 +82,30 @@ public class CategoryRestController {
         return responseObject;
     }
 
-    //curl -v localhost:8090/category/1
-//    @RequestMapping(value = "/category/{categoryId}", method = RequestMethod.GET)
-//    @ResponseStatus(value = HttpStatus.FOUND)
-//    public @ResponseBody
-//    Category getCategoryById(@PathVariable(value = "categoryId") int categoryId) {
-//        LOGGER.debug("getCategoryById id={}", categoryId);
-//        try{
-//            return categoryService.getCategoryById(categoryId);
-//        } catch (ServiceException ex){
-//            return null;
-//        }
-//    }
+//    curl -v localhost:8090/categories/9999999999/99999999999
+    @RequestMapping(value = "/categories/{beginning}/{end}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.FOUND)
+    public @ResponseBody
+    Map<String, Object> getCategoriesCount(@PathVariable(value = "beginning") int beginning,
+                                           @PathVariable(value = "end") int end) {
+        LOGGER.debug("getCategoriesCount beginning={} end={}", beginning, end);
+
+        responseObject = new HashMap<>();
+        try{
+            responseObject.put("data", categoryService.getEventsCountForCertainTimeIntervalGroupByCategory(beginning, end));
+        } catch (ServiceException ex){
+            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INPUT_DATA)){
+                responseObject.put("errorMessage", badInputIntervalData);
+            } else if (ex.getCustomErrorCode().equals(CustomErrorCodes.NO_CALLING_DATA_FOUND)){
+                responseObject.put("errorMessage", noDataAboutEventsInIntervalFound);
+            } else {
+                responseObject.put("errorMessage", programError);
+            }
+        }catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+        }
+        return responseObject;
+    }
 
 
     //curl -H "Content-Type: application/json" -X POST -d '{"categoryName":"Дискотека"}' -v localhost:8090/category
