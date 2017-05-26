@@ -12,34 +12,41 @@ import 'rxjs/add/operator/debounceTime';
 export class ResultsComponent{
 
   private currentTime: Date;
-  private dropdownIntervalsNames: Map<string, string>;// = new Map();
-  selectedBeginning: string = "Ближайший час";
+  private dropdownIntervalsNames: string[] = ["Ближайший час", "Ближайшие 2 часа", "Сегодня", "Завтра"];
+  selectedInterval: string = "Ближайший час";
   selectedEventsDate: any = null;
   categoriesWithCount: CategoryWithCounts[] = [];
   private _error = new Subject<string>();
   errorMessage: string;
+  total: number;
+  beginningOfPeriod: number;
+  endOfPeriod: number;
+
+  date: any;
 
   constructor(private resultsService: ResultsService,
               private converterService: ConverterService) {}
 
   ngOnInit() {
-    // this.dropdownIntervalsNames.set("nextHour", "Ближайший час");
-    // this.dropdownIntervalsNames.set("nextTwoHours", "Ближайшие 2 часа");
-    // this.dropdownIntervalsNames.set("today", "Сегодня");
-    // this.dropdownIntervalsNames.set("tomorrow", "Завтра");
     this._error.subscribe((message) => this.errorMessage = message);
+    let intervalPoints: number[] = this.converterService
+      .getBeginningAndEndOfInterval(new Date(), 0);
+    this.getCategoriesWithCountListAccordingToDropdown(intervalPoints[0], intervalPoints[1]);
   }
 
-  SetSelectedInterval(selectedDropdownInterval: string){
-
-    this.selectedBeginning = this.dropdownIntervalsNames.get(selectedDropdownInterval);
-
+  SetSelectedInterval(selectedDropdownInterval: number){
+    this.selectedInterval = this.dropdownIntervalsNames[+selectedDropdownInterval];
     this.currentTime = new Date();
-
     let intervalPoints: number[] = this.converterService
       .getBeginningAndEndOfInterval(this.currentTime, selectedDropdownInterval);
-
     this.getCategoriesWithCountListAccordingToDropdown(intervalPoints[0], intervalPoints[1]);
+    this.selectedEventsDate = null;
+  }
+
+  SetSelectedIntervalForDate(){
+    let intervalPoints: number[] = this.converterService.getIntervalForCertainDate(this.selectedEventsDate);
+    this.getCategoriesWithCountListAccordingToDropdown(intervalPoints[0], intervalPoints[1]);
+    this.selectedInterval = "Выберите период";
   }
 
   private getCategoriesWithCountListAccordingToDropdown(beginningOfPeriod: number, endOfPeriod: number){
@@ -48,7 +55,16 @@ export class ResultsComponent{
           res => {
             this.categoriesWithCount = res.data;
             this.errorMessage = res.errorMessage;
+            let total: number = 0;
+            if (this.categoriesWithCount){
+              for (let categoryWithCount of this.categoriesWithCount) {
+                total += categoryWithCount.countEventsOfCategory;
+              }
+            }
+            this.total = total;
+            this.beginningOfPeriod = beginningOfPeriod;
+            this.endOfPeriod = endOfPeriod;
           },
           error =>  this.errorMessage = <any>error);
-    }
+  }
 }

@@ -7,12 +7,12 @@
   <div class="col-md-3">
     <div ngbDropdown class="d-inline-block">
       <button class="btn btn-outline-primary" id="dropdownBasic"
-              ngbDropdownToggle>{{selectedBeginning}}</button>
+              ngbDropdownToggle>{{selectedInterval}}</button>
       <div class="dropdown-menu" aria-labelledby="dropdownBasic">
-        <button class="dropdown-item" (click)="SetSelectedBeginning('nextHour')">Ближайший час</button>
-        <button class="dropdown-item"(click)="SetSelectedBeginning('nextTwoHours')">Ближайшие 2 часа</button>
-        <button class="dropdown-item" (click)="SetSelectedBeginning('today')">Сегодня</button>
-        <button class="dropdown-item" (click)="SetSelectedBeginning('tomorrow')">Завтра</button>
+        <button class="dropdown-item" (click)="SetSelectedInterval(0)">Ближайший час</button>
+        <button class="dropdown-item"(click)="SetSelectedInterval(1)">Ближайшие 2 часа</button>
+        <button class="dropdown-item" (click)="SetSelectedInterval(2)">Сегодня</button>
+        <button class="dropdown-item" (click)="SetSelectedInterval(3)">Завтра</button>
       </div>
     </div>
   </div>
@@ -24,7 +24,8 @@
       <div class="form-group">
         <div class="input-group">
           <input class="form-control" placeholder="yyyy-mm-dd"
-                 name="dp2" [(ngModel)]="selectedEventsDate" ngbDatepicker #d2="ngbDatepicker">
+                 name="dp2" [(ngModel)]="selectedEventsDate" ngbDatepicker #d2="ngbDatepicker"
+                 (ngModelChange)="SetSelectedIntervalForDate()">
           <div class="input-group-addon" (click)="d2.toggle()" >
             <img src="../../img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
           </div>
@@ -38,10 +39,13 @@
 <div class="row padding-top-20">
   <div class="col-md-10">
     <ul class="list-group">
-      <li *ngFor="let categoryWithCount of categoriesWithCount" class="list-group-item justify-content-between">
-        {{categoryWithCount.category.categoryName}}
-        <span class="badge badge-default badge-pill">{{categoryWithCount.count}}</span>
-      </li>
+      <a routerLink="/results/{{categoryWithCount.category.categoryId}}/{{beginningOfPeriod}}/{{endOfPeriod}}"
+         *ngFor="let categoryWithCount of categoriesWithCount">
+        <li  class="list-group-item justify-content-between">
+          {{categoryWithCount.category.categoryName}}
+          <span class="badge badge-default badge-pill">{{categoryWithCount.countEventsOfCategory}}</span>
+        </li>
+      </a>
     </ul>
   </div>
 </div>
@@ -49,9 +53,9 @@
 <div class="row padding-top-20">
   <div class="col-md-2">
     <ul class="list-group">
-      <li class="list-group-item justify-content-between">
+      <li *ngIf = "total > 0" class="list-group-item justify-content-between">
         Всего:
-        <span class="badge badge-default badge-pill">17</span>
+        <span class="badge badge-default badge-pill">{{total}}</span>
       </li>
     </ul>
   </div>

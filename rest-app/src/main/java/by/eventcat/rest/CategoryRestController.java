@@ -84,7 +84,7 @@ public class CategoryRestController {
 
 //    curl -v localhost:8090/categories/9999999999/99999999999
     @RequestMapping(value = "/categories/{beginning}/{end}", method = RequestMethod.GET)
-    @ResponseStatus(value = HttpStatus.FOUND)
+    @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
     Map<String, Object> getCategoriesCount(@PathVariable(value = "beginning") int beginning,
                                            @PathVariable(value = "end") int end) {
