@@ -34,6 +34,7 @@ public class TimePeriodServiceImplTest {
     private static final String END1 = "2017-03-14 18:16:00";
     private static final String BEGINNING2 = "2016-03-14 00:00:00";
     private static final String END2 = "2016-03-14 18:16:00";
+    private static final String END3 = "2017-12-31 00:00:00";
     private static final String WRONG_BEGINNING = "2017-03-13 22:49";
     private static final String WRONG_BEGINNING1 = "2017-99-13 22:49:00";
     private static final TimePeriod TIME_PERIOD_CONST = new TimePeriod(new Event(1),
@@ -181,6 +182,47 @@ public class TimePeriodServiceImplTest {
         LOGGER.debug("test: getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTimeWrongBeginning()");
         try{
             timePeriodService.getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGINNING2, END2);
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test
+    public  void  getAllTimePeriodsOfCertainCategoryInTimeInterval() throws Exception{
+        LOGGER.debug("test: getAllTimePeriodsOfCertainCategoryInTimeInterval()");
+        List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
+                new Category(2),
+                convertTimeFromStringToSeconds(BEGINNING2),
+                convertTimeFromStringToSeconds(END3)
+        );
+        assertTrue(timePeriods.size() > 0);
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public  void  getAllTimePeriodsOfCertainCategoryInTimeIntervalWrongInputData() throws Exception{
+        LOGGER.debug("test: getAllTimePeriodsOfCertainCategoryInTimeIntervalWrongInputData()");
+        try{
+            List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
+                    new Category(2),
+                    0,
+                    convertTimeFromStringToSeconds(END3)
+            );
+        } catch (ServiceException ex){
+            assertEquals(CustomErrorCodes.INCORRECT_INPUT_DATA, ex.getCustomErrorCode());
+            throw ex;
+        }
+    }
+
+    @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
+    public  void  getAllTimePeriodsOfCertainCategoryInTimeIntervalNoDataFound() throws Exception{
+        LOGGER.debug("test: getAllTimePeriodsOfCertainCategoryInTimeIntervalNoDataFound()");
+        try{
+            List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
+                    new Category(999),
+                    convertTimeFromStringToSeconds(BEGINNING2),
+                    convertTimeFromStringToSeconds(END3)
+            );
         } catch (ServiceException ex){
             assertEquals(CustomErrorCodes.NO_CALLING_DATA_FOUND, ex.getCustomErrorCode());
             throw ex;

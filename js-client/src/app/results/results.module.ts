@@ -22,6 +22,7 @@ import {ConverterService} from "./services/converter.service";
   ],
   declarations: [
     //ResultsComponent,
+    //EventsOfCategoryInIntervalComponent
   ],
   providers: [
     ConverterService,

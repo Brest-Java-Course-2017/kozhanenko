@@ -1,9 +1,6 @@
 package by.eventcat.rest;
 
-import by.eventcat.Event;
-import by.eventcat.EventService;
-import by.eventcat.TimePeriod;
-import by.eventcat.TimePeriodService;
+import by.eventcat.*;
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
@@ -80,6 +77,10 @@ public class EventRestController {
     @Value("${event_to_delete_in_use}")
     private String deletingEventIsInUse;
 
+    @Value("${incorrect_category_or_interval}")
+    private String incorrectCategoryOrInterval;
+
+
     //curl -v localhost:8090/events
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     public @ResponseBody
@@ -101,9 +102,38 @@ public class EventRestController {
         return responseObject;
     }
 
+    //curl -v localhost:8090/events/1/1489438800/1489525199
+    @RequestMapping(value = "/events/{categoryId}/{beginOfInterval}/{endOfInterval}", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> getEventsOfCertainCategoryOfInterval(
+            @PathVariable(value = "categoryId") int categoryId,
+            @PathVariable(value = "beginOfInterval") int beginOfInterval,
+            @PathVariable(value = "endOfInterval") int endOfInterval
+            ) {
+        LOGGER.debug("getEventsOfCertainCategoryOfInterval()");
+        Map<String, Object> responseObject = new HashMap<>();
+
+        try{
+            responseObject.put("data", timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
+                    new Category(categoryId), beginOfInterval, endOfInterval
+            ));
+        } catch (ServiceException ex){
+            if (ex.getCustomErrorCode().equals(CustomErrorCodes.INCORRECT_INPUT_DATA)){
+                responseObject.put("errorMessage", incorrectCategoryOrInterval);
+            } else if (CustomErrorCodes.NO_CALLING_DATA_FOUND.equals(ex.getCustomErrorCode())){
+                responseObject.put("errorMessage", dataNotFound);
+            } else {
+                responseObject.put("errorMessage", programError);
+            }
+        } catch (DataAccessException ex){
+            responseObject.put("errorMessage", programError);
+        }
+        return responseObject;
+    }
+
 //    curl -v localhost:8090/event/1
     @RequestMapping(value = "/event/{eventId}", method = RequestMethod.GET)
-    //@ResponseStatus(value = HttpStatus.FOUND)
+    @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
     Map<String, Object> getFullEventById(@PathVariable(value = "eventId") int eventId) {
         LOGGER.debug("getFullEventById id={}", eventId);

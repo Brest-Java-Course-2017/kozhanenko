@@ -51,7 +51,20 @@ public interface TimePeriodDao {
      * @return list of TimePeriod objects
      * @throws DataAccessException
      */
-    List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime) throws DataAccessException;
+    List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime)
+            throws DataAccessException;
+
+    /**
+     * Get time periods of Category from certain time interval
+     *
+     * @param category Category object
+     * @param beginOfInterval beginning of watching interval
+     * @param endOfInterval end of watching interval
+     * @return list of TimePeriod objects
+     * @throws DataAccessException
+     */
+    List<TimePeriod> getAllTimePeriodsOfCertainCategoryInTimeInterval(Category category, long beginOfInterval,
+                                                                      long endOfInterval) throws DataAccessException;
 
     /**
      * Adds time period

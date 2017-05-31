@@ -73,6 +73,8 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
     @Value("${period.getAllTimePeriodsWithFullEventByEventId}")
     private String getAllTimePeriodsWithFullEventByEventIdSql;
 
+    @Value("${period.getTimePeriodsOfCategoryInInterval}")
+    private String getTimePeriodsOfCategoryInIntervalSql;
 
     @Override
     public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException {
@@ -108,6 +110,15 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
         LOGGER.debug("getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime({}, {})", beginTime, endTime);
         return jdbcTemplate.query(getAllTimePeriodsThatLastCertainTimeSql, new String[]{beginTime, endTime},
                 new TimePeriodRowMapper());
+    }
+
+    @Override
+    public List<TimePeriod> getAllTimePeriodsOfCertainCategoryInTimeInterval
+            (Category category, long beginOfInterval, long endOfInterval) throws DataAccessException {
+        LOGGER.debug("getAllTimePeriodsOfCertainCategoryInTimeInterval()");
+        return jdbcTemplate.query(getTimePeriodsOfCategoryInIntervalSql, new String[]{Integer.toString(category.getCategoryId()),
+                convertTimeFromSecondsToString(beginOfInterval), convertTimeFromSecondsToString(endOfInterval)},
+                new FullTimePeriodRowMapper());
     }
 
     @Override
@@ -182,6 +193,7 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
 
         @Override
         public TimePeriod mapRow(ResultSet resultSet, int i) throws SQLException {
+
             long beginning, end;
             if (resultSet.getString(BEGINNING) == null){
                 beginning = 0;

@@ -92,6 +92,21 @@ public class TimePeriodServiceImpl implements TimePeriodService{
 }
 
     @Override
+    public List<TimePeriod> getAllTimePeriodsOfCertainCategoryInTimeInterval
+            (Category category, long beginOfInterval, long endOfInterval) throws DataAccessException, ServiceException {
+        LOGGER.debug("getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime()");
+        if (category.getCategoryId() <= 0 || beginOfInterval <= 0 || endOfInterval <= 0){
+            throw  new ServiceException(CustomErrorCodes.INCORRECT_INPUT_DATA);
+        }
+        List<TimePeriod> timePeriods = timePeriodDao.getAllTimePeriodsOfCertainCategoryInTimeInterval(category,
+                beginOfInterval, endOfInterval);
+        if (timePeriods.size() == 0){
+            throw  new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        }
+        return timePeriods;
+    }
+
+    @Override
     public Integer addTimePeriod(TimePeriod timePeriod) throws DataAccessException, ServiceException {
         LOGGER.debug("addTimePeriod({})", timePeriod);
 

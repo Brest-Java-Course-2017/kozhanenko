@@ -30,8 +30,10 @@ public class TimePeriodDaoImplTest {
     private TimePeriodDao timePeriodDao;
 
     private static final String BEGIN_IN_STRING = "2017-03-14 10:55:00";
+    private static final String BEGIN_IN_STRING1 = "2017-01-01 00:00:00";
     private static final long BEGIN = convertTimeFromStringToSeconds(BEGIN_IN_STRING);
     private static final String END_IN_STRING = "2017-03-14 22:30:00";
+    private static final String END_IN_STRING1 = "2017-12-31 00:00:00";
     private static final long END = convertTimeFromStringToSeconds(END_IN_STRING);
     private static final long BEGIN1 = convertTimeFromStringToSeconds("2017-03-13 22:52:00");
     private static final TimePeriod TIME_PERIOD = new TimePeriod(new Event(1), BEGIN, END);
@@ -91,6 +93,15 @@ public class TimePeriodDaoImplTest {
         LOGGER.debug("test: getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() ");
         List<TimePeriod> timePeriods = timePeriodDao.
                 getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(BEGIN_IN_STRING, END_IN_STRING);
+        assertTrue(timePeriods.size() > 0);
+    }
+
+    @Test
+    public void getAllTimePeriodsOfCertainCategoryInTimeInterval() throws Exception{
+        LOGGER.debug("test: getAllTimePeriodsOfCertainCategoryInTimeInterval() ");
+        List<TimePeriod> timePeriods = timePeriodDao.
+                getAllTimePeriodsOfCertainCategoryInTimeInterval(new Category(2),
+                        convertTimeFromStringToSeconds(BEGIN_IN_STRING1), convertTimeFromStringToSeconds(END_IN_STRING1));
         assertTrue(timePeriods.size() > 0);
     }
 

@@ -60,6 +60,19 @@ public interface TimePeriodService {
             throws DataAccessException, ServiceException;
 
     /**
+     * Get time periods of Category from certain time interval
+     *
+     * @param category Category object
+     * @param beginOfInterval beginning of watching interval
+     * @param endOfInterval end of watching interval
+     * @return list of TimePeriod objects
+     * @throws DataAccessException
+     * @throws ServiceException
+     */
+    List<TimePeriod> getAllTimePeriodsOfCertainCategoryInTimeInterval
+    (Category category, long beginOfInterval, long endOfInterval) throws DataAccessException, ServiceException;
+
+    /**
      * Adds time period
      *
      * @param timePeriod TimePeriod object

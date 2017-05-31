@@ -1,0 +1,30 @@
+<div class="row">
+  <div class="col-md-3">
+    <button routerLink="/results" type="button" class="btn btn-outline-info">Назад</button>
+  </div>
+  <div class="col-md-9">
+    <ngb-alert *ngIf="errorMessage" type="danger" (close)="errorMessage = null">{{ errorMessage }}</ngb-alert>
+  </div>
+</div>
+
+
+<div class="row" style="margin-top: 20px;">
+  <div class="col-md-12">
+    <table class="table table-sm" style="background-color: lightgrey;">
+      <tbody>
+      <tr>
+        <td class="central">Наименование</td>
+        <td class="central">Место проведения</td>
+        <td class="central">Начало</td>
+        <td class="central">Завершение</td>
+      </tr>
+      <tr *ngFor="let resultEvent of resultEvents">
+        <td class="central">{{resultEvent.eventName}}</td>
+        <td class="central">{{resultEvent.eventPlace}}</td>
+        <td class="central">{{resultEvent.eventBeginToNow}}<br/>{{resultEvent.eventBeginDateInString}}</td>
+        <td class="central">{{resultEvent.eventEndToNow}}<br/>{{resultEvent.eventEndDateInString}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

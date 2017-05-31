@@ -20,6 +20,7 @@ import { NgbdDatepickerPopup } from './common-components/datepicker-popup';
 import { EventsService } from './events/services/events.service';
 import {DatePipe} from "@angular/common";
 import {ResultsModule} from "./results/results.module";
+import {ResultEventsComponent} from "./results/components/result-events.component";
 
 @NgModule({
   imports:      [
@@ -32,7 +33,7 @@ import {ResultsModule} from "./results/results.module";
     JsonpModule,
     CategoriesModule,
     MyEventsModule,
-    ResultsModule
+    ResultsModule,
   ],
   declarations: [
     AppComponent,
@@ -42,6 +43,8 @@ import {ResultsModule} from "./results/results.module";
     EventUpdatingComponent,
     ResultsComponent,
     NgbdDatepickerPopup,
+    //EventsOfCategoryInIntervalComponent
+    ResultEventsComponent
   ],
   providers: [ DatePipe ],
   bootstrap: [ AppComponent ]

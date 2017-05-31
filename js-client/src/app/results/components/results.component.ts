@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ResultsService} from "../services/results.service";
 import {CategoryWithCounts} from "../models/category-with-counts";
 import {ConverterService} from "../services/converter.service";
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/debounceTime';
   selector: 'my-results',
   templateUrl: './results.component.html',
 })
-export class ResultsComponent{
+export class ResultsComponent implements OnInit{
 
   private currentTime: Date;
   private dropdownIntervalsNames: string[] = ["Ближайший час", "Ближайшие 2 часа", "Сегодня", "Завтра"];

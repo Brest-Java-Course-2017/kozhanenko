@@ -5,6 +5,7 @@ import {ResultsComponent} from "./results/components/results.component";
 import {EventsComponent} from "./events/components/events.component";
 import {EventAddingComponent} from "./events/components/event-adding.component";
 import {EventUpdatingComponent} from './events/components/event-updating.component';
+import {ResultEventsComponent} from "./results/components/result-events.component";
 
 
 const routes: Routes = [
@@ -13,7 +14,9 @@ const routes: Routes = [
   { path: 'results', component: ResultsComponent },
   { path: 'events',  component: EventsComponent },
   { path: 'event',  component: EventAddingComponent },
-  { path: 'event/:id', component: EventUpdatingComponent}
+  { path: 'event/:id', component: EventUpdatingComponent},
+  { path: 'results/:categoryId/:beginOdInterval/:endOfInterval', component: ResultEventsComponent}
+
 ];
 
 
