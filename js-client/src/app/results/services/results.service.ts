@@ -14,8 +14,33 @@ export class ResultsService {
   private categoriesUrl = 'http://localhost:8090/categories';
   private eventsUrl = 'http://localhost:8090/events';
 
+  private typeOfSelection: string = "dropDown";//dropDown/datePicker
+  private dropDownSelection: number = 0;//0-3
+  private datePickerSelection: any;
 
   constructor (private http: Http) {}
+
+  getTypeOfSelection(){
+    return this.typeOfSelection;
+  }
+
+  getDropDownSelection(){
+    return this.dropDownSelection;
+  }
+
+  getDatePickerSelection(){
+    return this.datePickerSelection;
+  }
+
+  setDropDownSelection(val: number){
+    this.typeOfSelection = "dropDown";
+    this.dropDownSelection = val;
+  }
+
+  setDatePickerSelection(val: any){
+    this.typeOfSelection = "datePicker";
+    this.datePickerSelection = val;
+  }
 
   getCategoriesAndCount(beginning: number, end: number): Observable<ResponseGCAC> {
     let headers = new Headers({ 'Content-Type': 'application/json',  'Access-Control-Allow-Origin': '*' });
