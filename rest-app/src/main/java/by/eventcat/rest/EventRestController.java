@@ -104,11 +104,12 @@ public class EventRestController {
 
     //curl -v localhost:8090/events/1/1489438800/1489525199
     @RequestMapping(value = "/events/{categoryId}/{beginOfInterval}/{endOfInterval}", method = RequestMethod.GET)
+    @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
     Map<String, Object> getEventsOfCertainCategoryOfInterval(
             @PathVariable(value = "categoryId") int categoryId,
-            @PathVariable(value = "beginOfInterval") int beginOfInterval,
-            @PathVariable(value = "endOfInterval") int endOfInterval
+            @PathVariable(value = "beginOfInterval") long beginOfInterval,
+            @PathVariable(value = "endOfInterval") long endOfInterval
             ) {
         LOGGER.debug("getEventsOfCertainCategoryOfInterval()");
         Map<String, Object> responseObject = new HashMap<>();

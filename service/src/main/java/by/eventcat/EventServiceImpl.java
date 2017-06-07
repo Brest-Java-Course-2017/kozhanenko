@@ -34,7 +34,7 @@ public class EventServiceImpl implements EventService{
         LOGGER.debug("getAllEvents()");
 
         List<Event> events = eventDao.getAllEvents();
-        if (events == null) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if (events == null || events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return events;
     }
 

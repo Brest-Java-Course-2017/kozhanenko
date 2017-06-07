@@ -37,14 +37,6 @@ public interface CategoryService {
     Category getCategoryByCategoryName(String categoryName) throws DataAccessException, ServiceException;
 
     /**
-     * Add new category
-     *
-     * @param category category object
-     * @return new category identifier
-     * @throws DataAccessException
-     */
-
-    /**
      * Get Categories list with number of events of those categories of certain time period
      *
      * @param beginOfInterval beginning of watching interval
@@ -55,6 +47,13 @@ public interface CategoryService {
     List<CategoryWithCount> getEventsCountForCertainTimeIntervalGroupByCategory
     (long beginOfInterval, long endOfInterval) throws DataAccessException, ServiceException;
 
+    /**
+     * Add new category
+     *
+     * @param category category object
+     * @return new category identifier
+     * @throws DataAccessException
+     */
     Integer addCategory (Category category) throws DataAccessException, ServiceException;
 
     /**

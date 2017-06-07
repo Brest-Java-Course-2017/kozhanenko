@@ -125,7 +125,7 @@ public class CategoryServiceImpl implements CategoryService {
         LOGGER.debug("delete category with categoryId = {}", categoryId);
 
         if (categoryId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
-        int rowsAffected = 0;
+        int rowsAffected;
         try {
             rowsAffected = categoryDao.deleteCategory(categoryId);
         } catch (DataIntegrityViolationException ex){
