@@ -86,8 +86,8 @@ public class CategoryRestController {
     @RequestMapping(value = "/categories/{beginning}/{end}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
-    Map<String, Object> getCategoriesCount(@PathVariable(value = "beginning") int beginning,
-                                           @PathVariable(value = "end") int end) {
+    Map<String, Object> getCategoriesCount(@PathVariable(value = "beginning") long beginning,
+                                           @PathVariable(value = "end") long end) {
         LOGGER.debug("getCategoriesCount beginning={} end={}", beginning, end);
 
         responseObject = new HashMap<>();
