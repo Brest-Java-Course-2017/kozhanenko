@@ -91,9 +91,10 @@ export class EventsService {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
     if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = body.error || JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+      // const body = error.json() || '';
+      // const err = body.error || JSON.stringify(body);
+      // errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+      errMsg = "Проверьте соединение с сетью интернет либо обратитесь к администратору";
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
