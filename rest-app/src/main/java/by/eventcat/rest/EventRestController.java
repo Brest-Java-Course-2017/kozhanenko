@@ -81,7 +81,7 @@ public class EventRestController {
     private String incorrectCategoryOrInterval;
 
 
-    //curl -v localhost:8090/events
+    //curl -v localhost:8080/rest-app-1.0-SNAPSHOT/events
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> getEvents() {
@@ -102,7 +102,7 @@ public class EventRestController {
         return responseObject;
     }
 
-    //curl -v localhost:8090/events/1/1489438800/1489525199
+    //curl -v localhost:8080/rest-app-1.0-SNAPSHOT/events/1/1489438800/1489525199
     @RequestMapping(value = "/events/{categoryId}/{beginOfInterval}/{endOfInterval}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
@@ -132,7 +132,7 @@ public class EventRestController {
         return responseObject;
     }
 
-//    curl -v localhost:8090/event/1
+//    curl -v localhost:8080/rest-app-1.0-SNAPSHOT/event/1
     @RequestMapping(value = "/event/{eventId}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
@@ -159,7 +159,7 @@ public class EventRestController {
     //curl -H "Content-Type: application/json" -X POST -d '{ "timePeriods": [ { "timePeriodId": 0, "event":
     // { "eventId": -1, "category": { "categoryId": 1, "categoryName": "Театр" },
     // "eventName": "sdfasdf", "eventPlace": "asdfasdf" }, "beginning": 1494277260584, "end": 1494709260584 } ] }'
-    // -v localhost:8090/event
+    // -v localhost:8080/rest-app-1.0-SNAPSHOT/event
     @RequestMapping(value = "/event", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody//returns new category id
@@ -216,7 +216,7 @@ public class EventRestController {
     //curl -X PUT -H "Content-Type: application/json" -d '{ "timePeriods": [ { "timePeriodId": 0, "event":
     // { "eventId": 6, "category": { "categoryId": 5, "categoryName": "Музеи" }, "eventName": "\"Камни Беларуси\"",
     // "eventPlace": "\"Краеведческий музей\"" }, "beginning": 1494536460231, "end": 1494709260231 } ] }'
-    // localhost:8090/event/4
+    // localhost:8080/rest-app-1.0-SNAPSHOT/event/4
     @RequestMapping(value = "/event/{eventId}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
@@ -283,7 +283,7 @@ public class EventRestController {
         return responseObject;
     }
 
-    //curl -X DELETE localhost:8090/event/1
+    //curl -X DELETE localhost:8080/rest-app-1.0-SNAPSHOT/event/1
     @RequestMapping(value = "/event/{eventId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody

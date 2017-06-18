@@ -61,7 +61,7 @@ public class CategoryRestController {
     @Value("${no_data_about_events_in_interval}")
     private String noDataAboutEventsInIntervalFound;
 
-    //curl -v localhost:8090/categories
+    //curl -v localhost:8080/rest-app-1.0-SNAPSHOT/categories
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     public @ResponseBody
     Map<String, Object> getCategories() {
@@ -82,7 +82,7 @@ public class CategoryRestController {
         return responseObject;
     }
 
-//    curl -v localhost:8090/categories/9999999999/99999999999
+//    curl -v localhost:8080/rest-app-1.0-SNAPSHOT/categories/22222222/99999999999
     @RequestMapping(value = "/categories/{beginning}/{end}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
@@ -108,7 +108,8 @@ public class CategoryRestController {
     }
 
 
-    //curl -H "Content-Type: application/json" -X POST -d '{"categoryName":"Дискотека"}' -v localhost:8090/category
+    //curl -H "Content-Type: application/json" -X POST -d '{"categoryName":"Дискотека"}' -v
+    // localhost:8080/rest-app-1.0-SNAPSHOT/category
     @RequestMapping(value = "/category", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody//returns new category id
@@ -133,7 +134,7 @@ public class CategoryRestController {
         return responseObject;
     }
 
-    //curl -X PUT -v localhost:8090/category/{categoryId}/{categoryName}
+    //curl -X PUT -v localhost:8080/rest-app-1.0-SNAPSHOT/category/1/Megaparty
     @RequestMapping(value = "/category/{categoryId}/{categoryName}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
@@ -165,7 +166,7 @@ public class CategoryRestController {
         return responseObject;
     }
 
-    //curl -X DELETE localhost:8090/category/{categoryId}
+    //curl -X DELETE localhost:8080/rest-app-1.0-SNAPSHOT/category/1
     @RequestMapping(value = "/category/{categoryId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.OK)
     public @ResponseBody
