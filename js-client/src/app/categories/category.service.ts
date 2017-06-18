@@ -13,8 +13,8 @@ import {ResponseUDC} from "./models/response-update-delete-category-model";
 @Injectable()
 export class CategoryService {
 
-  private categoriesUrl = 'http://localhost:8090/categories';
-  private categoryUrl = 'http://localhost:8090/category';
+  private categoriesUrl = 'http://localhost:8080/rest-app-1.0-SNAPSHOT/categories';
+  private categoryUrl = 'http://localhost:8080/rest-app-1.0-SNAPSHOT/category';
   //private categoriesUrl = 'res.txt';
 
   constructor (private http: Http) {}

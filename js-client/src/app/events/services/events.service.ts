@@ -16,8 +16,8 @@ import {ResponseUDE} from "../models/response-update-delete-event-model";
 export class EventsService {
   //TODO: solve Access-Control-Allow-Origin problem
 
-  private eventsUrl = 'http://localhost:8090/events';
-  private eventUrl = 'http://localhost:8090/event';
+  private eventsUrl = 'http://localhost:8080/rest-app-1.0-SNAPSHOT/events';
+  private eventUrl = 'http://localhost:8080/rest-app-1.0-SNAPSHOT/event';
   //private eventsMockUrl = 'res3.txt';
 
   constructor (private http: Http) {}

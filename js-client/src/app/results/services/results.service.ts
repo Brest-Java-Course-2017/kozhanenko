@@ -11,8 +11,8 @@ import {ResponseGEoCiI} from "../models/response-get-events-of-category-in-inter
 @Injectable()
 export class ResultsService {
 
-  private categoriesUrl = 'http://localhost:8090/categories';
-  private eventsUrl = 'http://localhost:8090/events';
+  private categoriesUrl = 'http://localhost:8080/rest-app-1.0-SNAPSHOT/categories';
+  private eventsUrl = 'http://localhost:8080/rest-app-1.0-SNAPSHOT/events';
 
   private typeOfSelection: string = "dropDown";//dropDown/datePicker
   private dropDownSelection: number = 0;//0-3

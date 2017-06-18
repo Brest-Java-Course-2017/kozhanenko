@@ -94,6 +94,10 @@ export class EventUpdatingComponent implements OnInit{
         error =>  this.errorMessage = <any>error);
   }
 
+  SetSelectedCategory(category: Category){
+    this.selectedCategory = category;
+  }
+
   setNewEventName(event: any){
     this.newEventName = event.target.value;
   }

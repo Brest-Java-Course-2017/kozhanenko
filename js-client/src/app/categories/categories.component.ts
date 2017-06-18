@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Category} from "./models/category";
 import {CategoryService} from "./category.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
