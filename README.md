@@ -17,13 +17,18 @@ In this version you can:
  - npm at least 3.x.x or higher
  - Web Browser
  
- To **start REST service** you need to follow the next steps:
+ To **start REST service with Apache Tomcat** you need to follow the next steps:
  1. Create new project directory by typing in terminal: **_mkdir newProjectName_**
  2. Move to created directory _**cd newProjectName**_ and clone the project to it _**git clone https://github.com/Brest-Java-Course-2017/kozhanenko.git**_
  3. Move to _kozhanenko/rest-app_ directory _**cd kozhanenko/rest-app**_ and run command **_mvn clean install_**
  4. Start your Apache Tomcat Server **_sudo systemctl start tomcat_**
  5. Open in your web browser Apache Tomcat start page http://server_domain_or_IP:8080 (for example http://localhost:8080 - you could have different) then open Tomcat Web Application Manager **_http://server_domain_or_IP:8080/manager/html_**, select WAR file to deploy: **_newProjectName/kozhanenko/rest-app/target/rest-app-1.0-SNAPSHOT.war_** and push deploy button
  6. After this REST service is available in url **_http://server_domain_or_IP:8080/rest-app-1.0-SNAPSHOT/_**
+ 
+ To **start REST service with Jetty** you need to follow the next steps:
+ 1. Make steps 1.-3. for starting REST service with Apache Tomcat.
+ 2. from _kozhanenko/rest-app_ type in terminal **_mvn jetty:run_**
+ 3. After this REST service is available in url **_http://server_domain_or_IP:8080/rest-app-1.0-SNAPSHOT/_**
   
  To **start js-client** you need to follow the next steps:
  1. Move from cloned project directory (_newProjectName_) to js-client directory by typing in terminal **_cd kozhanenko/js-client_**

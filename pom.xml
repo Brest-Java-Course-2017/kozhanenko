@@ -170,10 +170,10 @@
                     <configuration>
                         <scanIntervalSeconds>10</scanIntervalSeconds>
                         <webApp>
-                            <contextPath>/</contextPath>
+                            <contextPath>/rest-app-1.0-SNAPSHOT/</contextPath>
                         </webApp>
                         <httpConnector>
-                            <port>8090</port>
+                            <port>8080</port>
                         </httpConnector>
                     </configuration>
                 </plugin>
