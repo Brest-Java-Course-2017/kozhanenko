@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath*:test-spring-hibernate-db.xml"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <!--<value>classpath:app.properties</value>-->
+                <value>classpath:database.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="categoryDAO" class="by.eventcat.jpa.CategoryDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
+</beans>

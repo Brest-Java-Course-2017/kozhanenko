@@ -1,13 +1,21 @@
 package by.eventcat;
 
 import java.util.Objects;
+import javax.persistence.*;
 
 /**
  * Category (Topic) of event
  */
+@Entity
+@Table(name = "category")
 public class Category {
 
+    @Id
+    @Column(name = "category_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int categoryId;
+
+    @Column(name = "category_name")
     private String categoryName;
 
     public Category (){}
