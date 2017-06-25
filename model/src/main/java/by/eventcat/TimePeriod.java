@@ -1,15 +1,28 @@
 package by.eventcat;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
  * Time Period stores data about event duration period
  */
+@Entity
+@Table(name = "time_period")
 public class TimePeriod {
 
+    @Id
+    @Column(name = "time_period_id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int timePeriodId;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id")
     private Event event;
+
+    @Column(name = "beginning")
     private long beginning;
+
+    @Column(name = "end")
     private long end;
 
     public TimePeriod(){}

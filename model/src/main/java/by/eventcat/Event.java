@@ -1,15 +1,34 @@
 package by.eventcat;
 
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Class Event
  */
+@Entity
+@Table(name = "event")
 public class Event {
+
+    @Id
+    @Column(name = "event_id")
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int eventId;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
+
+    @Column(name = "event_name")
     private String eventName;
+
+    @Column(name = "event_place_name")
     private String eventPlace;
+
+    @OneToMany(mappedBy = "event")
+    private Set<TimePeriod> timePeriods = new HashSet<>();
 
     public Event(){}
 
@@ -60,6 +79,14 @@ public class Event {
 
     public void setEventPlace(String eventPlace) {
         this.eventPlace = eventPlace;
+    }
+
+    public Set<TimePeriod> getTimePeriods() {
+        return timePeriods;
+    }
+
+    public void setTimePeriods(Set<TimePeriod> timePeriods) {
+        this.timePeriods = timePeriods;
     }
 
     @Override

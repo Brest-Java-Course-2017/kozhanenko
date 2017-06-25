@@ -9,13 +9,21 @@
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <!--<value>classpath:app.properties</value>-->
+                <value>classpath:dao.jpa.properties</value>
                 <value>classpath:database.properties</value>
             </list>
         </property>
     </bean>
 
     <bean id="categoryDAO" class="by.eventcat.jpa.CategoryDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
+    <bean id="eventDAO" class="by.eventcat.jpa.EventDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
+    <bean id="timePeriodDAO" class="by.eventcat.jpa.TimePeriodDaoImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
 

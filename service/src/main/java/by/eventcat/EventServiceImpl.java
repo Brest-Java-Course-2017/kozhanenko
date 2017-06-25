@@ -46,7 +46,7 @@ public class EventServiceImpl implements EventService{
             throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         }
         List<Event> events = eventDao.getAllEventsByEventPlaceName(eventPlaceName);
-        if(events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if(events == null || events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return events;
     }
 
@@ -56,7 +56,7 @@ public class EventServiceImpl implements EventService{
 
         if (category.getCategoryId() <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
         List<Event> events = eventDao.getAllEventsByCategoryId(category);
-        if(events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
+        if(events == null || events.size() == 0) throw new ServiceException(CustomErrorCodes.NO_CALLING_DATA_FOUND);
         return events;
     }
 

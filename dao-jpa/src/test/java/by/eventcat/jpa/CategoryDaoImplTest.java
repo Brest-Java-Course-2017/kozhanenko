@@ -2,6 +2,7 @@ package by.eventcat.jpa;
 
 import by.eventcat.Category;
 import by.eventcat.CategoryDao;
+import by.eventcat.CategoryWithCount;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -19,6 +20,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static by.eventcat.jpa.TimeConverter.*;
+
 
 /**
  * Category Dao JPA Implementation Test
@@ -41,6 +44,8 @@ public class CategoryDaoImplTest {
     private static final Category NON_EXISTING_CATEGORY =  new Category(99,"Барды");
     private static final Category CATEGORY_TO_DELETE =  new Category("Детские");
     private static final Category EXISTING_CATEGORY =  new Category(CATEGORY_NAME);
+    private static final String BEGIN_TIME = "2017-03-01 00:00:00";
+    private static final String END_TIME ="2017-04-01 00:00:00";
 
     @Test
     public void getAllCategories() throws Exception{
@@ -80,10 +85,11 @@ public class CategoryDaoImplTest {
     @Test
     public void getEventsCountForCertainTimeIntervalGroupByCategory() throws Exception{
         LOGGER.debug("test: getEventsCountForCertainTimeIntervalGroupByCategory()");
-
-
-
-
+        List<CategoryWithCount> categoriesWithCount = categoryDao.getEventsCountForCertainTimeIntervalGroupByCategory(
+                convertTimeFromStringToSeconds(BEGIN_TIME),
+                convertTimeFromStringToSeconds(END_TIME)
+        );
+        assertTrue(categoriesWithCount.size() > 0);
     }
 
     @Test
