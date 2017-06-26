@@ -16,6 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static by.eventcat.jpa.TimeConverter.*;
@@ -109,24 +110,30 @@ public class CategoryDaoImpl implements CategoryDao {
     public List<CategoryWithCount> getEventsCountForCertainTimeIntervalGroupByCategory(long beginOfInterval, long endOfInterval)
             throws DataAccessException {
         LOGGER.debug("getEventsCountForCertainTimeIntervalGroupByCategory begin={} end={}", beginOfInterval, endOfInterval);
-        List<CategoryWithCount> categoriesWithCount = null;
+        List<CategoryWithCount> categoriesWithCount = new ArrayList<>();
+        CategoryWithCount categoryWithCount;
         Session session = sessionFactory.openSession();
         Transaction tx = null;
         try{
             tx = session.beginTransaction();
 
-//            SQLQuery query = session.createSQLQuery(getCategoriesWithEventCount);
-//            query.setParameter(0, convertTimeFromSecondsToString(beginOfInterval));
-//            query.setParameter(1, convertTimeFromSecondsToString(endOfInterval));
-//            query.addEntity(CategoryWithCount.class);
-//            categoriesWithCount = query.list();
-//
-//            for (Object obj: categoriesWithCount){
-//                LOGGER.debug(obj);
-//
-//            }
+            SQLQuery query = session.createSQLQuery(getCategoriesWithEventCount);
+            query.setParameter(0, convertTimeFromSecondsToString(beginOfInterval));
+            query.setParameter(1, convertTimeFromSecondsToString(endOfInterval));
+            List<Object[]> resObjects = query.list();
 
-            //TODO: implement method
+            for (Object[] object: resObjects){
+                categoryWithCount = new CategoryWithCount();
+                categoryWithCount.setCategory( new Category(
+                        object[0]!=null ? Integer.parseInt(object[0].toString()) : 0,
+                        object[1]!=null ? object[1].toString() : ""
+                ));
+                categoryWithCount.setCountEventsOfCategory(
+                        object[2]!=null ? Integer.parseInt(object[0].toString()) : 0
+                );
+                categoriesWithCount.add(categoryWithCount);
+            }
+            LOGGER.debug(categoriesWithCount);
             tx.commit();
         } catch(HibernateException ex){
             if (tx!=null) tx.rollback();

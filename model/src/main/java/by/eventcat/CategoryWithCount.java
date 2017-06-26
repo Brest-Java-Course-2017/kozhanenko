@@ -7,6 +7,8 @@ public class CategoryWithCount {
     private Category category;
     private int countEventsOfCategory;
 
+    public CategoryWithCount(){}
+
     public CategoryWithCount(Category category, int countEventsOfCategory) {
         this.category = category;
         this.countEventsOfCategory = countEventsOfCategory;

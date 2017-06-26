@@ -44,8 +44,10 @@ public class CategoryDaoImplTest {
     private static final Category NON_EXISTING_CATEGORY =  new Category(99,"Барды");
     private static final Category CATEGORY_TO_DELETE =  new Category("Детские");
     private static final Category EXISTING_CATEGORY =  new Category(CATEGORY_NAME);
-    private static final String BEGIN_TIME = "2017-03-01 00:00:00";
-    private static final String END_TIME ="2017-04-01 00:00:00";
+    private static final String BEGIN_TIME = "2017-01-01 00:00:00";
+    private static final String BEGIN_TIME1 = "2016-01-01 00:00:00";
+    private static final String END_TIME ="2017-12-31 00:00:00";
+    private static final String END_TIME1 ="2016-12-31 00:00:00";
 
     @Test
     public void getAllCategories() throws Exception{
@@ -90,6 +92,16 @@ public class CategoryDaoImplTest {
                 convertTimeFromStringToSeconds(END_TIME)
         );
         assertTrue(categoriesWithCount.size() > 0);
+    }
+
+    @Test
+    public void getEventsCountForCertainTimeIntervalGroupByCategoryNoDataFound() throws Exception{
+        LOGGER.debug("test: getEventsCountForCertainTimeIntervalGroupByCategoryNoDataFound()");
+        List<CategoryWithCount> categoriesWithCount = categoryDao.getEventsCountForCertainTimeIntervalGroupByCategory(
+                convertTimeFromStringToSeconds(BEGIN_TIME1),
+                convertTimeFromStringToSeconds(END_TIME1)
+        );
+        assertTrue(categoriesWithCount.size() == 0);
     }
 
     @Test
