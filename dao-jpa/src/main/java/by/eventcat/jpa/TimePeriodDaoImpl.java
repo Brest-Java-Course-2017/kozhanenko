@@ -1,13 +1,14 @@
 package by.eventcat.jpa;
 
-import by.eventcat.Category;
-import by.eventcat.Event;
-import by.eventcat.TimePeriod;
-import by.eventcat.TimePeriodDao;
+import by.eventcat.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,26 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
 
     @Override
     public TimePeriod getTimePeriodById(Integer timePeriodId) throws DataAccessException {
-        return null;
+        LOGGER.debug("getTimePeriodById where ID={}", timePeriodId);
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        TimePeriod timePeriod;
+        try{
+            tx = session.beginTransaction();
+            timePeriod =  (TimePeriod)session.get(TimePeriod.class, timePeriodId);
+            tx.commit();
+            LOGGER.debug(timePeriod);
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        if (timePeriod == null){
+            throw new EmptyResultDataAccessException(1);
+        }
+        timePeriod.setLongFields();
+        return timePeriod;
     }
 
     @Override

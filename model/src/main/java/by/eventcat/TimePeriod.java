@@ -1,6 +1,7 @@
 package by.eventcat;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -20,9 +21,15 @@ public class TimePeriod {
     private Event event;
 
     @Column(name = "beginning")
-    private long beginning;
+    private Date beginningInDateFormat;
 
     @Column(name = "end")
+    private Date endInDateFormat;
+
+    @Transient
+    private long beginning;
+
+    @Transient
     private long end;
 
     public TimePeriod(){}
@@ -56,6 +63,24 @@ public class TimePeriod {
         this.event = event;
     }
 
+    public Date getBeginningInDateFormat() {
+        return beginningInDateFormat;
+    }
+
+    public void setBeginningInDateFormat(Date beginningInDateFormat) {
+        this.beginningInDateFormat = beginningInDateFormat;
+
+    }
+
+    public Date getEndInDateFormat() {
+        return endInDateFormat;
+    }
+
+    public void setEndInDateFormat(Date endInDateFormat) {
+        this.endInDateFormat = endInDateFormat;
+
+    }
+
     public long getBeginning() {
         return beginning;
     }
@@ -70,6 +95,11 @@ public class TimePeriod {
 
     public void setEnd(long end) {
         this.end = end;
+    }
+
+    public void setLongFields(){
+        setEnd(endInDateFormat.getTime()/1000);
+        setBeginning(beginningInDateFormat.getTime()/1000);
     }
 
     @Override
@@ -95,6 +125,8 @@ public class TimePeriod {
                 ", event=" + event +
                 ", beginning=" + beginning +
                 ", end=" + end +
+                ", beginningInDateFormat='" + beginningInDateFormat + '\'' +
+                ", endInDateFormat='" + endInDateFormat + '\'' +
                 '}';
     }
 }
