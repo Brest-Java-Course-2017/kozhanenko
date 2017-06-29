@@ -102,6 +102,11 @@ public class TimePeriod {
         setBeginning(beginningInDateFormat.getTime()/1000);
     }
 
+    public void setDateFields(){
+        setBeginningInDateFormat(new Date(beginning*1000));
+        setEndInDateFormat(new Date(end*1000));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

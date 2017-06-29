@@ -106,6 +106,7 @@ public class CategoryDaoImpl implements CategoryDao {
         return category;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<CategoryWithCount> getEventsCountForCertainTimeIntervalGroupByCategory(long beginOfInterval, long endOfInterval)
             throws DataAccessException {
