@@ -38,6 +38,7 @@
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="connection.pool_size">12</prop>
                 <prop key="current_session_context_class">thread</prop>
+                <prop key="jdbc.batch_size">20</prop>
             </props>
         </property>
 

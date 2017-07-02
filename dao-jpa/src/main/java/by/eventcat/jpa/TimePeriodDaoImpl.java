@@ -4,6 +4,7 @@ import by.eventcat.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.*;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+
+import static by.eventcat.jpa.TimeConverter.*;
 
 /**
  * TimePeriod JPA Dao Implementation
@@ -112,14 +115,71 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
         return getTimePeriodListOfCertainEventByEventId(event);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime) throws DataAccessException {
-        return null;
+    public List<TimePeriod> getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime(String beginTime, String endTime)
+            throws DataAccessException {
+        LOGGER.debug("getAllTimePeriodsThatBeginOrLastFromNowTillSelectedTime() where beginning={} and end={}",
+                beginTime, endTime);
+        List<TimePeriod> timePeriods;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(TimePeriod.class, "timePeriod");
+            criteria.add(Restrictions.ge("timePeriod.endInDateFormat",
+                    new Date(convertTimeFromStringToSeconds(beginTime)*1000)));
+            criteria.add(Restrictions.le("timePeriod.beginningInDateFormat",
+                    new Date(convertTimeFromStringToSeconds(endTime)*1000)));
+            timePeriods = criteria.list();
+            for(TimePeriod timePeriod: timePeriods){
+                timePeriod.setLongFields();
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        LOGGER.debug(timePeriods);
+        return timePeriods;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<TimePeriod> getAllTimePeriodsOfCertainCategoryInTimeInterval(Category category, long beginOfInterval, long endOfInterval) throws DataAccessException {
-        return null;
+    public List<TimePeriod> getAllTimePeriodsOfCertainCategoryInTimeInterval(
+            Category category, long beginOfInterval, long endOfInterval) throws DataAccessException {
+
+        LOGGER.debug("getAllTimePeriodsOfCertainCategoryInTimeInterval() where categoryId= {} beginning={} and end={}",
+                category, beginOfInterval, endOfInterval);
+        List<TimePeriod> timePeriods;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(TimePeriod.class, "timePeriod");
+            criteria.createAlias("timePeriod.event", "event");
+            criteria.createAlias("event.category", "category");
+            criteria.add(Restrictions.eq("category.categoryId", category.getCategoryId()));
+            criteria.add(Restrictions.gt("timePeriod.endInDateFormat",
+                    new Date(beginOfInterval*1000)));
+            criteria.add(Restrictions.le("timePeriod.beginningInDateFormat",
+                    new Date(endOfInterval*1000)));
+            criteria.addOrder(Order.asc("timePeriod.endInDateFormat"));
+            timePeriods = criteria.list();
+            for(TimePeriod timePeriod: timePeriods){
+                timePeriod.setLongFields();
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        LOGGER.debug(timePeriods);
+        return timePeriods;
     }
 
     @Override
@@ -148,21 +208,127 @@ public class TimePeriodDaoImpl implements TimePeriodDao{
 
     @Override
     public int[] addTimePeriodList(List<TimePeriod> timePeriods) throws DataAccessException {
-        return new int[0];
+        LOGGER.debug("addTimePeriodList timePeriods={}", timePeriods);
+        int[] rowsAffectedArr = new int[timePeriods.size()];
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            int i=0;
+            for ( TimePeriod timePeriod: timePeriods) {
+                timePeriod.setDateFields();
+                int newTimePeriodId = (Integer) session.save(timePeriod);
+                if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                    //flush a batch of inserts and release memory:
+                    session.flush();
+                    session.clear();
+                }
+                if (newTimePeriodId > 0){
+                    rowsAffectedArr[i] = 1;
+                } else {
+                    rowsAffectedArr[i] = 0;
+                }
+                i++;
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            if (ex instanceof ConstraintViolationException){
+                throw new DataIntegrityViolationException("");
+            } else {
+                throw ex;
+            }
+        } finally {
+            session.close();
+        }
+        return rowsAffectedArr;
     }
 
     @Override
     public int updateTimePeriod(TimePeriod timePeriod) throws DataAccessException {
-        return 0;
+        LOGGER.debug(" updateTimePeriod with timePeriodId={}", timePeriod.getTimePeriodId());
+        int rowsAffected;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            timePeriod.setDateFields();
+            session.update(timePeriod);
+            tx.commit();
+            rowsAffected = 1;
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            if (ex instanceof StaleStateException || ex instanceof ConstraintViolationException){
+                rowsAffected = 0;
+            } else {
+                throw ex;
+            }
+        } finally {
+            session.close();
+        }
+        return rowsAffected;
     }
 
     @Override
     public int deleteTimePeriod(Integer timePeriodId) throws DataAccessException {
-        return 0;
+        LOGGER.debug("deleteTimePeriod with ID={}", timePeriodId);
+        int rowsAffected;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            TimePeriod timePeriod =
+                    (TimePeriod) session.get(TimePeriod.class, timePeriodId);
+            if (timePeriod == null){
+                rowsAffected = 0;
+            } else{
+                session.delete(timePeriod);
+                rowsAffected = 1;
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        return rowsAffected;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public int deleteTimePeriodsByEventId(Event event) throws DataAccessException {
-        return 0;
+        LOGGER.debug("deleteTimePeriodsByEventId with eventID={}", event.getEventId());
+        int rowsAffected = 0;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(TimePeriod.class, "timePeriod");
+            criteria.createAlias("timePeriod.event", "event");
+            criteria.add(Restrictions.eq("event.eventId", event.getEventId()));
+            List<TimePeriod> timePeriods = criteria.list();
+            if (timePeriods.size() != 0){
+                int i = 0;
+                for ( TimePeriod timePeriod: timePeriods) {
+                    timePeriod.setDateFields();
+                    session.delete(timePeriod);
+                    if ( i % 20 == 0 ) { //20, same as the JDBC batch size
+                        //flush a batch of inserts and release memory:
+                        session.flush();
+                        session.clear();
+                    }
+                    rowsAffected++;
+                    i++;
+                }
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        return rowsAffected;
     }
 }
