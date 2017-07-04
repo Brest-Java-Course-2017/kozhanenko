@@ -19,14 +19,14 @@ import static org.junit.Assert.*;
  * Event Service Implementation Test
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:test-spring-service.xml"})
+//@ContextConfiguration(locations = {"classpath*:test-spring-service.xml"})
+@ContextConfiguration(locations = {"classpath*:test-spring-service-for-jpa-dao-impl.xml"})
 @Transactional
 public class EventServiceImplTest {
 
     private Logger LOGGER = LogManager.getLogger();
 
     private static final String EVENT_PLACE_NAME = "«БРЕСТСКИЙ АКАДЕМИЧЕСКИЙ ТЕАТР ДРАМЫ»";
-    private static final int CATEGORY_ID = 1;
     private static final String EVENT_NAME = "Премьера \"Весёлый вдовец\"";
     private static final String EVENT_NAME2 = "Радостный человек";
     private static final Event EVENT_CONST = new Event(new Category(4), EVENT_NAME, EVENT_PLACE_NAME);
@@ -34,7 +34,7 @@ public class EventServiceImplTest {
     private static final Event EVENT1 = new Event(new Category(4), EVENT_NAME, EVENT_PLACE_NAME);
 
     @Autowired
-    private EventServiceImpl eventService;
+    private EventService eventService;
 
     @Test
     public void getAllEvents() throws Exception {
@@ -79,9 +79,12 @@ public class EventServiceImplTest {
     @Test
     public void getAllEventsByCategoryId() throws Exception {
         LOGGER.debug("test: getAllEventsByCategoryId()");
-
-        List<Event> events = eventService.getAllEventsByCategoryId(new Category(1));
-        assertTrue(events.size() == 2);
+        List<Event> allEvents = eventService.getAllEvents();
+        if (allEvents.size() > 0){
+            int categoryId = allEvents.get(0).getCategory().getCategoryId();
+            List<Event> events = eventService.getAllEventsByCategoryId(new Category(categoryId));
+            assertTrue(events.size() > 0);
+        }
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
@@ -111,12 +114,15 @@ public class EventServiceImplTest {
     @Test
     public void getEventById() throws Exception {
         LOGGER.debug("test: getEventById()");
-
-        Event event = eventService.getEventById(1);
-        assertNotNull(event);
-        assertEquals(CATEGORY_ID, event.getCategory().getCategoryId());
-        assertEquals(EVENT_NAME, event.getEventName());
-        assertEquals(EVENT_PLACE_NAME, event.getEventPlace());
+        List<Event> events = eventService.getAllEvents();
+        if (events.size() > 0){
+            Event existingEvent = events.get(0);
+            Event event = eventService.getEventById(existingEvent.getEventId());
+            assertNotNull(event);
+            assertEquals(existingEvent.getCategory().getCategoryId(), event.getCategory().getCategoryId());
+            assertEquals(existingEvent.getEventName(), event.getEventName());
+            assertEquals(existingEvent.getEventPlace(), event.getEventPlace());
+        }
     }
 
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)

@@ -5,6 +5,7 @@ import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -22,7 +23,6 @@ public class EventServiceImpl implements EventService{
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    //@Autowired
     private EventDao eventDao;
 
     public void setEventDao(EventDao eventDao) {

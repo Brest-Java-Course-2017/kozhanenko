@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/jdbc
+       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+    <context:component-scan base-package="by.eventcat.rest"/>
+
+    <mvc:annotation-driven/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:dao.jpa.properties</value>
+                <value>classpath:database.properties</value>
+                <value>classpath:ru.error.messages.properties</value>
+                <value>classpath:ru.success.messages.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"/>
+    </bean>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="{jdbc.password}" />
+    </bean>
+
+    <jdbc:initialize-database data-source="dataSource">
+        <jdbc:script location="classpath:create-tables.sql"/>
+        <jdbc:script location="classpath:data-script.sql"/>
+    </jdbc:initialize-database>
+
+    <!-- Hibernate 4 SessionFactory Bean definition -->
+    <bean id="hibernate4AnnotatedSessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="annotatedClasses">
+            <list>
+                <value>by.eventcat.Category</value>
+                <value>by.eventcat.Event</value>
+                <value>by.eventcat.TimePeriod</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="connection.pool_size">12</prop>
+                <!--<prop key="current_session_context_class">thread</prop>-->
+                <prop key="jdbc.batch_size">20</prop>
+            </props>
+        </property>
+
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
+
+
+    <bean id="categoryDao" class="by.eventcat.jpa.CategoryDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="categoryService" class="by.eventcat.CategoryServiceImpl">
+        <property name="categoryDao" ref="categoryDao"/>
+    </bean>
+
+    <bean id="eventDao" class="by.eventcat.jpa.EventDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="eventService" class="by.eventcat.EventServiceImpl">
+        <property name="eventDao" ref="eventDao"/>
+    </bean>
+
+    <bean id="timePeriodDao" class="by.eventcat.jpa.TimePeriodDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="timePeriodService" class="by.eventcat.TimePeriodServiceImpl">
+        <property name="timePeriodDao" ref="timePeriodDao"/>
+    </bean>
+
+    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
+        <!--<property name="messageConverters">-->
+            <!--<list>-->
+                <!--<ref bean="jsonConverter"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+        <!--&lt;!&ndash;<property name="supportedMediaTypes" value="application/json;" />&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="prettyPrint" value="true" />&ndash;&gt;-->
+        <!--<property name="objectMapper">-->
+            <!--<bean class="by.eventcat.mapper.HibernateAwareObjectMapper" />-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <!-- Use the HibernateAware mapper instead of the default -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="by.eventcat.mapper.HibernateAwareObjectMapper" />
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+</beans>

@@ -308,6 +308,4 @@ public class TimePeriodDaoImplTest {
         assertEquals(quantityBefore, quantityAfter);
     }
 
-
-
 }

@@ -1,15 +1,18 @@
 package by.eventcat;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Proxy;
+
+import java.util.*;
 import javax.persistence.*;
+import javax.transaction.Transactional;
 
 /**
  * Category (Topic) of event
  */
 @Entity
 @Table(name = "category")
+@Transactional
 public class Category {
 
     @Id
@@ -21,7 +24,7 @@ public class Category {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
-    private Set<Event> events = new HashSet<>();
+    private List<Event> events = new ArrayList<>();
 
     public Category (){}
 
@@ -54,11 +57,11 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public Set<Event> getEvents() {
+    public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(Set<Event> events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
     }
 

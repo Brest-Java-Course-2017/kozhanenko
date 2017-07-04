@@ -89,6 +89,7 @@ public class EventDaoImpl implements EventDao{
             criteria.createAlias("event.category", "category");
             criteria.add(Restrictions.eq("category.categoryId", category.getCategoryId()));
             events = criteria.list();
+            events.size();
             tx.commit();
         } catch(HibernateException ex){
             if (tx!=null) tx.rollback();

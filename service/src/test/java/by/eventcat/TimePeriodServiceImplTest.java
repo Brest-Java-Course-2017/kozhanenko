@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static by.eventcat.TimeConverter.*;
+import static by.eventcat.jpa.TimeConverter.*;
 
 /**
  * Time Period Service Implementation Test
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:test-spring-service.xml"})
+//@ContextConfiguration(locations = {"classpath*:test-spring-service.xml"})
+@ContextConfiguration(locations = {"classpath*:test-spring-service-for-jpa-dao-impl.xml"})
 @Transactional
 public class TimePeriodServiceImplTest {
 
@@ -51,7 +52,7 @@ public class TimePeriodServiceImplTest {
 
 
     @Autowired
-    private TimePeriodServiceImpl timePeriodService;
+    private TimePeriodService timePeriodService;
 
     @Test
     public void getTimePeriodById() throws Exception {
@@ -119,7 +120,7 @@ public class TimePeriodServiceImplTest {
     public void getTimePeriodListOfCertainEventByEventIdIncorrectIndex() throws Exception{
         LOGGER.debug("test: getTimePeriodListOfCertainEventByEventIdIncorrectIndex()");
         try{
-            List<TimePeriod> timePeriods = timePeriodService.getTimePeriodListOfCertainEventByEventId(new Event(-5));
+            timePeriodService.getTimePeriodListOfCertainEventByEventId(new Event(-5));
         } catch(ServiceException ex) {
             assertEquals(CustomErrorCodes.INCORRECT_INDEX, ex.getCustomErrorCode());
             throw ex;
@@ -203,7 +204,7 @@ public class TimePeriodServiceImplTest {
     public  void  getAllTimePeriodsOfCertainCategoryInTimeIntervalWrongInputData() throws Exception{
         LOGGER.debug("test: getAllTimePeriodsOfCertainCategoryInTimeIntervalWrongInputData()");
         try{
-            List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
+            timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
                     new Category(2),
                     0,
                     convertTimeFromStringToSeconds(END3)
@@ -218,7 +219,7 @@ public class TimePeriodServiceImplTest {
     public  void  getAllTimePeriodsOfCertainCategoryInTimeIntervalNoDataFound() throws Exception{
         LOGGER.debug("test: getAllTimePeriodsOfCertainCategoryInTimeIntervalNoDataFound()");
         try{
-            List<TimePeriod> timePeriods = timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
+            timePeriodService.getAllTimePeriodsOfCertainCategoryInTimeInterval(
                     new Category(999),
                     convertTimeFromStringToSeconds(BEGINNING2),
                     convertTimeFromStringToSeconds(END3)

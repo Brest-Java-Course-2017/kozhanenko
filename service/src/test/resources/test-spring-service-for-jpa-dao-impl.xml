@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath*:test-spring-hibernate-db.xml"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:dao.jpa.properties</value>
+                <value>classpath:database.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="categoryDao" class="by.eventcat.jpa.CategoryDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="categoryService" class="by.eventcat.CategoryServiceImpl">
+        <property name="categoryDao" ref="categoryDao"/>
+    </bean>
+
+    <bean id="eventDao" class="by.eventcat.jpa.EventDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="eventService" class="by.eventcat.EventServiceImpl">
+        <property name="eventDao" ref="eventDao"/>
+    </bean>
+
+    <bean id="timePeriodDao" class="by.eventcat.jpa.TimePeriodDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="timePeriodService" class="by.eventcat.TimePeriodServiceImpl">
+        <property name="timePeriodDao" ref="timePeriodDao"/>
+    </bean>
+
+</beans>

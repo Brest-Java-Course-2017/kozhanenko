@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Map;
  */
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
+@Transactional
 public class EventRestController {
 
     private static final Logger LOGGER = LogManager.getLogger();

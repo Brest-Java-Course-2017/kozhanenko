@@ -17,8 +17,8 @@
     </bean>
 
     <jdbc:initialize-database data-source="dataSource">
-        <jdbc:script location="create-tables.sql"/>
-        <jdbc:script location="data-script.sql"/>
+        <jdbc:script location="classpath:create-tables.sql"/>
+        <jdbc:script location="classpath:data-script.sql"/>
     </jdbc:initialize-database>
 
     <!-- Hibernate 4 SessionFactory Bean definition -->

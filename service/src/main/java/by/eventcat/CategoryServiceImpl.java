@@ -4,6 +4,7 @@ import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -23,7 +24,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    //@Autowired
     private CategoryDao categoryDao;
 
     public void setCategoryDao(CategoryDao categoryDao) {

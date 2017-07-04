@@ -4,6 +4,7 @@ import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static by.eventcat.TimeConverter.*;
+import static by.eventcat.jpa.TimeConverter.*;
 
 /**
  * TimePeriodService Implementation
@@ -23,9 +24,9 @@ public class TimePeriodServiceImpl implements TimePeriodService{
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    //@Autowired
-    private TimePeriodDao timePeriodDao;
 
+    private TimePeriodDao timePeriodDao;
+//    @Autowired
     public void setTimePeriodDao(TimePeriodDao timePeriodDao) {
         this.timePeriodDao = timePeriodDao;
     }

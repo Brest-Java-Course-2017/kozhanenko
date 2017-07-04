@@ -9,13 +9,13 @@ import java.util.Date;
 /**
  * Time conversion class
  */
-class TimeConverter {
+public class TimeConverter {
     /**
      * Convert time in String format to timestamp (seconds)
      * @param timeInString time in format "yyyy-MM-dd HH:mm:ss"
      * @return time in timestamp format
      */
-    static long convertTimeFromStringToSeconds(String timeInString){
+    public static long convertTimeFromStringToSeconds(String timeInString){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         try{
@@ -33,7 +33,7 @@ class TimeConverter {
      * @param timeInSeconds time in timestamp format
      * @return time in format "yyyy-MM-dd HH:mm:ss"
      */
-    static String convertTimeFromSecondsToString (long timeInSeconds){
+    public static String convertTimeFromSecondsToString (long timeInSeconds){
         Date date = new Date(timeInSeconds*1000);
         DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(date);
@@ -45,7 +45,7 @@ class TimeConverter {
      * @param dateString testing date string
      * @return if dateString matches pattern "yyyy-MM-dd HH:mm:ss"
      */
-    static boolean isValidDateInStringFormat(String dateString) {
+    public static boolean isValidDateInStringFormat(String dateString) {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             df.parse(dateString);
@@ -70,7 +70,7 @@ class TimeConverter {
      * @param dateString testing date string
      * @return if testing date string contains correct date and time
      */
-    static boolean isValidDateInString(String dateString){
+    public static boolean isValidDateInString(String dateString){
         if ( ! isValidDateInStringFormat(dateString)){
             return false;
         }

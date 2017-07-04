@@ -13,7 +13,7 @@
     <modules>
         <module>model</module>
         <module>dao-api</module>
-        <module>dao</module>
+        <!--<module>dao</module>-->
         <module>test-db</module>
         <module>service-api</module>
         <module>service</module>
@@ -156,6 +156,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+                <version>${jackson.databind-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-hibernate4</artifactId>
                 <version>${jackson.databind-version}</version>
             </dependency>
 

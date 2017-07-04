@@ -13,27 +13,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static by.eventcat.TimeConverter.convertTimeFromStringToSeconds;
+import static by.eventcat.jpa.TimeConverter.convertTimeFromStringToSeconds;
 import static org.junit.Assert.*;
 
 /**
  * Category service implementation test
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:test-spring-service.xml"})
+//@ContextConfiguration(locations = {"classpath*:test-spring-service.xml"})
+@ContextConfiguration(locations = {"classpath*:test-spring-service-for-jpa-dao-impl.xml"})
 @Transactional
 public class CategoryServiceImplTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
     private static final String CATEGORY_NAME_1 = "Театр";
     private static final String INCORRECT_CATEGORY_NAME_1 = "Т";
     private static final String INCORRECT_CATEGORY_NAME_2 = "Некорректное имя";
     private static final Category CATEGORY = new Category("Барды");
-    private static final Category DUPLICATE_CATEGORY = new Category(CATEGORY_NAME_1);
     private static final String BEGIN_TIME = "2017-03-01 00:00:00";
     private static final String END_TIME ="2017-04-01 00:00:00";
     private static final String BEGIN_TIME1 = "2099-03-01 00:00:00";
@@ -50,9 +50,14 @@ public class CategoryServiceImplTest {
     @Test
     public void getCategoryById() throws Exception {
         LOGGER.debug("test: getCategoryById()");
-        Category category = categoryService.getCategoryById(1);
-        assertNotNull(category);
-        assertEquals(CATEGORY_NAME_1, category.getCategoryName());
+        List<Category> categories = categoryService.getAllCategories();
+        if (categories.size() > 0){
+            int categoryId = categories.get(0).getCategoryId();
+            String categoryName = categories.get(0).getCategoryName();
+            Category category = categoryService.getCategoryById(categoryId);
+            assertNotNull(category);
+            assertEquals(categoryName, category.getCategoryName());
+        }
     }
 
     @Test (expected = by.eventcat.custom.exceptions.ServiceException.class)
@@ -80,9 +85,13 @@ public class CategoryServiceImplTest {
     @Test
     public void getCategoryByCategoryName() throws Exception {
         LOGGER.debug("test: getCategoryByCategoryName()");
-        Category category = categoryService.getCategoryByCategoryName(CATEGORY_NAME_1);
-        assertNotNull(category);
-        assertEquals(CATEGORY_NAME_1, category.getCategoryName());
+        List<Category> categories = categoryService.getAllCategories();
+        if (categories.size() > 0){
+            String categoryName = categories.get(0).getCategoryName();
+            Category category = categoryService.getCategoryByCategoryName(categoryName);
+            assertNotNull(category);
+            assertEquals(categoryName, category.getCategoryName());
+        }
     }
 
     @Test (expected = by.eventcat.custom.exceptions.ServiceException.class)
@@ -180,12 +189,15 @@ public class CategoryServiceImplTest {
     @Test(expected = by.eventcat.custom.exceptions.ServiceException.class)
     public void addDuplicateCategory() throws Exception {
         LOGGER.debug("test: addDuplicateCategory()");
-
-        try{
-            categoryService.addCategory(DUPLICATE_CATEGORY);
-        } catch (ServiceException ex){
-            assertEquals(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED, ex.getCustomErrorCode());
-            throw ex;
+        List<Category> categories = categoryService.getAllCategories();
+        if (categories.size() > 0){
+            Category duplicateCategory = new Category(categories.get(0).getCategoryName());
+            try{
+                categoryService.addCategory(duplicateCategory);
+            } catch (ServiceException ex){
+                assertEquals(CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED, ex.getCustomErrorCode());
+                throw ex;
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package by.eventcat;
 
+import org.hibernate.annotations.Proxy;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
@@ -9,6 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "time_period")
+//@Proxy(lazy = false)
 public class TimePeriod {
 
     @Id
