@@ -1,5 +1,7 @@
 package by.eventcat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
@@ -28,6 +30,7 @@ public class Event {
     private String eventPlace;
 
     @OneToMany(mappedBy = "event")
+    @JsonIgnore
     private Set<TimePeriod> timePeriods = new HashSet<>();
 
     public Event(){}

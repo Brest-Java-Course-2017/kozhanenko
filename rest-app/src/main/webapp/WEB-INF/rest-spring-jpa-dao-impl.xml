@@ -71,8 +71,6 @@
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
 
-
-
     <bean id="categoryDao" class="by.eventcat.jpa.CategoryDaoImpl">
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
@@ -93,22 +91,6 @@
     <bean id="timePeriodService" class="by.eventcat.TimePeriodServiceImpl">
         <property name="timePeriodDao" ref="timePeriodDao"/>
     </bean>
-
-    <!--<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">-->
-        <!--<property name="messageConverters">-->
-            <!--<list>-->
-                <!--<ref bean="jsonConverter"/>-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-    <!--<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
-        <!--&lt;!&ndash;<property name="supportedMediaTypes" value="application/json;" />&ndash;&gt;-->
-        <!--&lt;!&ndash;<property name="prettyPrint" value="true" />&ndash;&gt;-->
-        <!--<property name="objectMapper">-->
-            <!--<bean class="by.eventcat.mapper.HibernateAwareObjectMapper" />-->
-        <!--</property>-->
-    <!--</bean>-->
 
     <mvc:annotation-driven>
         <mvc:message-converters>

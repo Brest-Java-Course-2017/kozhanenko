@@ -1,6 +1,9 @@
 package by.eventcat;
 
-import org.hibernate.annotations.Proxy;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,7 +14,8 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "time_period")
-//@Proxy(lazy = false)
+@JsonSerialize(using = TimePeriodSerializer.class)
+@JsonDeserialize(using = TimePeriodDeserializer.class)
 public class TimePeriod {
 
     @Id
@@ -24,14 +28,18 @@ public class TimePeriod {
     private Event event;
 
     @Column(name = "beginning")
+    @JsonIgnore
     private Date beginningInDateFormat;
 
     @Column(name = "end")
+    @JsonIgnore
     private Date endInDateFormat;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Transient
     private long beginning;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Transient
     private long end;
 
@@ -72,7 +80,6 @@ public class TimePeriod {
 
     public void setBeginningInDateFormat(Date beginningInDateFormat) {
         this.beginningInDateFormat = beginningInDateFormat;
-
     }
 
     public Date getEndInDateFormat() {

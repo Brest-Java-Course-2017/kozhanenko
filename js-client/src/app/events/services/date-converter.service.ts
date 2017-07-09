@@ -10,7 +10,7 @@ export class DateConverterService {
   public convertDateFromMapToSeconds(fullYear: any, time: any): number {
     //fullYear.month - in human format
     let date1: number = new Date().setFullYear(fullYear.year, fullYear.month - 1, fullYear.day);
-    return (new Date(date1).setHours(time.hour, time.minute, 0))/1000;
+    return Math.floor( (new Date(date1).setHours(time.hour, time.minute, 0))/1000 );
   }
 
   public convertDateFromMapToString(fullYear: any, time: any): string {

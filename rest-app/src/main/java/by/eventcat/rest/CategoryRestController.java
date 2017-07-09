@@ -21,7 +21,6 @@ import java.util.Map;
  */
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@Transactional
 public class CategoryRestController {
 
     private static final Logger LOGGER = LogManager.getLogger();

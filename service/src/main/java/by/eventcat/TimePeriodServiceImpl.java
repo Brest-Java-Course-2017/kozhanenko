@@ -130,6 +130,13 @@ public class TimePeriodServiceImpl implements TimePeriodService{
         LOGGER.debug("addTimePeriodList()");
 
         for (TimePeriod timePeriod: timePeriods){
+
+            LOGGER.debug(timePeriod.getEvent().getEventId() <= 0);
+            LOGGER.debug(timePeriod.getBeginning() <= 0);
+            LOGGER.debug(timePeriod.getBeginning());
+            LOGGER.debug(timePeriod.getEnd() <= 0);
+            LOGGER.debug(timePeriod.getEnd());
+
             if (timePeriod.getEvent().getEventId() <= 0 ||
                     timePeriod.getBeginning() <= 0 ||
                     timePeriod.getEnd() <= 0){

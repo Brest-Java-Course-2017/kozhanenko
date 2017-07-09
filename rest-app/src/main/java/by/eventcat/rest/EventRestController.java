@@ -168,6 +168,7 @@ public class EventRestController {
     Map<String, Object> addEvent(@RequestBody Map<String, List<TimePeriod>> requestBody) {
         List<TimePeriod> timePeriods = requestBody.get("timePeriods");
         LOGGER.debug("addEvent: event = {}", timePeriods.get(0).getEvent());
+        LOGGER.debug("timePeriods = {}", timePeriods);
         Map<String, Object> responseObject = new HashMap<>();
         Event newEvent = timePeriods.get(0).getEvent();
         int newEventId;

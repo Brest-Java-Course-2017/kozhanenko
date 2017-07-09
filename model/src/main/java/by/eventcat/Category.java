@@ -1,7 +1,6 @@
 package by.eventcat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Proxy;
 
 import java.util.*;
 import javax.persistence.*;
@@ -12,7 +11,6 @@ import javax.transaction.Transactional;
  */
 @Entity
 @Table(name = "category")
-@Transactional
 public class Category {
 
     @Id
@@ -24,6 +22,7 @@ public class Category {
     private String categoryName;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Event> events = new ArrayList<>();
 
     public Category (){}

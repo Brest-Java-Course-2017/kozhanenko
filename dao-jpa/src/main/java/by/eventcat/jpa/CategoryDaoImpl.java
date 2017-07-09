@@ -14,7 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import static by.eventcat.jpa.TimeConverter.*;
  * CategoryDao JPA Implementation
  */
 @Repository
-@Transactional
+//@Transactional
 public class CategoryDaoImpl implements CategoryDao {
 
     private static final Logger LOGGER = LogManager.getLogger();

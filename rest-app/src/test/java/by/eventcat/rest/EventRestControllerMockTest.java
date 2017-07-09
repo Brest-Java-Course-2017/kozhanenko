@@ -4,6 +4,9 @@ import by.eventcat.*;
 import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -38,6 +41,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 @ContextConfiguration(locations = {"classpath*:test-spring-rest-mock.xml"})
 public class EventRestControllerMockTest {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @Resource
     private EventRestController eventController;
 
@@ -63,8 +68,8 @@ public class EventRestControllerMockTest {
     private static final Event EVENT1 = new Event(2, new Category(1),
             "some_name1", "some_place1");
     private static final List<Event> EVENTS = new ArrayList<>();
-    private static final TimePeriod TIME_PERIOD = new TimePeriod(new Event(1),
-            123234234L, 1234566456L);
+    private static final TimePeriod TIME_PERIOD = new TimePeriod(EVENT,
+            123234234, 1234566456);
     private static final TimePeriod TIME_PERIOD_FULL = new TimePeriod(1, new Event(1,
             new Category(1), "name", "place"), 123234234L, 1234566456L);
     private static final List<TimePeriod> TIME_PERIODS = new ArrayList<>();
@@ -166,7 +171,16 @@ public class EventRestControllerMockTest {
         responseBody.put("successMessage", eventSuccessfullyAdded);
         responseBody.put("data", 1);
 
-        String timePeriods = new ObjectMapper().writeValueAsString(REQUEST_BODY);
+        ObjectMapper mapper = new ObjectMapper();
+
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(TimePeriod.class, new TimePeriodSerializer());
+        mapper.registerModule(module);
+
+        String timePeriods  = mapper.writeValueAsString(REQUEST_BODY);
+
+        LOGGER.debug(timePeriods);
+        //String timePeriods = new ObjectMapper().writeValueAsString(REQUEST_BODY);
 
         mockMvc.perform(
                 post("/event")
@@ -189,7 +203,17 @@ public class EventRestControllerMockTest {
         expect(mockTimePeriodService.addTimePeriodList(EasyMock.<List<TimePeriod>> anyObject())).andReturn(ROWS_AFFECTED);
         replay(mockTimePeriodService);
 
-        String timePeriods = new ObjectMapper().writeValueAsString(REQUEST_BODY);
+
+        //String timePeriods = new ObjectMapper().writeValueAsString(REQUEST_BODY);
+        ObjectMapper mapper = new ObjectMapper();
+
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(TimePeriod.class, new TimePeriodSerializer());
+        mapper.registerModule(module);
+
+        String timePeriods  = mapper.writeValueAsString(REQUEST_BODY);
+
+
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("successMessage", eventSuccessfullyUpdated);
 

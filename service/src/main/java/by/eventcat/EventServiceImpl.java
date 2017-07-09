@@ -5,7 +5,6 @@ import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -77,7 +76,6 @@ public class EventServiceImpl implements EventService{
     @Override
     public Integer addEvent(Event event) throws DataAccessException, ServiceException {
         LOGGER.debug("addEvent(event): name = {}", event.getEventName());
-
         if (event.getCategory().getCategoryId() <= 0 ||
                 event.getEventName() == null ||
                 event.getEventName().length() < 2 ||

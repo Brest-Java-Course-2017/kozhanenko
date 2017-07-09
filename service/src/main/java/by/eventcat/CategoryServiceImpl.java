@@ -4,13 +4,13 @@ import by.eventcat.custom.exceptions.CustomErrorCodes;
 import by.eventcat.custom.exceptions.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * Category Service Implementation
  */
 @Service
-@Transactional
+//@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private static final Logger LOGGER = LogManager.getLogger();
