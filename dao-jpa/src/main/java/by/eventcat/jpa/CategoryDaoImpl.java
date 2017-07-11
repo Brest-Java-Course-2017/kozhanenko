@@ -130,7 +130,7 @@ public class CategoryDaoImpl implements CategoryDao {
                         object[1]!=null ? object[1].toString() : ""
                 ));
                 categoryWithCount.setCountEventsOfCategory(
-                        object[2]!=null ? Integer.parseInt(object[0].toString()) : 0
+                        object[2]!=null ? Integer.parseInt(object[2].toString()) : 0
                 );
                 categoriesWithCount.add(categoryWithCount);
             }

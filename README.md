@@ -36,7 +36,7 @@ In this version you can:
  3. Start js-client by typing in terminal **_npm start_**
  4. js-client is available in your browser in url **_http://server_domain_or_IP:3000_** (for example **_http://localhost:3000_**)
  
- **Important:** testing DB has initial data about events, that happening in 13.03.2017-15.03.2017
+ **Important:** testing DB has initial data about events, that happening in 13.03.2017-14.03.2017 and 21.03.2017
  
  You can **test REST service** with the next **curl** commands:
  1. Get all categories: _curl -v localhost:8080/rest-app-1.0-SNAPSHOT/categories_
