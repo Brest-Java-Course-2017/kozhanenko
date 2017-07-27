@@ -3,37 +3,47 @@
         xmlns="http://www.springframework.org/schema/security"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:beans="http://www.springframework.org/schema/beans"
-        xmlns:sec="http://www.springframework.org/schema/security"
         xsi:schemaLocation="
       http://www.springframework.org/schema/security
       http://www.springframework.org/schema/security/spring-security-4.2.xsd
       http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-    <http entry-point-ref="restAuthenticationEntryPoint">
-        <!--<intercept-url pattern="/api/admin/**" access="ROLE_ADMIN"/>-->
-        <intercept-url pattern="/**" access="hasRole('ROLE_ADMIN')"/>
+    <!--activate @PreFilter, @PreAuthorize, @PostFilter, @PostAuthorize annotations on any spring beans in the context-->
+    <global-method-security pre-post-annotations="enabled" />
 
-        <form-login
-                authentication-success-handler-ref="mySuccessHandler"
-                authentication-failure-handler-ref="myFailureHandler"
-        />
+    <!--define the login and signup endpoints to skip security-->
+    <http pattern="/login" security="none"/>
+    <http pattern="/signup" security="none"/>
 
-        <logout />
+    <!--we define the filter chain applied to all requests while adding two important configs: Entry point reference and -->
+    <!--setting the session creation to stateless (we do not want the session created for security purposes as -->
+    <!--we are using tokens for each request)-->
+    <http pattern="/**" entry-point-ref="restAuthenticationEntryPoint" create-session="stateless">
+        <!--We do not need csrf protection because our tokens are immune to it-->
+        <csrf disabled="true"/>
+        <!--we plug in our special authentication filter within the Spring’s predefined filter chain,-->
+        <!--just before the form login filter-->
+        <custom-filter before="FORM_LOGIN_FILTER" ref="jwtAuthenticationFilter"/>
     </http>
 
-    <beans:bean id="mySuccessHandler"
-                class="by.eventcat.rest.security.MySavedRequestAwareAuthenticationSuccessHandler"/>
-    <beans:bean id="myFailureHandler" class=
-            "org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler"/>
+    <!--This bean is the declaration of our authentification filter; since it is extending Spring’s -->
+    <!--AbstractAuthenticationProcessingFilter, we need to declare it in XML to wire its properties -->
+    <!--(auto wire does not work here)-->
+    <beans:bean id="jwtAuthenticationFilter" class="by.eventcat.rest.security.JwtAuthenticationFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager" />
+        <!--The default success handler of AbstractAuthenticationProcessingFilter is not good enough for REST purposes -->
+        <!--because it redirects the user to a success page; that is why we set our own here-->
+        <beans:property name="authenticationSuccessHandler" ref="jwtAuthenticationSuccessHandler" />
+    </beans:bean>
 
     <authentication-manager alias="authenticationManager">
-        <authentication-provider>
-            <user-service>
-                <user name="temporary" password="temporary" authorities="ROLE_ADMIN"/>
-                <user name="user" password="user" authorities="ROLE_USER"/>
-            </user-service>
-        </authentication-provider>
+        <!--The declaration of the provider created by the authenticationManager is used by our filter to authenticate users-->
+        <authentication-provider ref="jwtAuthenticationProvider" />
     </authentication-manager>
+
+    <beans:bean id="restAuthenticationEntryPoint" class="by.eventcat.rest.security.RestAuthenticationEntryPoint"/>
+    <beans:bean id="jwtAuthenticationProvider" class="by.eventcat.rest.security.JwtAuthenticationProvider"/>
+    <beans:bean id="jwtUtil" class="by.eventcat.rest.security.JwtUtil"/>
 
 </beans:beans>

@@ -24,6 +24,8 @@
                 <value>classpath:database.properties</value>
                 <value>classpath:ru.error.messages.properties</value>
                 <value>classpath:ru.success.messages.properties</value>
+                <!--for jwt use-->
+                <value>classpath:security.jwt.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="UTF-8"/>
