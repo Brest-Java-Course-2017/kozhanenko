@@ -1,50 +1,63 @@
 package by.eventcat;
 
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * User model
  */
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    @Column(name = "user_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long userId;
 
-    private String userName;
-
-    private String userPassword;
-
-    private String userRequestData;
-
+    //main user identifier - unique field
+    @Column(name = "user_email", unique = true)
     private String userEmail;
 
+    @Transient
+    @Column(name = "user_password")
+    private String userPassword;
+
+    @Column(name = "user_role")
+    private String role;
+
+    //name-surname or nick - how user wants to be named
+    @Column(name = "user_name")
+    private String userName;
+
+    @ManyToMany
+    @JoinTable(name = "users_locations_correlation",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "location_id")})
+    private List<Locality> localities = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "users_event_place_correlation",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "event_place_id")})
+    private List<EventPlace> placesAvailable = new ArrayList<>();
+
+    @Column(name = "user_phone_number")
     private String userPhoneNumber;
 
+    @Column(name = "user_service_plan")
     private String userServicePlan;
 
-    private Float userBalanсe;
+    @Column(name = "user_balance")
+    private Float userBalance;
 
-    private String Role;
-
+    @Column(name = "user_permissions")
     private String userPermissions;
 
+    @Column(name = "user_is_enabled")
     private boolean isEnabled;
 
     public User() {
-    }
-
-    public User(long userId, String userName, String userPassword, String userRequestData, String userEmail,
-                String userPhoneNumber, String userServicePlan, Float userBalanсe, String role, String userPermissions, boolean isEnabled) {
-        this.userId = userId;
-        this.userName = userName;
-        this.userPassword = userPassword;
-        this.userRequestData = userRequestData;
-        this.userEmail = userEmail;
-        this.userPhoneNumber = userPhoneNumber;
-        this.userServicePlan = userServicePlan;
-        this.userBalanсe = userBalanсe;
-        Role = role;
-        this.userPermissions = userPermissions;
-        this.isEnabled = isEnabled;
     }
 
     public long getUserId() {
@@ -55,12 +68,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getUserPassword() {
@@ -71,20 +84,36 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public String getUserRequestData() {
-        return userRequestData;
+    public String getRole() {
+        return role;
     }
 
-    public void setUserRequestData(String userRequestData) {
-        this.userRequestData = userRequestData;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public List<Locality> getLocalities() {
+        return localities;
+    }
+
+    public void setLocalities(List<Locality> localities) {
+        this.localities = localities;
+    }
+
+    public List<EventPlace> getPlacesAvailable() {
+        return placesAvailable;
+    }
+
+    public void setPlacesAvailable(List<EventPlace> placesAvailable) {
+        this.placesAvailable = placesAvailable;
     }
 
     public String getUserPhoneNumber() {
@@ -103,20 +132,12 @@ public class User {
         this.userServicePlan = userServicePlan;
     }
 
-    public Float getUserBalanсe() {
-        return userBalanсe;
+    public Float getUserBalance() {
+        return userBalance;
     }
 
-    public void setUserBalanсe(Float userBalanсe) {
-        this.userBalanсe = userBalanсe;
-    }
-
-    public String getRole() {
-        return Role;
-    }
-
-    public void setRole(String role) {
-        Role = role;
+    public void setUserBalance(Float userBalance) {
+        this.userBalance = userBalance;
     }
 
     public String getUserPermissions() {
@@ -142,35 +163,37 @@ public class User {
         User user = (User) o;
         return userId == user.userId &&
                 isEnabled == user.isEnabled &&
-                Objects.equals(userName, user.userName) &&
-                Objects.equals(userPassword, user.userPassword) &&
-                Objects.equals(userRequestData, user.userRequestData) &&
                 Objects.equals(userEmail, user.userEmail) &&
+                Objects.equals(userPassword, user.userPassword) &&
+                Objects.equals(role, user.role) &&
+                Objects.equals(userName, user.userName) &&
+                Objects.equals(localities, user.localities) &&
+                Objects.equals(placesAvailable, user.placesAvailable) &&
                 Objects.equals(userPhoneNumber, user.userPhoneNumber) &&
                 Objects.equals(userServicePlan, user.userServicePlan) &&
-                Objects.equals(userBalanсe, user.userBalanсe) &&
-                Objects.equals(Role, user.Role) &&
+                Objects.equals(userBalance, user.userBalance) &&
                 Objects.equals(userPermissions, user.userPermissions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userName, userPassword, userRequestData, userEmail, userPhoneNumber,
-                userServicePlan, userBalanсe, Role, userPermissions, isEnabled);
+        return Objects.hash(userId, userEmail, userPassword, role, userName, localities, placesAvailable,
+                userPhoneNumber, userServicePlan, userBalance, userPermissions, isEnabled);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", userRequestData='" + userRequestData + '\'' +
                 ", userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", role='" + role + '\'' +
+                ", userName='" + userName + '\'' +
+                //", localities=" + localities +
+                //", placesAvailable=" + placesAvailable +
                 ", userPhoneNumber='" + userPhoneNumber + '\'' +
                 ", userServicePlan='" + userServicePlan + '\'' +
-                ", userBalanсe=" + userBalanсe +
-                ", Role='" + Role + '\'' +
+                ", userBalance=" + userBalance +
                 ", userPermissions='" + userPermissions + '\'' +
                 ", isEnabled=" + isEnabled +
                 '}';

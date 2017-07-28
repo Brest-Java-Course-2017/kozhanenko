@@ -21,3 +21,22 @@ INSERT INTO `time_period` (`time_period_id`, `event_id`, `beginning`, `end`) VAL
         (4, 1, '2017-03-14 10:00:00', '2017-03-14 12:00:00'),
         (5, 3, '2017-03-21 22:00:00', '2017-03-21 22:50:00'),
         (6, 3, '2017-03-14 11:00:00', '2017-03-14 12:00:00');
+
+INSERT INTO `our_locations` (`location_id`, `city_name`) VALUES
+        (1, 'Брест'),
+        (2, 'Гродно'),
+        (3, 'Минск'),
+        (4, 'Витебск'),
+        (5, 'Гомель'),
+        (6, 'Могилёв');
+
+INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `user_email`, `user_phone_number`,
+                     `user_service_plan`, `user_balance`, `user_role`, `user_permissions`, `user_is_enabled`) VALUES
+        (1, 'Василий', '12345', 'sss@mail.ru', '55555555', NULL, NULL, 'admin', NULL, 'true'),
+        (2, 'Алекс', '12345', 'fff@mail.ru', '66666666', NULL, NULL, 'user', NULL, 'true');
+
+INSERT INTO `users_locations_correlation` (`user_id`, `location_id`) VALUES
+        (1, 1),
+        (1, 4),
+        (2, 1),
+        (2, 3);

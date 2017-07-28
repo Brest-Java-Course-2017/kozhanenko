@@ -1,7 +1,10 @@
 package by.eventcat;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,19 +14,38 @@ import java.util.Objects;
 @Table(name = "event_place")
 public class EventPlace {
 
+    @Id
+    @Column(name = "event_place_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int eventPlaceId;
 
+    @Column(name = "name")
     private String eventPlaceName;
 
+    @Column(name = "description")
     private String description;
 
-    private String img_urls;
+    @Column(name = "img_urls")
+    private String imgUrls;
 
+    @Column(name = "icon_url")
+    private String iconUrl;
+
+    @Column(name = "address")
     private String address;
 
+    @Column(name = "contacts")
     private String contacts;
 
-    private String coordinates;
+    @Column(name = "latitude_coordinate")
+    private float latitudeCoordinate;
+
+    @Column(name = "longitude_coordinate")
+    private float longitudeCoordinate;
+
+    @ManyToMany(mappedBy = "placesAvailable")
+    @JsonIgnore
+    private List<User> users = new ArrayList<>();
 
     public int getEventPlaceId() {
         return eventPlaceId;
@@ -49,12 +71,20 @@ public class EventPlace {
         this.description = description;
     }
 
-    public String getImg_urls() {
-        return img_urls;
+    public String getImgUrls() {
+        return imgUrls;
     }
 
-    public void setImg_urls(String img_urls) {
-        this.img_urls = img_urls;
+    public void setImgUrls(String imgUrls) {
+        this.imgUrls = imgUrls;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public String getAddress() {
@@ -73,12 +103,28 @@ public class EventPlace {
         this.contacts = contacts;
     }
 
-    public String getCoordinates() {
-        return coordinates;
+    public float getLatitudeCoordinate() {
+        return latitudeCoordinate;
     }
 
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
+    public void setLatitudeCoordinate(float latitudeCoordinate) {
+        this.latitudeCoordinate = latitudeCoordinate;
+    }
+
+    public float getLongitudeCoordinate() {
+        return longitudeCoordinate;
+    }
+
+    public void setLongitudeCoordinate(float longitudeCoordinate) {
+        this.longitudeCoordinate = longitudeCoordinate;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     @Override
@@ -87,17 +133,20 @@ public class EventPlace {
         if (o == null || getClass() != o.getClass()) return false;
         EventPlace that = (EventPlace) o;
         return eventPlaceId == that.eventPlaceId &&
+                Float.compare(that.latitudeCoordinate, latitudeCoordinate) == 0 &&
+                Float.compare(that.longitudeCoordinate, longitudeCoordinate) == 0 &&
                 Objects.equals(eventPlaceName, that.eventPlaceName) &&
                 Objects.equals(description, that.description) &&
-                Objects.equals(img_urls, that.img_urls) &&
+                Objects.equals(imgUrls, that.imgUrls) &&
+                Objects.equals(iconUrl, that.iconUrl) &&
                 Objects.equals(address, that.address) &&
-                Objects.equals(contacts, that.contacts) &&
-                Objects.equals(coordinates, that.coordinates);
+                Objects.equals(contacts, that.contacts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventPlaceId, eventPlaceName, description, img_urls, address, contacts, coordinates);
+        return Objects.hash(eventPlaceId, eventPlaceName, description, imgUrls, iconUrl,
+                address, contacts, latitudeCoordinate, longitudeCoordinate);
     }
 
     @Override
@@ -106,10 +155,12 @@ public class EventPlace {
                 "eventPlaceId=" + eventPlaceId +
                 ", eventPlaceName='" + eventPlaceName + '\'' +
                 ", description='" + description + '\'' +
-                ", img_urls='" + img_urls + '\'' +
+                ", imgUrls='" + imgUrls + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
                 ", address='" + address + '\'' +
                 ", contacts='" + contacts + '\'' +
-                ", coordinates='" + coordinates + '\'' +
+                ", latitudeCoordinate=" + latitudeCoordinate +
+                ", longitudeCoordinate=" + longitudeCoordinate +
                 '}';
     }
 }

@@ -30,6 +30,9 @@
                 <value>by.eventcat.Category</value>
                 <value>by.eventcat.Event</value>
                 <value>by.eventcat.TimePeriod</value>
+                <value>by.eventcat.User</value>
+                <value>by.eventcat.EventPlace</value>
+                <value>by.eventcat.Locality</value>
             </list>
         </property>
         <property name="hibernateProperties">
