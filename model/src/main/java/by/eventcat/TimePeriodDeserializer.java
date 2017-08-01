@@ -24,7 +24,7 @@ public class TimePeriodDeserializer extends StdDeserializer<TimePeriod> {
 
     @Override
     public TimePeriod deserialize(JsonParser jp, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
 
         int timePeriodId = (Integer) (node.get("timePeriodId")).numberValue();

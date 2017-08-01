@@ -1,5 +1,8 @@
 package by.eventcat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -19,7 +22,7 @@ public class User {
     @Column(name = "user_email", unique = true)
     private String userEmail;
 
-    @Transient
+    @JsonIgnore
     @Column(name = "user_password")
     private String userPassword;
 
@@ -167,8 +170,8 @@ public class User {
                 Objects.equals(userPassword, user.userPassword) &&
                 Objects.equals(role, user.role) &&
                 Objects.equals(userName, user.userName) &&
-                Objects.equals(localities, user.localities) &&
-                Objects.equals(placesAvailable, user.placesAvailable) &&
+//                Objects.equals(localities, user.localities) &&
+//                Objects.equals(placesAvailable, user.placesAvailable) &&
                 Objects.equals(userPhoneNumber, user.userPhoneNumber) &&
                 Objects.equals(userServicePlan, user.userServicePlan) &&
                 Objects.equals(userBalance, user.userBalance) &&
@@ -177,7 +180,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, userEmail, userPassword, role, userName, localities, placesAvailable,
+        return Objects.hash(userId, userEmail, userPassword, role, userName,
                 userPhoneNumber, userServicePlan, userBalance, userPermissions, isEnabled);
     }
 
@@ -189,8 +192,8 @@ public class User {
                 ", userPassword='" + userPassword + '\'' +
                 ", role='" + role + '\'' +
                 ", userName='" + userName + '\'' +
-                //", localities=" + localities +
-                //", placesAvailable=" + placesAvailable +
+                ", localities=" + localities +
+                ", placesAvailable=" + placesAvailable +
                 ", userPhoneNumber='" + userPhoneNumber + '\'' +
                 ", userServicePlan='" + userServicePlan + '\'' +
                 ", userBalance=" + userBalance +

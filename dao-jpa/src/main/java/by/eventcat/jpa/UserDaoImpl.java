@@ -1,11 +1,17 @@
 package by.eventcat.jpa;
 
+import by.eventcat.Category;
 import by.eventcat.User;
 import by.eventcat.UserDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.*;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
 
@@ -33,6 +39,10 @@ public class UserDaoImpl implements UserDao{
             tx = session.beginTransaction();
             Criteria criteria = session.createCriteria(User.class);
             users = criteria.list();
+            for(User user: users){
+                Hibernate.initialize(user.getLocalities());
+                Hibernate.initialize(user.getPlacesAvailable());
+            }
             tx.commit();
         } catch(HibernateException ex){
             if (tx!=null) tx.rollback();
@@ -45,27 +55,144 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
+    public List<User> getAllUsersByLocationPermission(String cityName) throws DataAccessException {
+        return null;
+    }
+
+    @Override
     public User getUserById(long userId) throws DataAccessException {
-        return null;
+        LOGGER.debug("getUserById where ID={}", userId);
+        User user;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            user = (User) session.get(User.class, userId);
+            if (user != null){
+                Hibernate.initialize(user.getLocalities());
+                Hibernate.initialize(user.getPlacesAvailable());
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        if (user == null){
+            throw new EmptyResultDataAccessException(1);
+        }
+        LOGGER.debug("user={}", user);
+        return user;
     }
 
     @Override
-    public User getUserByUserEmail(long userEmail) throws DataAccessException {
-        return null;
+    public User getUserByUserEmail(String userEmail) throws DataAccessException {
+        LOGGER.debug("getUserByUserEmail={}", userEmail);
+        User user;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+
+            Criteria criteria = session.createCriteria(User.class);
+            user = (User) criteria.add(Restrictions.eq("userEmail", userEmail))
+                    .uniqueResult();
+            if (user != null){
+                Hibernate.initialize(user.getLocalities());
+                Hibernate.initialize(user.getPlacesAvailable());
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        if (user == null){
+            throw new EmptyResultDataAccessException(1);
+        }
+        LOGGER.debug("user={}", user);
+        return user;
     }
 
     @Override
-    public Integer addNewUser(User user) throws DataAccessException {
-        return null;
+    public Long addNewUser(User user) throws DataAccessException {
+        LOGGER.debug("addNewUser={}", user.getUserEmail());
+        Long newUserId;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            newUserId = (Long)session.save(user);
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            if (ex instanceof ConstraintViolationException){
+                throw new DuplicateKeyException("");
+            }
+            throw ex;
+        } finally {
+            session.close();
+        }
+        return newUserId;
     }
 
     @Override
     public int updateUser(User user) throws DataAccessException {
-        return 0;
+        LOGGER.debug("updateUser with userId={}", user.getUserId());
+        int rowsAffected;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            session.update(user);
+            rowsAffected = 1;
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            if (ex instanceof ConstraintViolationException){
+                throw new DuplicateKeyException("");
+            }
+            if (ex instanceof StaleStateException){
+                rowsAffected = 0;
+            } else {
+                throw ex;
+            }
+        } finally {
+            session.close();
+        }
+        return rowsAffected;
     }
 
     @Override
-    public int deleteUserById(Integer userId) throws DataAccessException {
-        return 0;
+    public int deleteUserById(Long userId) throws DataAccessException {
+        LOGGER.debug("deleteUserById with ID={}", userId);
+        int rowsAffected;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            User user =
+                    (User)session.get(User.class, userId);
+            if (user == null){
+                rowsAffected = 0;
+            } else{
+                session.delete(user);
+                rowsAffected = 1;
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            if (ex instanceof ConstraintViolationException){
+                //TODO: implement when User is in use in users_event_place_correlation table
+                throw new DataIntegrityViolationException("");
+            } else {
+                throw ex;
+            }
+        } finally {
+            session.close();
+        }
+        return rowsAffected;
     }
 }

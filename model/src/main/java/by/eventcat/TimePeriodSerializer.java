@@ -1,7 +1,6 @@
 package by.eventcat;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
@@ -16,14 +15,14 @@ public class TimePeriodSerializer extends StdSerializer<TimePeriod> {
         this(null);
     }
 
-    public TimePeriodSerializer(Class<TimePeriod> t) {
+    private TimePeriodSerializer(Class<TimePeriod> t) {
         super(t);
     }
 
     @Override
     public void serialize(
             TimePeriod value, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException, JsonProcessingException {
+            throws IOException{
 
         jgen.writeStartObject();
         jgen.writeNumberField("timePeriodId", value.getTimePeriodId());

@@ -18,6 +18,15 @@ public interface UserDao {
     List<User> getAllUsers() throws DataAccessException;
 
     /**
+     * Get all users have permissions for some exact location (city)
+     *
+     * @param cityName city name
+     * @return list of users that fall under the criteria of city
+     * @throws DataAccessException
+     */
+    List<User> getAllUsersByLocationPermission(String cityName) throws DataAccessException;
+
+    /**
      * Get User object by identifier
      *
      * @param userId - user identifier
@@ -33,7 +42,7 @@ public interface UserDao {
      * @return User object
      * @throws DataAccessException
      */
-    User getUserByUserEmail (long userEmail) throws DataAccessException;
+    User getUserByUserEmail (String userEmail) throws DataAccessException;
 
     /**
      * Add new user to database
@@ -42,7 +51,7 @@ public interface UserDao {
      * @return new User identifier
      * @throws DataAccessException
      */
-    Integer addNewUser (User user) throws DataAccessException;
+    Long addNewUser (User user) throws DataAccessException;
 
     /**
      * Update User information
@@ -60,5 +69,5 @@ public interface UserDao {
      * @return
      * @throws DataAccessException
      */
-    int deleteUserById(Integer userId) throws DataAccessException;
+    int deleteUserById(Long userId) throws DataAccessException;
 }

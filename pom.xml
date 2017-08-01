@@ -19,6 +19,7 @@
         <module>service</module>
         <module>rest-app</module>
         <module>dao-jpa</module>
+        <module>common-functionality</module>
     </modules>
 
     <properties>
@@ -67,6 +68,11 @@
             <dependency>
                 <groupId>by.eventcat</groupId>
                 <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>by.eventcat</groupId>
+                <artifactId>common-functionality</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

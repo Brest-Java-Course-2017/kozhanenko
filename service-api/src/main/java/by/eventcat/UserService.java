@@ -19,6 +19,15 @@ public interface UserService {
     List<User> getAllUsers() throws DataAccessException, ServiceException;
 
     /**
+     * Get all users have permissions for some exact location (city)
+     *
+     * @param cityName city name
+     * @return list of users that fall under the criteria of city
+     * @throws DataAccessException
+     */
+    List<User> getAllUsersByLocationPermission(String cityName) throws DataAccessException, ServiceException;
+
+    /**
      * Get User object by identifier
      *
      * @param userId - user identifier
