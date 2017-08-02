@@ -1,7 +1,6 @@
 package by.eventcat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.*;
@@ -27,7 +26,8 @@ public class User {
     private String userPassword;
 
     @Column(name = "user_role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     //name-surname or nick - how user wants to be named
     @Column(name = "user_name")
@@ -87,11 +87,11 @@ public class User {
         this.userPassword = userPassword;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

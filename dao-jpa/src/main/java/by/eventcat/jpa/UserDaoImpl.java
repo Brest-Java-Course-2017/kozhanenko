@@ -1,6 +1,5 @@
 package by.eventcat.jpa;
 
-import by.eventcat.Category;
 import by.eventcat.User;
 import by.eventcat.UserDao;
 import org.apache.logging.log4j.LogManager;
@@ -68,10 +67,7 @@ public class UserDaoImpl implements UserDao{
         try{
             tx = session.beginTransaction();
             user = (User) session.get(User.class, userId);
-            if (user != null){
-                Hibernate.initialize(user.getLocalities());
-                Hibernate.initialize(user.getPlacesAvailable());
-            }
+
             tx.commit();
         } catch(HibernateException ex){
             if (tx!=null) tx.rollback();
@@ -112,7 +108,6 @@ public class UserDaoImpl implements UserDao{
         if (user == null){
             throw new EmptyResultDataAccessException(1);
         }
-        LOGGER.debug("user={}", user);
         return user;
     }
 

@@ -32,11 +32,18 @@ INSERT INTO `our_locations` (`location_id`, `city_name`) VALUES
 
 INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `user_email`, `user_phone_number`,
                      `user_service_plan`, `user_balance`, `user_role`, `user_permissions`, `user_is_enabled`) VALUES
-        (1, 'Василий', '12345', 'sss@mail.ru', '55555555', NULL, NULL, 'admin', NULL, 'true'),
-        (2, 'Алекс', '12345', 'fff@mail.ru', '66666666', NULL, NULL, 'user', NULL, 'true');
+        (1, 'Василий', '12345', 'sss@mail.ru', '55555555', NULL, NULL, 'SUPER_ADMIN', NULL, 'true'),
+        (2, 'Алекс', '12345', 'fff@mail.ru', '66666666', NULL, NULL, 'CITY_ADMIN', NULL, 'true'),
+        (3, 'Макс', '12345', 'ggg@mail.ru', '66666666', NULL, NULL, 'LOCAL_ADMIN', NULL, 'true'),
+        (4, 'Ольга', '12345', 'ccc@mail.ru', '66666666', NULL, NULL, 'LOCAL_ADMIN', NULL, 'true');
 
 INSERT INTO `users_locations_correlation` (`user_id`, `location_id`) VALUES
-        (1, 1),
-        (1, 4),
         (2, 1),
-        (2, 3);
+        (3, 1),
+        (4, 3);
+
+INSERT INTO `user_totals` (`user_totals_id`, `user_role`, `location_id`, `count`) VALUES
+        (1, 'SUPER_ADMIN', NULL, 1),
+        (2, 'CITY_ADMIN', 1, 1),
+        (3, 'LOCAL_ADMIN', 1, 1),
+        (4, 'LOCAL_ADMIN', 3, 1);

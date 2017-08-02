@@ -24,7 +24,15 @@ public class Locality {
     @JsonIgnore
     private List<User> users = new ArrayList<>();
 
+    @OneToMany(mappedBy = "city")
+    @JsonIgnore
+    private Set<UserTotals> usersTotalData = new HashSet<>();
+
     public Locality() {
+    }
+
+    public Locality(long locationId) {
+        this.locationId = locationId;
     }
 
     public long getLocationId() {
@@ -49,6 +57,14 @@ public class Locality {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public Set<UserTotals> getUsersTotalData() {
+        return usersTotalData;
+    }
+
+    public void setUsersTotalData(Set<UserTotals> usersTotalData) {
+        this.usersTotalData = usersTotalData;
     }
 
     @Override

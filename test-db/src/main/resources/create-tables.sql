@@ -83,3 +83,15 @@ CREATE TABLE `users_event_place_correlation` (
   CONSTRAINT `FK__event_place` FOREIGN KEY (`event_place_id`) REFERENCES `event_place` (`event_place_id`)
 );
 
+DROP TABLE IF EXISTS `user_totals`;
+CREATE TABLE `user_totals` (
+  `user_totals_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_role` VARCHAR(11) NULL DEFAULT NULL,
+  `location_id` INT(11) NULL DEFAULT NULL,
+  `count` INT(11) NULL DEFAULT '0',
+  PRIMARY KEY (`user_totals_id`),
+  KEY `FK_user_totals_our_locations` (`location_id`),
+  CONSTRAINT `FK_user_totals_our_locations` FOREIGN KEY (`location_id`) REFERENCES `our_locations` (`location_id`)
+)
+
+

@@ -31,4 +31,8 @@
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
 
+    <bean id="userTotalsDAO" class="by.eventcat.jpa.UserTotalsDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
 </beans>

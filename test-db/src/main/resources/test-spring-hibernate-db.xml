@@ -33,6 +33,7 @@
                 <value>by.eventcat.User</value>
                 <value>by.eventcat.EventPlace</value>
                 <value>by.eventcat.Locality</value>
+                <value>by.eventcat.UserTotals</value>
             </list>
         </property>
         <property name="hibernateProperties">
