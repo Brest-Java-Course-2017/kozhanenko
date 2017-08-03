@@ -7,8 +7,6 @@ import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 
@@ -73,10 +71,10 @@ public class UserTotalsDaoImpl implements UserTotalsDao{
     }
 
     @Override
-    public int setValue(UserRole userRole, Locality city, String operation) throws DataAccessException {
+    public int setValue(UserRole userRole, Locality city, UserTotalsSetValueOperation operation) throws DataAccessException {
         UserTotals editingLine = getValue(userRole, city);
 
-        if (operation.equals("increase")){
+        if (operation.equals(UserTotalsSetValueOperation.INCREASE)){
             //no such data before - add new UserTotals object
             if (editingLine == null){
                 UserTotals addedData = new UserTotals(userRole, city, 1);
@@ -92,7 +90,7 @@ public class UserTotalsDaoImpl implements UserTotalsDao{
                     if (ex instanceof ConstraintViolationException){
                         return 3;
                     }
-                    return 5;
+                    return 4;
                 } finally {
                     session.close();
                 }
@@ -100,7 +98,7 @@ public class UserTotalsDaoImpl implements UserTotalsDao{
                 editingLine.setCount(editingLine.getCount() + 1);
                 return updateUserTotalsLine(editingLine);
             }
-        } else if (operation.equals("decrease")){
+        } else if (operation.equals(UserTotalsSetValueOperation.DECREASE)){
             if (editingLine == null){
                 return 2;//error code
             } else {
@@ -113,7 +111,7 @@ public class UserTotalsDaoImpl implements UserTotalsDao{
                         tx.commit();
                     } catch(HibernateException ex){
                         if (tx!=null) tx.rollback();
-                        return 5;
+                        return 4;
                         }
                 } else {
                     editingLine.setCount(editingLine.getCount() - 1);
@@ -121,7 +119,6 @@ public class UserTotalsDaoImpl implements UserTotalsDao{
                 }
             }
         }
-        //TODO: in service layer check if operation value is "increase" or "decrease"
         return 1;
     }
 

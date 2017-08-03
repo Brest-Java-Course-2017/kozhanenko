@@ -1,9 +1,6 @@
 package by.eventcat.jpa;
 
-import by.eventcat.Locality;
-import by.eventcat.UserRole;
-import by.eventcat.UserTotals;
-import by.eventcat.UserTotalsDao;
+import by.eventcat.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -93,18 +90,21 @@ public class UserTotalsDaoImplTest {
         if (userTotalsDao.getValue(UserRole.LOCAL_ADMIN, new Locality(6)) == null){
 
             //"decrease" of non existing line
-            result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(6), "decrease");
+            result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(6),
+                    UserTotalsSetValueOperation.DECREASE);
             assertEquals(2, result);
 
             //"increase" - line didn't exist before operation
             int quantityBefore = userTotalsDao.getUserTotals().size();
-            result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(6), "increase");
+            result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(6),
+                    UserTotalsSetValueOperation.INCREASE);
             assertEquals(1, result);
             int quantityAfter = userTotalsDao.getUserTotals().size();
             assertEquals(quantityBefore + 1, quantityAfter);
 
             //"decrease" - count after operation is 0
-            result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(6), "decrease");
+            result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(6),
+                    UserTotalsSetValueOperation.DECREASE);
             assertEquals(1, result);
             assertEquals(quantityAfter - 1, userTotalsDao.getUserTotals().size());
 
@@ -115,13 +115,15 @@ public class UserTotalsDaoImplTest {
             int countBefore = userTotalsLine.getCount();
 
             //"increase" - line existed before operation
-            result  = userTotalsDao.setValue(userTotalsLine.getUserRole(), userTotalsLine.getCity(), "increase");
+            result  = userTotalsDao.setValue(userTotalsLine.getUserRole(), userTotalsLine.getCity(),
+                    UserTotalsSetValueOperation.INCREASE);
             assertEquals(1, result);
             UserTotals lineAfter = userTotalsDao.getValue(userTotalsLine.getUserRole(), userTotalsLine.getCity());
             assertEquals(countBefore + 1, lineAfter.getCount());
 
             //"decrease" - count after operation is more than 0
-            result  = userTotalsDao.setValue(userTotalsLine.getUserRole(), userTotalsLine.getCity(), "decrease");
+            result  = userTotalsDao.setValue(userTotalsLine.getUserRole(), userTotalsLine.getCity(),
+                    UserTotalsSetValueOperation.DECREASE);
             assertEquals(1, result);
             assertEquals(countBefore, userTotalsDao.getValue(userTotalsLine.getUserRole(), userTotalsLine.getCity()).getCount());
         }
@@ -131,13 +133,8 @@ public class UserTotalsDaoImplTest {
     public void setValueNotExistingCity() throws Exception {
         LOGGER.debug("test: setValueNotExistingCity()");
 
-        int result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(999), "increase");
+        int result  = userTotalsDao.setValue(UserRole.LOCAL_ADMIN, new Locality(999),
+                UserTotalsSetValueOperation.INCREASE);
         assertEquals(3, result);
     }
-
-
-
-
-
-
 }

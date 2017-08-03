@@ -36,4 +36,22 @@
         <property name="timePeriodDao" ref="timePeriodDao"/>
     </bean>
 
+    <bean id="userDao" class="by.eventcat.jpa.UserDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <bean id="userService" class="by.eventcat.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+        <property name="userTotalsDao" ref="userTotalsDao"/>
+    </bean>
+
+    <bean id="userTotalsDao" class="by.eventcat.jpa.UserTotalsDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
+
+
+
+
 </beans>

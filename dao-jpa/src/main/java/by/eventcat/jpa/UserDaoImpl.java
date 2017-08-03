@@ -53,9 +53,32 @@ public class UserDaoImpl implements UserDao{
         return users;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<User> getAllUsersByLocationPermission(String cityName) throws DataAccessException {
-        return null;
+        LOGGER.debug("getAllUsersByLocationPermission cityName={}", cityName);
+        List<User> users;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+
+            Criteria criteria = session.createCriteria(User.class);
+            criteria.createAlias("localities", "localitiesAlias");
+            criteria.add(Restrictions.eq("localitiesAlias.cityName", cityName));
+            users = criteria.list();
+            for(User user: users){
+                Hibernate.initialize(user.getLocalities());
+                Hibernate.initialize(user.getPlacesAvailable());
+            }
+            tx.commit();
+        } catch(HibernateException ex){
+            if (tx!=null) tx.rollback();
+            throw ex;
+        } finally {
+            session.close();
+        }
+        return users;
     }
 
     @Override
@@ -67,7 +90,10 @@ public class UserDaoImpl implements UserDao{
         try{
             tx = session.beginTransaction();
             user = (User) session.get(User.class, userId);
-
+            if (user != null){
+                Hibernate.initialize(user.getLocalities());
+                Hibernate.initialize(user.getPlacesAvailable());
+            }
             tx.commit();
         } catch(HibernateException ex){
             if (tx!=null) tx.rollback();

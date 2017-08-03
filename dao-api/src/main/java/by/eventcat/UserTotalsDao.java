@@ -37,9 +37,8 @@ public interface UserTotalsDao {
      *        1- OK,
      *        2 - try to decrease non existing data
      *        3 - using not existing city (ConstraintViolationException)
-     *        4 - try to update not existing UserTotals line StaleStateException
-     *        5 - HibernateException
+     *        4 - HibernateException
      * @throws DataAccessException
      */
-    int setValue(UserRole userRole, Locality city, String operation) throws DataAccessException;
+    int setValue(UserRole userRole, Locality city, UserTotalsSetValueOperation operation) throws DataAccessException;
 }

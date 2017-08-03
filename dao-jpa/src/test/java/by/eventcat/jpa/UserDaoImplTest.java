@@ -1,5 +1,6 @@
 package by.eventcat.jpa;
 
+import by.eventcat.Locality;
 import by.eventcat.User;
 import by.eventcat.UserDao;
 import org.apache.logging.log4j.LogManager;
@@ -38,6 +39,20 @@ public class UserDaoImplTest {
         LOGGER.debug("test: getAllUsers()");
         List<User> users = userDao.getAllUsers();
         assertTrue(users.size() > 0);
+    }
+
+    @Test
+    public void getAllUsersByLocationPermission() throws Exception {
+        LOGGER.debug("test: getAllUsers()");
+        List<User> users = userDao.getAllUsers();
+        if (users.size() > 0){
+            List<Locality> localities = users.get(0).getLocalities();
+            if (localities.size() > 0){
+                String cityName = localities.get(0).getCityName();
+                users = userDao.getAllUsersByLocationPermission(cityName);
+                assertTrue(users.size() > 0);
+            }
+        }
     }
 
     @Test
@@ -196,8 +211,5 @@ public class UserDaoImplTest {
         LOGGER.debug("test: deleteUserByIdDataIsInUse()");
         userDao.deleteUserById(1L);
     }
-
-
-
 
 }

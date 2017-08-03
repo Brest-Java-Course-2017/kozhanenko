@@ -32,10 +32,10 @@ INSERT INTO `our_locations` (`location_id`, `city_name`) VALUES
 
 INSERT INTO `users` (`user_id`, `user_name`, `user_password`, `user_email`, `user_phone_number`,
                      `user_service_plan`, `user_balance`, `user_role`, `user_permissions`, `user_is_enabled`) VALUES
-        (1, 'Василий', '12345', 'sss@mail.ru', '55555555', NULL, NULL, 'SUPER_ADMIN', NULL, 'true'),
-        (2, 'Алекс', '12345', 'fff@mail.ru', '66666666', NULL, NULL, 'CITY_ADMIN', NULL, 'true'),
-        (3, 'Макс', '12345', 'ggg@mail.ru', '66666666', NULL, NULL, 'LOCAL_ADMIN', NULL, 'true'),
-        (4, 'Ольга', '12345', 'ccc@mail.ru', '66666666', NULL, NULL, 'LOCAL_ADMIN', NULL, 'true');
+        (1, 'Василий', '$2a$10$WCZcoy1wRZyuM51bA2LYveYQj1bxkEmiIny53VS0J9l8r01LX5TvO', 'sss@mail.ru', '55555555', NULL, NULL, 'SUPER_ADMIN', NULL, 'true'),
+        (2, 'Алекс', '$2a$10$WCZcoy1wRZyuM51bA2LYveYQj1bxkEmiIny53VS0J9l8r01LX5TvO', 'fff@mail.ru', '66666666', NULL, NULL, 'CITY_ADMIN', NULL, 'true'),
+        (3, 'Макс', '$2a$10$WCZcoy1wRZyuM51bA2LYveYQj1bxkEmiIny53VS0J9l8r01LX5TvO', 'ggg@mail.ru', '66666666', NULL, NULL, 'LOCAL_ADMIN', NULL, 'true'),
+        (4, 'Ольга', '$2a$10$WCZcoy1wRZyuM51bA2LYveYQj1bxkEmiIny53VS0J9l8r01LX5TvO', 'ccc@mail.ru', '66666666', NULL, NULL, 'LOCAL_ADMIN', NULL, 'true');
 
 INSERT INTO `users_locations_correlation` (`user_id`, `location_id`) VALUES
         (2, 1),

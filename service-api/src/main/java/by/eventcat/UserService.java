@@ -43,7 +43,7 @@ public interface UserService {
      * @return User object
      * @throws DataAccessException
      */
-    User getUserByUserEmail (long userEmail) throws DataAccessException, ServiceException;
+    User getUserByUserEmail (String userEmail) throws DataAccessException, ServiceException;
 
     /**
      * Add new user to database
@@ -52,7 +52,7 @@ public interface UserService {
      * @return new User identifier
      * @throws DataAccessException
      */
-    Integer addNewUser (User user) throws DataAccessException, ServiceException;
+    Long addNewUser (User user) throws DataAccessException, ServiceException;
 
     /**
      * Update User information
@@ -62,6 +62,17 @@ public interface UserService {
      * @throws DataAccessException
      */
     int updateUser(User user) throws DataAccessException, ServiceException;
+
+    /**
+     * Change User Password to newPassword value
+     *
+     * @param userId - User identifier
+     * @param newPassword new User password
+     * @return number of rows affected
+     * @throws DataAccessException
+     * @throws ServiceException
+     */
+    int changeUserPassword(Long userId, String newPassword) throws DataAccessException, ServiceException;
 
     /**
      * Delete User by identifier

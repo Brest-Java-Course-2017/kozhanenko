@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(150) NOT NULL,
-  `user_password` varchar(30) NOT NULL,
+  `user_password` varchar(60) NOT NULL,
   `user_email`  varchar(100) NOT NULL UNIQUE,
   `user_phone_number` varchar(150) NOT NULL,
   `user_service_plan` varchar(30) NOT NULL,

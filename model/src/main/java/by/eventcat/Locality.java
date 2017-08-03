@@ -35,6 +35,11 @@ public class Locality {
         this.locationId = locationId;
     }
 
+    public Locality(long locationId, String cityName) {
+        this.locationId = locationId;
+        this.cityName = cityName;
+    }
+
     public long getLocationId() {
         return locationId;
     }
