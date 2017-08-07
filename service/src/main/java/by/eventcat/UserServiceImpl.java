@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService{
         this.userTotalsDao = userTotalsDao;
     }
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private PasswordEncoder passwordEncoder;
 
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -203,13 +202,62 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public int deleteUserById(Integer userId) throws DataAccessException, ServiceException {
-        return 0;
+    public int deleteUserById(Long userId) throws DataAccessException, ServiceException {
+        LOGGER.debug("deleteUserById with userId = {}", userId);
+
+        if (userId <= 0) throw new ServiceException(CustomErrorCodes.INCORRECT_INDEX);
+        int rowsAffected;
+
+        User userToDelete;
+        try{
+            userToDelete = userDao.getUserById(userId);
+        } catch (EmptyResultDataAccessException ex){
+            throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
+        }
+
+        try {
+            rowsAffected = userDao.deleteUserById(userId);
+        } catch (DataIntegrityViolationException ex){
+            //TODO: in DAO layer implement DataIntegrityViolationException situation - may be when events or event places wil be associated with User
+            throw new ServiceException(CustomErrorCodes.DELETING_DATA_IS_IN_USE);
+        }
+        if (rowsAffected == 0) throw new ServiceException(CustomErrorCodes.NO_ACTIONS_MADE);
+        if (rowsAffected > 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
+
+        if (rowsAffected == 1){
+            Locality locality = null;
+            if (userToDelete.getLocalities() != null && userToDelete.getLocalities().size() > 0){
+                locality = userToDelete.getLocalities().get(0);
+            }
+            int resultCode = userTotalsDao.setValue(userToDelete.getRole(), locality, UserTotalsSetValueOperation.DECREASE);
+            if (resultCode != 1) throw new ServiceException(CustomErrorCodes.ACTIONS_ERROR);
+        }
+
+        return rowsAffected;
     }
 
     @Override
     public User authenticateUser(String userEmail, String userPassword) throws DataAccessException, ServiceException {
-        return null;
+        LOGGER.debug("authenticateUser with userEmail = {}, userPassword={}", userEmail, userPassword);
+
+        if (userPassword.length() < 8){
+            return null;
+        }
+
+        User realUser;
+        try{
+            realUser = getUserByUserEmail(userEmail);
+        } catch(ServiceException ex){
+            return null;
+        }
+
+        if (passwordEncoder.matches(userPassword, realUser.getUserPassword())){
+            realUser.setUserPassword(null);
+            return realUser;
+        } else {
+            return null;
+        }
+
     }
 
     private void changeUserTotalsForUserUpdate(User userBeforeUpdate, User user) throws ServiceException{

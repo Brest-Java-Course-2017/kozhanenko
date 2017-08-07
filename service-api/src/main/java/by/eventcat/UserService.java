@@ -81,7 +81,7 @@ public interface UserService {
      * @return
      * @throws DataAccessException
      */
-    int deleteUserById(Integer userId) throws DataAccessException, ServiceException;
+    int deleteUserById(Long userId) throws DataAccessException, ServiceException;
 
     /**
      * Authenticate User by login (email) and password

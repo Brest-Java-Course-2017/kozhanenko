@@ -50,6 +50,10 @@
         <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
     </bean>
 
+    <bean id="userTotalsService" class="by.eventcat.UserTotalsServiceImpl">
+        <property name="userTotalsDao" ref="userTotalsDao"/>
+    </bean>
+
 
 
 

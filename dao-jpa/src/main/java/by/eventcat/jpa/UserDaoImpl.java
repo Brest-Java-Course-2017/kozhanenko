@@ -206,7 +206,7 @@ public class UserDaoImpl implements UserDao{
         } catch(HibernateException ex){
             if (tx!=null) tx.rollback();
             if (ex instanceof ConstraintViolationException){
-                //TODO: implement when User is in use in users_event_place_correlation table
+                //TODO: implement when User is in use in users_event_place_correlation table - may be when events or event places wil be associated with User
                 throw new DataIntegrityViolationException("");
             } else {
                 throw ex;

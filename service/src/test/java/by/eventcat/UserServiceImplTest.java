@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +32,9 @@ public class UserServiceImplTest {
 
     @Autowired
     private UserTotalsDao userTotalsDao;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     public void getAllUsers() throws Exception {
@@ -171,6 +174,9 @@ public class UserServiceImplTest {
                 assertEquals(totalUsersOfNewUserKind.getCount() + 1,
                         userTotalsDao.getValue(userToAdd.getRole(), city).getCount());
             }
+
+            int rowsAffected = userService.deleteUserById(userId);
+            assertEquals(1, rowsAffected);
         }
     }
 
@@ -185,7 +191,8 @@ public class UserServiceImplTest {
             User userToAdd = users.get(0);
             userToAdd.setUserEmail("rr");
             try{
-                userService.addNewUser(userToAdd);
+                Long newUserId = userService.addNewUser(userToAdd);
+                assertEquals(new Long(-1), newUserId);
             } catch(ServiceException ex) {
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
@@ -193,7 +200,8 @@ public class UserServiceImplTest {
 
             userToAdd.setUserPassword("123456");
             try{
-                userService.addNewUser(userToAdd);
+                Long newUserId = userService.addNewUser(userToAdd);
+                assertEquals(new Long(-1), newUserId);
             } catch(ServiceException ex) {
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
@@ -201,7 +209,8 @@ public class UserServiceImplTest {
 
             userToAdd.setRole(null);
             try{
-                userService.addNewUser(userToAdd);
+                Long newUserId =  userService.addNewUser(userToAdd);
+                assertEquals(new Long(-1), newUserId);
             } catch(ServiceException ex) {
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
@@ -209,15 +218,15 @@ public class UserServiceImplTest {
 
             userToAdd.setLocalities(null);
             try{
-                userService.addNewUser(userToAdd);
+                Long newUserId = userService.addNewUser(userToAdd);
+                assertEquals(new Long(-1), newUserId);
             } catch(ServiceException ex) {
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
-            userToAdd.setLocalities(new ArrayList<Locality>());
         }
     }
 
-    @Test
+    @Test(expected = ServiceException.class)
     public void addNewUserDuplicateData() throws Exception {
         LOGGER.debug("test: addNewUserDuplicateData()");
 
@@ -231,6 +240,7 @@ public class UserServiceImplTest {
                 userService.addNewUser(userToAdd);
             } catch(ServiceException ex) {
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED);
+                throw ex;
             }
         }
     }
@@ -242,6 +252,7 @@ public class UserServiceImplTest {
         List<User> users = userService.getAllUsers();
         if (users.size() > 0){
             User userToUpdate = users.get(0);
+            String userNameBefore = userToUpdate.getUserName();
             userToUpdate.setUserName("John");
 
             UserTotals userTotalsBeforeUpdate = userTotalsDao.getValue(userToUpdate.getRole(),
@@ -258,10 +269,15 @@ public class UserServiceImplTest {
                     (userToUpdate.getLocalities() != null && userToUpdate.getLocalities().size() > 0) ?
                             userToUpdate.getLocalities().get(0) : null);
             assertEquals(userTotalsBeforeUpdate, userTotalsAfterUpdate);
+
+            //set data to initial
+            updatedUser.setUserName(userNameBefore);
+            updatedUser = userService.getUserById(userToUpdate.getUserId());
+            assertEquals("John", updatedUser.getUserName());
         }
     }
 
-    @Test
+    @Test(expected = ServiceException.class)
     public void updateNonExistingUser() throws Exception {
         LOGGER.debug("test: updateNonExistingUser()");
 
@@ -273,6 +289,7 @@ public class UserServiceImplTest {
                 userService.updateUser(userToUpdate);
             } catch (ServiceException ex){
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.NO_ACTIONS_MADE);
+                throw ex;
             }
         }
     }
@@ -286,7 +303,8 @@ public class UserServiceImplTest {
             User userToUpdate = users.get(0);
             userToUpdate.setUserEmail("rr");
             try{
-                userService.updateUser(userToUpdate);
+                int rowsAffected = userService.updateUser(userToUpdate);
+                assertEquals(-1, rowsAffected);
             } catch (ServiceException ex){
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
@@ -294,7 +312,8 @@ public class UserServiceImplTest {
 
             userToUpdate.setRole(null);
             try{
-                userService.updateUser(userToUpdate);
+                int rowsAffected = userService.updateUser(userToUpdate);
+                assertEquals(-1, rowsAffected);
             } catch (ServiceException ex){
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
@@ -302,21 +321,22 @@ public class UserServiceImplTest {
             userToUpdate.setRole(UserRole.CITY_ADMIN);
             userToUpdate.setLocalities(new ArrayList<>());
             try{
-                userService.updateUser(userToUpdate);
+                int rowsAffected = userService.updateUser(userToUpdate);
+                assertEquals(-1, rowsAffected);
             } catch (ServiceException ex){
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
             userToUpdate.setLocalities(null);
             try{
-                userService.updateUser(userToUpdate);
+                int rowsAffected = userService.updateUser(userToUpdate);
+                assertEquals(-1, rowsAffected);
             } catch (ServiceException ex){
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
             }
-
         }
     }
 
-    @Test
+    @Test(expected = ServiceException.class)
     public void updateUserDuplicateData() throws Exception {
         LOGGER.debug("test: updateUserDuplicateData()");
 
@@ -329,6 +349,7 @@ public class UserServiceImplTest {
                 userService.updateUser(userToUpdate);
             } catch (ServiceException ex){
                 assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.NO_DUPLICATE_DATA_PERMITTED);
+                throw ex;
             }
         }
     }
@@ -387,8 +408,15 @@ public class UserServiceImplTest {
                 } else{
                     assertEquals(userTotalsAfterUpdateBefore.getCount() + 1, userTotalsAfterUpdate.getCount());
                 }
-            }
 
+                //set data to initial
+                updatedUser.setRole(userRoleBeforeUpdate);
+                List<Locality> localities1 = new ArrayList<>();
+                localities1.add(0, localityBeforeUpdate);
+                updatedUser.setLocalities(localities1);
+                count = userService.updateUser(updatedUser);
+                assertEquals(1, count);
+            }
         }
     }
 
@@ -398,15 +426,25 @@ public class UserServiceImplTest {
 
         List<User> users = userService.getAllUsers();
         if (users.size() > 0) {
-            User userToUpdate = users.get(0);
-            String passwordBefore = userToUpdate.getUserPassword();
+            User user = users.get(0);
+            user.setUserEmail("someDifferentEmail@gmail.com");
+            user.setUserPassword("12345678");
+
+            Long newUserId = userService.addNewUser(user);
+            assertNotNull(newUserId);
+
+            User userToUpdate = userService.getUserById(newUserId);
+            assertTrue(passwordEncoder.matches("12345678", userToUpdate.getUserPassword()));
 
             int rowsAffected = userService.changeUserPassword(userToUpdate.getUserId(), "newPassword");
             assertEquals(1, rowsAffected);
 
-            User updatedUser = userService.getUserById(userToUpdate.getUserId());
+            User updatedUser = userService.getUserById(newUserId);
+            assertTrue(passwordEncoder.matches("newPassword",updatedUser.getUserPassword()));
 
-            assertNotEquals(passwordBefore, updatedUser.getUserPassword());
+            //set data to initial
+            rowsAffected = userService.deleteUserById(newUserId);
+            assertEquals(1, rowsAffected);
         }
     }
 
@@ -415,19 +453,21 @@ public class UserServiceImplTest {
         LOGGER.debug("test: changeUserPasswordIncorrectInputData()");
 
         try{
-            userService.changeUserPassword(0L, "12345678");
+            int rowsAffected = userService.changeUserPassword(0L, "12345678");
+            assertEquals(-1, rowsAffected);
         } catch(ServiceException ex){
             assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
 
         try{
-            userService.changeUserPassword(1L, "12345");
+            int rowsAffected = userService.changeUserPassword(1L, "12345");
+            assertEquals(-1, rowsAffected);
         } catch(ServiceException ex){
             assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INPUT_DATA);
         }
     }
 
-    @Test
+    @Test(expected = ServiceException.class)
     public void changeUserPasswordNoSuchUser() throws Exception {
         LOGGER.debug("test: changeUserPasswordNoSuchUser()");
 
@@ -435,14 +475,136 @@ public class UserServiceImplTest {
             userService.changeUserPassword(999L, "12345678");
         } catch(ServiceException ex){
             assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.NO_ACTIONS_MADE);
+            throw ex;
         }
     }
 
+    @Test
+    public void deleteUserById() throws Exception {
+        LOGGER.debug("test: deleteUserById()");
 
+        List<User> users = userService.getAllUsers();
 
+        if (users.size() > 0) {
+            User user = users.get(0);
+            user.setUserEmail("newUser@gmail.com");
 
+            Long addedUserId = userService.addNewUser(user);
+            assertEquals(users.size() + 1, userService.getAllUsers().size());
 
+            UserTotals totalUsersOfThisKindBefore = userTotalsDao.getValue(user.getRole(),
+                    (user.getLocalities() != null && user.getLocalities().size() > 0) ?
+                            user.getLocalities().get(0) : null);
 
+            int rowsAffected = userService.deleteUserById(addedUserId);
+            assertEquals(1, rowsAffected);
+            assertEquals(users.size(), userService.getAllUsers().size());
 
+            UserTotals totalUsersOfThisKindAfter = userTotalsDao.getValue(user.getRole(),
+                    (user.getLocalities() != null && user.getLocalities().size() > 0) ?
+                            user.getLocalities().get(0) : null);
 
+            try{
+                userService.getUserByUserEmail("newUser@gmail.com");
+            } catch (ServiceException ex){
+                assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.NO_CALLING_DATA_FOUND);
+            }
+
+            if (totalUsersOfThisKindBefore.getCount() == 1){
+                assertEquals(null, totalUsersOfThisKindAfter);
+            } else if (totalUsersOfThisKindBefore.getCount() > 1){
+                assertEquals(totalUsersOfThisKindBefore.getCount() - 1, totalUsersOfThisKindAfter.getCount());
+            }
+        }
     }
+
+    @Test(expected = ServiceException.class)
+    public void deleteUserByIdNoActionsMade() throws Exception {
+        LOGGER.debug("test: deleteUserByIdNoActionsMade()");
+
+        try {
+            userService.deleteUserById(999L);
+        } catch (ServiceException ex){
+            assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.NO_ACTIONS_MADE);
+            throw ex;
+        }
+    }
+
+    @Test(expected = ServiceException.class)
+    public void deleteUserIncorrectIndex() throws Exception {
+        LOGGER.debug("test: deleteUserByIdNoActionsMade()");
+
+        try {
+            userService.deleteUserById(0L);
+        } catch (ServiceException ex){
+            assertEquals(ex.getCustomErrorCode(), CustomErrorCodes.INCORRECT_INDEX);
+            throw ex;
+        }
+    }
+
+    @Test
+    public void authenticateUser() throws Exception {
+        LOGGER.debug("test: authenticateUser()");
+
+        List<User> users = userService.getAllUsers();
+        if (users.size() > 0) {
+            User user = users.get(0);
+
+            user.setUserEmail("someMagicEmail@gmail.com");
+            user.setUserPassword("12345678");
+
+            Long newUserId = userService.addNewUser(user);
+            assertNotNull(newUserId);
+
+            User resultUser = userService.authenticateUser("someMagicEmail@gmail.com", "12345678");
+            assertNotNull(resultUser);
+
+            //set data to initial
+            int rowsAffected = userService.deleteUserById(newUserId);
+            assertEquals(1, rowsAffected);
+        }
+    }
+
+    @Test
+    public void authenticateUserWrongEmail() throws Exception {
+        LOGGER.debug("test: authenticateUserWrongEmail()");
+
+        User user = userService.authenticateUser("someNonExistingUserEmail@gmail.com", "12345678");
+        assertEquals(null, user);
+
+        User user1 = userService.authenticateUser("om", "12345678");
+        assertEquals(null, user1);
+    }
+
+    @Test
+    public void authenticateUserWrongPasswordLength() throws Exception {
+        LOGGER.debug("test: authenticateUserWrongPasswordLength()");
+
+        User user = userService.authenticateUser("someNonExistingUserEmail@gmail.com", "12345");
+        assertEquals(null, user);
+    }
+
+    @Test
+    public void authenticateUserPasswordNotMatches() throws Exception {
+        LOGGER.debug("test: authenticateUserPasswordNotMatches()");
+
+        List<User> users = userService.getAllUsers();
+        if (users.size() > 0) {
+            User user = users.get(0);
+
+            user.setUserEmail("someMagicEmail@gmail.com");
+            user.setUserPassword("12345678");
+
+            Long newUserId = userService.addNewUser(user);
+            assertNotNull(newUserId);
+
+            User resultUser = userService.authenticateUser("someMagicEmail@gmail.com", "87654321");
+            assertNull(resultUser);
+
+            //set data to initial
+            int rowsAffected = userService.deleteUserById(newUserId);
+            assertEquals(1, rowsAffected);
+        }
+    }
+
+}
