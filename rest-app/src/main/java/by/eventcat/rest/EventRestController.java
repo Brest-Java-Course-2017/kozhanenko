@@ -28,6 +28,7 @@ public class EventRestController {
 
     @Autowired
     private EventService eventService;
+
     @Autowired
     private TimePeriodService timePeriodService;
 

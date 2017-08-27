@@ -13,8 +13,7 @@
     <global-method-security pre-post-annotations="enabled" />
 
     <!--define the login and signup endpoints to skip security-->
-    <http pattern="/login" security="none"/>
-    <http pattern="/signup" security="none"/>
+    <http pattern="/authenticate" security="none"/>
 
     <!--we define the filter chain applied to all requests while adding two important configs: Entry point reference and -->
     <!--setting the session creation to stateless (we do not want the session created for security purposes as -->

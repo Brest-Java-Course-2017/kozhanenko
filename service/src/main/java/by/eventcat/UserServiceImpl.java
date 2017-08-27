@@ -237,7 +237,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User authenticateUser(String userEmail, String userPassword) throws DataAccessException, ServiceException {
+    public User authenticateUser(String userEmail, String userPassword) throws DataAccessException{
         LOGGER.debug("authenticateUser with userEmail = {}, userPassword={}", userEmail, userPassword);
 
         if (userPassword.length() < 8){

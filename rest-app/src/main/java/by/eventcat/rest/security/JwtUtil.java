@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -12,8 +14,15 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class JwtUtil {
 
+
+    private static String secret;
+
     @Value("${jwt.secret}")
-    private String secret;
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Tries to parse specified String as a JWT token. If successful, returns User object with username, id and role prefilled (extracted from token).
@@ -48,7 +57,12 @@ public class JwtUtil {
      * @param user the user for which the token will be generated
      * @return the JWT token
      */
-    public String generateToken(User user) {
+    public static String generateToken(User user) {
+
+        LOGGER.debug(secret);
+        LOGGER.debug(user);
+
+
         Claims claims = Jwts.claims().setSubject(user.getUserName());
         claims.put("userId", Long.toString(user.getUserId()));
         claims.put("userPermissions", user.getUserPermissions());

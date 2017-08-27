@@ -247,7 +247,9 @@
                     <configuration>
                         <scanIntervalSeconds>10</scanIntervalSeconds>
                         <webApp>
-                            <contextPath>/rest-app-1.0-SNAPSHOT/</contextPath>
+                            <!--<contextPath>/rest-app-1.0-SNAPSHOT/</contextPath>-->
+                            <contextPath>/</contextPath>
+                            <webInfIncludeJarPattern>.*/foo-[^/]*\.jar$|.*/classes/.*</webInfIncludeJarPattern>
                         </webApp>
                         <httpConnector>
                             <port>8080</port>

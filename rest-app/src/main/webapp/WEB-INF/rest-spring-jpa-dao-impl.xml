@@ -53,6 +53,10 @@
                 <value>by.eventcat.Category</value>
                 <value>by.eventcat.Event</value>
                 <value>by.eventcat.TimePeriod</value>
+                <value>by.eventcat.User</value>
+                <value>by.eventcat.EventPlace</value>
+                <value>by.eventcat.Locality</value>
+                <value>by.eventcat.UserTotals</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -92,6 +96,24 @@
     </bean>
     <bean id="timePeriodService" class="by.eventcat.TimePeriodServiceImpl">
         <property name="timePeriodDao" ref="timePeriodDao"/>
+    </bean>
+
+    <bean id="userDao" class="by.eventcat.jpa.UserDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <bean id="userService" class="by.eventcat.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+        <property name="userTotalsDao" ref="userTotalsDao"/>
+    </bean>
+
+    <bean id="userTotalsDao" class="by.eventcat.jpa.UserTotalsDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+
+    <bean id="userTotalsService" class="by.eventcat.UserTotalsServiceImpl">
+        <property name="userTotalsDao" ref="userTotalsDao"/>
     </bean>
 
     <mvc:annotation-driven>

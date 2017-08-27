@@ -94,7 +94,7 @@ public interface UserService {
      * @return User object (authentication is successful) or null
      * @throws DataAccessException
      */
-    User authenticateUser(String userEmail, String userPassword) throws DataAccessException, ServiceException;
+    User authenticateUser(String userEmail, String userPassword) throws DataAccessException;
 
 
 }

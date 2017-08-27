@@ -17,6 +17,10 @@
         <constructor-arg value="by.eventcat.TimePeriodService"/>
     </bean>
 
+    <bean id="userService" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="by.eventcat.UserService"/>
+    </bean>
+
     <context:component-scan base-package="by.eventcat.rest"/>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
